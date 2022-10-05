@@ -12,7 +12,7 @@ class MenuData extends Model
      *
      * @var string
      */
-    protected $table = 'viewcat_menu';
+    protected $table = 'view_sys_menu';
     
 
     /**
@@ -21,7 +21,7 @@ class MenuData extends Model
      * @var array
      */
     protected $fillable = [
-        'id_menu', 'key', 'label', 'icon', 'orden', 'id_keycloak'
+        'menu_id', 'key', 'label', 'icon', 'orden', 'keycloak_id'
     ];
 
     /**
