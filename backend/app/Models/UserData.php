@@ -12,7 +12,7 @@ class UserData extends Model
      *
      * @var string
      */
-    protected $table = 'cat_user';
+    protected $table = 'sys_users';
       /**
      * The primary key associated with the table.
      *

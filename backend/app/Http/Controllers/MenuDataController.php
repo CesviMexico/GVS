@@ -27,26 +27,26 @@ class MenuDataController extends Controller
 
     public function showOne($id)
     {
-        $data = MenuData::where("id_submenu", "=", null)
-            ->where("id_keycloak", "=", $id)
+        $data = MenuData::whereNull("submenu_id")
+            ->where("keycloak_id", $id)
             ->get();
 
         foreach ($data as $key => $dataRow) {
-            $data[$key]['children'] = DB::table('viewcat_menu')
-                ->where("id_submenu", "=", $dataRow['id_menu'])
-                ->where("id_keycloak", "=", $id)
-                ->get(["id_menu", "key", "label", "icon", "orden"]);
+            $data[$key]['children'] = DB::table('view_sys_menu')
+                ->where("submenu_id", "=", $dataRow['menu_id'])
+                ->where("keycloak_id", "=", $id)
+                ->get(["menu_id", "key", "label", "icon", "order"]);
         }
 
 
         $response = [
             "status" => 200,
             "data" => $data,
-            "message" => "Info Actualizada",
+            "message" => "Menu Actualizado",
             "type" => "success"
         ];
 
-        return response()->json($response);
+        return response()->json($response, 200);
         //return response()->json(["Hola mundo" => "brayquiriun"]);
     }
 }
