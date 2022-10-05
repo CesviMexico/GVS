@@ -66,7 +66,7 @@ const Layout = ({ children }) => {
 
     const ActualizaUser = async (parametros) => {
         const responseActualizaUser = await getAxiosLumen({
-            uri: 'demo/user',
+            uri: 'user',
             //setloading: setloading,
             msErrorApi: msErrorApi,
             keycloak: keycloak,
@@ -75,12 +75,12 @@ const Layout = ({ children }) => {
             logoutOptions: logoutOptions,
             parametros: parametros
 
-        })        
+        })
     }
 
     const ActualizaMenu = async (subject) => {
         const response = await getAxiosLumen({
-            uri: 'demo/menu/' + subject,
+            uri: 'menu/' + subject,
             setloading: setloading,
             msErrorApi: msErrorApi,
             keycloak: keycloak,
@@ -94,30 +94,35 @@ const Layout = ({ children }) => {
         let Menu = []
         let SubMenu = []
 
-        switch (response.data.length) {
-            default:               
-                ActualizaUser([{...keycloak.tokenParsed,id_keycloak: keycloak.subject,}])
-                setItems([])
-                response.data.map((row) => {
-                    const { label, key, icon, children } = row
-                    SubMenu = []
-                    children.length > 0 &&                   
-                        children.map((rowChild) => {
-                            SubMenu.push(getItem({ label: rowChild.label, key: rowChild.key, icon: rowChild.icon, }))
-                        })
-                    Menu.push(
-                        children.length > 0 ?
-                            getItem({ label, key, icon, children: SubMenu })
-                            :
-                            getItem({ label, key, icon, })
-                    )
-                })
-                setItems(Menu)
-                break;
-            case 0:
-                // navigate('/Page404');
-                // keycloak.logout(process.env.REACT_APP_logoutOption)
-                break;
+        try {
+            switch (response.data.length) {
+                default:
+                    ActualizaUser([{ ...keycloak.tokenParsed, id_keycloak: keycloak.subject, }])
+                    setItems([])
+                    response.data.map((row) => {
+                        const { label, key, icon, children } = row
+                        SubMenu = []
+                        children.length > 0 &&
+                            children.map((rowChild) => {
+                                SubMenu.push(getItem({ label: rowChild.label, key: rowChild.key, icon: rowChild.icon, }))
+                            })
+                        Menu.push(
+                            children.length > 0 ?
+                                getItem({ label, key, icon, children: SubMenu })
+                                :
+                                getItem({ label, key, icon, })
+                        )
+                    })
+                    setItems(Menu)
+                    break;
+                case 0:
+                    navigate('/Page404');
+                    keycloak.logout(process.env.REACT_APP_logoutOption)
+                    break;
+            }
+        } catch (error) {
+            navigate('/Page404');
+            // keycloak.logout(process.env.REACT_APP_logoutOption)
         }
 
         setCollapsed(true)
