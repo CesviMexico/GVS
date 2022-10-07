@@ -26,3 +26,9 @@ $router->group(['prefix' => 'user', 'middleware' => 'jwt'], function () use ($ro
     $router->delete('/{id}', ['uses' => 'UserDataController@delete']);
     $router->put('/{id}', ['uses' => 'UserDataController@update']);
 });
+
+$router->group(['prefix' => 'configuracion'], function () use ($router) {
+    $router->get('forms',  ['uses' => 'ConfiguracionController@showAll']);
+    $router->post('forms',  ['uses' => 'ConfiguracionController@create']);
+    $router->put('forms/{id}', ['uses' => 'ConfiguracionController@update']);
+});
