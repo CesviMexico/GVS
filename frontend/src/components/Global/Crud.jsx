@@ -23,7 +23,7 @@ const Crud = (props) => {
 
   const crudContext = useContext(CrudContext);
 
-  const { tableProps, loading, columns, datasource, OnClickAction, ActualizaTabla, title, uri } = props
+  const { tableProps, loading, columns, datasource, OnClickAction, ActualizaTabla, title, uri, viewFab } = props
 
   const { form, openmodal, currentrowid, btntitle, guardarDatosAction, editarDatosAction,
     openModalCAction, closeModalCAction, chCurrentRowIDAction, chTitleBtnCAction, } = crudContext;
@@ -41,9 +41,8 @@ const Crud = (props) => {
   const onFinish = (values) => {
     if (btntitle === "Guardar") {
       guardarDatosAction(uri, values);
-    } else {
-      const valuesFinal = { ...values, id_user: currentrowid }
-      editarDatosAction(uri, valuesFinal);
+    } else {    
+      editarDatosAction(uri, values, currentrowid);
     }
   };
 
@@ -64,7 +63,7 @@ const Crud = (props) => {
         }}
       >
         <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-        <Form form={form} name="control-hooks" onFinish={onFinish}>
+        <Form form={form} name="control-hooks" layout="vertical" onFinish={onFinish}>
           <DialogContent>{props.children}</DialogContent>
           <DialogActions>
             <Button autoFocus onClick={closeModalCAction}>
@@ -77,8 +76,6 @@ const Crud = (props) => {
         </Form>
       </Dialog>
 
-
-
       <Box sx={{
         display: 'flex', flexWrap: 'wrap', '& > :not(style)':
           { m: 1, width: '98%', height: '100%', },
@@ -87,7 +84,6 @@ const Crud = (props) => {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <TablaANTD
-
               loading={loading}
               columnsTable={columns}
               datasource={datasource}
@@ -111,20 +107,22 @@ const Crud = (props) => {
               ActualizaTabla={ActualizaTabla}
 
               Agregar={onNewCrud}
-              AgregarIcon={"fluent:person-add-24-filled"}
+              AgregarIcon={tableProps && tableProps.IconAgregar}
 
             />
-            <Fab aria-label="save" color="primary"
-              sx={{
-                position: 'fixed',
-                bottom: "80px",
-                right: '45%',
+            {viewFab &&
+              <Fab aria-label="save" color="primary"
+                sx={{
+                  position: 'fixed',
+                  bottom: "80px",
+                  right: '45%',
 
-              }}
-              onClick={onNewCrud}
-            >
-              <AddIcon />
-            </Fab>
+                }}
+                onClick={onNewCrud}
+              >
+                <AddIcon />
+              </Fab>
+            }
           </Grid>
         </Grid>
       </Box>

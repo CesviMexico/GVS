@@ -11,7 +11,11 @@ import Login from './pages/login'
 
 import Cat from './pages/Cat'
 import Cat2 from './pages/Cat2'
-import Users from './pages/Users'
+
+//configuracion
+import Users from './pages/Configuracion/Users/Home'
+import Forms from './pages/Configuracion/Forms/Home'
+import Tables from './pages/Configuracion/Tables/Home'
 
 import Page404 from './pages/Page404'
 import Page403 from './pages/Page403'
@@ -44,7 +48,11 @@ const Router = () => {
                         <Route path="/chartjs" element={<PrivateRoute><Layout><GraficasChart /></Layout></PrivateRoute>} />
 
 
-                        <Route path="/Users" element={<PrivateRoute><Layout><Users /></Layout></PrivateRoute>} />
+                        <Route path="Configuracion/Users" element={<PrivateRoute><Layout><Users /></Layout></PrivateRoute>} />
+                        <Route path="Configuracion/Forms" element={<PrivateRoute><Layout><Forms /></Layout></PrivateRoute>} />
+                        <Route path="Configuracion/Tables" element={<PrivateRoute><Layout><Tables /></Layout></PrivateRoute>} />
+
+
                         <Route path="/Page403" element={<PrivateRoute><Page403 /></PrivateRoute>} />
                         <Route path="/Page404" element={<PrivateRoute><Layout><Page404 /></Layout></PrivateRoute>} />
 

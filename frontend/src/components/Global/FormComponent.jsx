@@ -214,8 +214,7 @@ export const FormAntdCrud = (props) => {
   // Hook y funciones o metodos Globales
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
-
-  const { formItems } = props
+  const { formItems, onChangeSelect } = props
   const [formItem] = useState([])
 
   ///Upload
@@ -238,16 +237,18 @@ export const FormAntdCrud = (props) => {
     "RangePicker": ({ showTime, format }) => <RangePicker showTime={showTime} format={format} />,
     "TimePicker": ({ format }) => <TimePicker format={format} />,
 
-    "Select": ({ placeholder, arrayOption, mode }) =>
+    "Select": ({ placeholder, arrayOption, mode, key }) =>
       <Select
+        key={key}
         mode={mode}
         placeholder={placeholder}
         showSearch
         optionFilterProp="children"
+        onChange={(event) => onChangeSelect && onChangeSelect(event,key)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
       >
         {arrayOption.map((dato_row, index) =>
-          <Option key={index} value={dato_row.value} >{dato_row.text}</Option>
+          <Option key={index} value={dato_row.value} >{dato_row.label}</Option>
         )}
       </Select>,
 
@@ -291,7 +292,7 @@ export const FormAntdCrud = (props) => {
     "": () => { "Erro en tipo" },
   }
   const ItemsForm = () => {
-    formItems && formItems.forEach(Item => {
+    formItems .length && formItems.forEach(Item => {
       let obj =
       {
         ...Item,
@@ -307,8 +308,9 @@ export const FormAntdCrud = (props) => {
           },
 
         ],
-        tipo: swicthTipo[Item.tipo] && swicthTipo[Item.tipo](
+        name_element: swicthTipo[Item.name_element] && swicthTipo[Item.name_element](
           {
+            key: Item.name,
             placeholder: Item.placeholder && Item.placeholder,
             min: Item.min && Item.min,
             max: Item.max && Item.max,
@@ -316,7 +318,7 @@ export const FormAntdCrud = (props) => {
             showCount: Item.showCount && Item.showCountItem.showCount,
             showTime: Item.showTime && Item.showTime,
             format: Item.format && Item.format,
-            arrayOption: Item.arrayOption && Item.arrayOption,
+            arrayOption: Item.options && Item.options,
             mode: Item.mode && Item.mode,
             valuePropName: Item.valuePropName && Item.valuePropName,
             marksSlider: Item.marksSlider && Item.marksSlider,
@@ -340,10 +342,11 @@ export const FormAntdCrud = (props) => {
       formItem.push(obj)
     });
 
-    console.log('formItem', formItem)
-    console.log('formItem', formItem.length)
+    // console.log('formItem', formItem)
+    // console.log('formItem', formItem.length)
   }
-  ItemsForm();
+
+  formItem.length == 0 && ItemsForm();
 
   return (
     <ConfigProvider locale={idiomaGral}>
@@ -361,7 +364,7 @@ export const FormAntdCrud = (props) => {
               valuePropName={row.valuePropName}
             //getValueFromEvent={(e) => normFile(e)}
             >
-              {row.tipo}
+              {row.name_element}
             </Form.Item>
           </Grid>
         )}

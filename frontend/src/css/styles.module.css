@@ -23,5 +23,12 @@
   flex: 0 0 300px;
 }
 
+.ant-drawer-mask{
+  background-color: rgba(111, 126, 140, 0.2)!important;
+  backdrop-filter: blur(4px)!important;
+}
+
+
+
 
 

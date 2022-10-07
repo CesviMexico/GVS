@@ -3,6 +3,7 @@ import ThemeContext from '../../context/ThemContext'
 
 import 'antd/dist/antd.css';
 import { ConfigProvider, Drawer } from 'antd';
+import  '../../css/stylesDraw.css'
 
 const DrawerAntd = (props) => {
 
@@ -10,7 +11,7 @@ const DrawerAntd = (props) => {
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
 
-  const { title, placement, visible, onClose } = props
+  const { title, placement, visible, onClose , getContainer,style} = props
 
   return (
     <ConfigProvider locale={idiomaGral}>
@@ -20,6 +21,9 @@ const DrawerAntd = (props) => {
         placement={placement ? placement : "right"}
         onClose={onClose && onClose}
         visible={visible}
+        getContainer={getContainer}
+        style={style}       
+
       >
         {props.children}
       </Drawer>

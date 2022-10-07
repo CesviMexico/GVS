@@ -94,7 +94,7 @@ const Layout = ({ children }) => {
         let Menu = []
         let SubMenu = []
 
-        try {
+       
             switch (response.data.length) {
                 default:
                     ActualizaUser([{ ...keycloak.tokenParsed, id_keycloak: keycloak.subject, }])
@@ -116,14 +116,12 @@ const Layout = ({ children }) => {
                     setItems(Menu)
                     break;
                 case 0:
-                    navigate('/Page404');
-                    keycloak.logout(process.env.REACT_APP_logoutOption)
+                    // navigate('/Page404');
+                    // keycloak.logout(process.env.REACT_APP_logoutOption)
                     break;
-            }
-        } catch (error) {
-            navigate('/Page404');
-            // keycloak.logout(process.env.REACT_APP_logoutOption)
-        }
+            } 
+            
+            // console.log('Menu',Menu)
 
         setCollapsed(true)
         setloading(false)
