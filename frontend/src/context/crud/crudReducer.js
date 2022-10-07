@@ -60,6 +60,13 @@ export default (state, action) => {
                 ...state,
                 currentrowid: action.payload,
             };
+
+            case "CRUD_LOADING":
+            return {
+                ...state,
+                loading: action.payload,
+            };
+
         default:
             return state;
     }

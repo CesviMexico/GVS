@@ -18,7 +18,7 @@ const ModdalMUI = (props) => {
   // Hook y funciones o metodos Globales
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
-  const { open, closeModal, footer } = props;
+  const { open, closeModal, footer , title , maxWidth } = props;
 
   const [form] = Form.useForm()
   const [btntitle, setBtnTitle] = useState("Guardar")
@@ -39,7 +39,7 @@ const ModdalMUI = (props) => {
           onClose={closeModal}
           aria-labelledby="responsive-dialog-title"
           fullWidth={true}
-          maxWidth="sm"
+          maxWidth={maxWidth ? maxWidth : "sm"}  //sm-md-lg
           BackdropProps={{
             sx: {
               backgroundColor: "rgba(111, 126, 140, 0.2)",
@@ -47,7 +47,7 @@ const ModdalMUI = (props) => {
             }
           }}
         >
-          <DialogTitle id="responsive-dialog-title">{props.title}</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
           <Form form={form} name="control-hooks" onFinish={onFinish}>
             <DialogContent>{props.children}</DialogContent>
             {

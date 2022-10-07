@@ -70,7 +70,7 @@ const CrudAction = (props) => {
                 logoutOptions: logoutOptions
 
             })
-            console.log('obtenerDatosAction',response)
+            //console.log('obtenerDatosAction',response)
             dispatch(mostrarDatos(response));
         } catch (error) {
             dispatch(mostrarDatosError());
@@ -122,12 +122,12 @@ const CrudAction = (props) => {
         type: CRUD_SAVE_ERROR,
         payload: true,
     });
-    const editarDatosAction = async (uri, values, request='put') => {
+    const editarDatosAction = async (uri, values, id, request='put') => {
         dispatch(editarInit());
         try {
 
             const response = await getAxiosLumen({
-                uri: uri + '/' + values.id_user,
+                uri: uri + '/' + id,
                 msErrorApi: msErrorApi,
                 keycloak: keycloak,
                 notification: true,
@@ -159,6 +159,16 @@ const CrudAction = (props) => {
         payload: true,
     });
 
+    const loadingCrud = (payload) => ({
+        type: "CRUD_LOADING",
+        payload: payload,
+    });
+
+    const SetloadingCrud = (payload) => (
+        dispatch(loadingCrud(payload))
+   );
+   
+
     return (
         <CrudContext.Provider
             value={{
@@ -176,6 +186,10 @@ const CrudAction = (props) => {
                 closeModalCAction,
                 chCurrentRowIDAction,
                 chTitleBtnCAction,
+
+                SetloadingCrud,
+
+                
             }}
         >
             {props.children}

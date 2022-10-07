@@ -31,6 +31,11 @@ import separator, { formatDate, formatDateTime, ExportToExcel } from './funcione
 //colores
 import { green, red, yellow } from '@mui/material/colors';
 
+
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
+
+
 const { Link } = TypographyAntd;
 const { Option } = Select;
 
@@ -42,6 +47,7 @@ const TablaANTD = (props) => {
 
   const {
     loading,
+    loadingAdd,
     datasource,
 
     pagination,
@@ -68,7 +74,8 @@ const TablaANTD = (props) => {
     AgregarIcon,
     ExportaExcelOtro,
 
-    Sumary
+    Sumary,
+    tbSimple
 
   } = props
 
@@ -169,28 +176,27 @@ const TablaANTD = (props) => {
   const action = (row, key, IconAction, titleMSG) => {
     return (
       <>
-        {titleMSG ?
-
-          <Popconfirm
-            key={key}
-            title={titleMSG}
-            //icon={<Icon icon={IconAction} style={{color: backgroundColor}} />}
-            okText="Si"
-            cancelText="No"
-            onConfirm={() => OnClickAction(row, key)}
-          >
-            {/* <Icon icon={swicthIcons[IconAction]} */}
-            <Icon icon={IconAction} key={key}
-              style={{
-                cursor: "pointer",
-                fontSize: sizeIcon,
-                marginLeft: "5px",
-                color: backgroundColor
-              }}
-            />
-          </Popconfirm>
-          :
-          <Tooltip title={key} key={key}>
+        <Tooltip title={key} key={key}>
+          {titleMSG ?
+            <Popconfirm
+              key={key}
+              title={titleMSG}
+              //icon={<Icon icon={IconAction} style={{color: backgroundColor}} />}
+              okText="Si"
+              cancelText="No"
+              onConfirm={() => OnClickAction(row, key)}
+            >
+              {/* <Icon icon={swicthIcons[IconAction]} */}
+              <Icon icon={IconAction} key={key}
+                style={{
+                  cursor: "pointer",
+                  fontSize: sizeIcon,
+                  marginLeft: "5px",
+                  color: backgroundColor
+                }}
+              />
+            </Popconfirm>
+            :
             <Icon icon={IconAction} key={key}
               style={{
                 cursor: "pointer",
@@ -200,8 +206,8 @@ const TablaANTD = (props) => {
               }}
               onClick={() => OnClickAction(row, key)}
             />
-          </Tooltip>
-        }
+          }
+        </Tooltip>
       </>
     );
   };
@@ -365,9 +371,9 @@ const TablaANTD = (props) => {
     return (
       <>
         <Select
-        style={{
-          width: width,
-        }}
+          style={{
+            width: width,
+          }}
           key={index}
           allowClear
           showSearch
@@ -486,7 +492,7 @@ const TablaANTD = (props) => {
         col.datePicker && objDatePicker(col.key, col.icon, col.placeholder, col.format, col.showTime),
         col.Input && objInput(col.key, col.icon, col.placeholder,),
         col.textArea && objTextArea(col.key, col.icon, col.placeholder, col.height),
-        col.Select && objSelect(col.key, col.icon, col.placeholder, col.arrayOption,  col.width),
+        col.Select && objSelect(col.key, col.icon, col.placeholder, col.arrayOption, col.width),
         col.upload && objUploads(
           col.key,
           col.iconC,
@@ -565,114 +571,131 @@ const TablaANTD = (props) => {
   }
 
 
+  const TableCP = () => {
+    return (
+      <Table
+        //className={}
+        loading={loading}
+        dataSource={datasource}
+        //onChange={onChange}
+        onChange={onChange}
+        bordered={bordered}
+        size={size}
+        tableLayout={tableLayout} //"fixed" //- | auto | fixed
+
+        pagination={
+          pagination &&
+          {
+            responsive: true,
+            pageSize: pageSize,
+            simple: simplepage,
+            position: [positionTop, positionBottom],
+            // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
+          }
+        }
+
+        scroll={{ x: scrollX, y: scrollY }}
+        columns={columns}
+
+        title={() =>
+          noChange > 0 && noChange !== datasource.length ?
+            <Typography
+              variant="body2"
+              style={{ color: colorTable }}
+            ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+            </Typography>
+            : ""}
+
+        summary={(pageData) => Sumary && Sumary(pageData)}
+      />
+    )
+  }
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   return (
     <>
       <ConfigProvider locale={idiomaGral}>
-        {/* <Skeleton avatar loading={!loading} paragraph={{ rows: 4, }} > */}
 
-
-
-        <CardMUI
-          styleCardHeader={{ backgroundColor: colorTable }}
-          title={
-            <Typography
-              variant="h6"
-              component="div"
-              gutterBottom
-              style={{ color: colorIcon }}
-            >  {Title}
-            </Typography>
-          }
-          avatarCardHeader={
-            <>
-              <BadgeMUIImg
-                sizeIcon={sizeIconTable}
-                icon={IconAvatar}
-                badgeContent={datasource && datasource.length}
-                max={9999}
-              />
-            </>
-          }
-
-          actionsCardHeader={
-            <>
-              {Agregar &&
-                <Tooltip title="Agregar">
-                  <IconButton aria-label="settings"
-                    onClick={() => Agregar()}
-                  >
-                    <Icon icon={AgregarIcon ? AgregarIcon : "clarity:add-line"} style={{ fontSize: sizeIcon, color: colorIcon }} />
-                  </IconButton>
-                </Tooltip>
-              }
-
-              {ExportaExcel &&
-                // < a href={currenturlapi + "ExportaExcel/" + urlexportaExcel} target="_blank" >
-                <IconButton aria-label="settings" onClick={() => ExportToExcelButton()}>
-                  <Tooltip title={"Exportar a Excel"} >
-                    <Icon icon={"mdi:microsoft-excel"} style={{ fontSize: sizeIcon, color: colorIcon }} />
-                  </Tooltip>
-                </IconButton>
-                // </a>
-              }
-
-
-              {ActualizaTabla &&
-                <Tooltip title="Actualizar tabla">
-                  <IconButton aria-label="settings"
-                    onClick={() => ActualizaTabla()}
-                  >
-                    {/* <Icon icon={"mdi:table-refresh"} style={{ fontSize: sizeIcon, color: colorIcon }} /> */}
-                    <SyncOutlined spin={loading}
-                      style={{ fontSize: sizeIcon, color: colorIcon }}
-                    />
-
-                  </IconButton>
-                </Tooltip>
-              }
-
-
-            </>
-          }
-        >
-          <Table
-            //className={}
-            loading={loading}
-            dataSource={datasource}
-            //onChange={onChange}
-            onChange={onChange}
-            bordered={bordered}
-            size={size}
-            tableLayout={tableLayout} //"fixed" //- | auto | fixed
-
-            pagination={
-              pagination &&
-              {
-                responsive: true,
-                pageSize: pageSize,
-                simple: simplepage,
-                position: [positionTop, positionBottom],
-                // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
-              }
+        {!tbSimple ?
+          <CardMUI
+            styleCardHeader={{ backgroundColor: colorTable }}
+            title={
+              <Typography
+                variant="h6"
+                component="div"
+                gutterBottom
+                style={{ color: colorIcon }}
+              >  {Title}
+              </Typography>
+            }
+            avatarCardHeader={
+              <>
+                <BadgeMUIImg
+                  sizeIcon={sizeIconTable}
+                  icon={IconAvatar}
+                  badgeContent={datasource && datasource.length}
+                  max={9999}
+                />
+              </>
             }
 
-            scroll={{ x: scrollX, y: scrollY }}
-            columns={columns}
+            actionsCardHeader={
+              <>
+                {Agregar &&
+                  <Tooltip title="Agregar">
+                    <IconButton aria-label="settings"
+                      onClick={() => Agregar()}
+                      disabled={loadingAdd}
+                    >
 
-            title={() =>
-              noChange > 0 && noChange !== datasource.length ?
-                <Typography
-                  variant="body2"
-                  style={{ color: colorTable }}
-                ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-                </Typography>
-                : ""}
+                      {loadingAdd ?
+                        <Spin indicator={antIcon} spinning={true} />
+                        :
+                        <Icon icon={AgregarIcon ? AgregarIcon : "clarity:add-line"} style={{ fontSize: sizeIcon, color: colorIcon }} />
+                      }
+                    </IconButton>
+                  </Tooltip>
+                }
 
-            summary={(pageData) => Sumary && Sumary(pageData)}
-          />
-        </CardMUI>
-        {/* </Skeleton> */}
+                {ExportaExcel &&
+                  // < a href={currenturlapi + "ExportaExcel/" + urlexportaExcel} target="_blank" >
+                  <IconButton aria-label="settings" onClick={() => ExportToExcelButton()}>
+                    <Tooltip title={"Exportar a Excel"} >
+                      <Icon icon={"mdi:microsoft-excel"} style={{ fontSize: sizeIcon, color: colorIcon }} />
+                    </Tooltip>
+                  </IconButton>
+                  // </a>
+                }
+
+
+                {ActualizaTabla &&
+                  <Tooltip title="Actualizar tabla">
+                    <IconButton aria-label="settings"
+                      onClick={() => ActualizaTabla()}
+                    >
+                      {/* <Icon icon={"mdi:table-refresh"} style={{ fontSize: sizeIcon, color: colorIcon }} /> */}
+                      <SyncOutlined spin={loading}
+                        style={{ fontSize: sizeIcon, color: colorIcon }}
+                      />
+
+                    </IconButton>
+                  </Tooltip>
+                }
+
+
+              </>
+            }
+          >
+            <div style={{ position: "relative", overflow: "hidden", }}>
+              <TableCP />
+              {props.children}
+            </div>
+          </CardMUI>
+          : <TableCP />
+        }
+
+
 
         <ModdalANTD
           visible={previewVisible}
