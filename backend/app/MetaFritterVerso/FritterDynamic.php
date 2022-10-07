@@ -29,16 +29,20 @@ class FritterDynamic
                 if ($item['component_no'] == $component_no) {
                     $obj += [$item['name_attribute'] => $item['value']];
                     $obj['name_element'] = $item['name_element'];
-                }
+                    $dependency = (int) $item['dependency'];
+                    
+                }               
             }
+            if($dependency > 0){
+                $dependecys = DB::table('sys_dependencys')->where('component_id', $component_no)->get();
+                foreach ($dependecys as $dep) {
+                    $obj['options'] = DB::table($dep->name_table)->select($dep->label.' as label', $dep->value.' as value')->whereRaw($dep->where)->get();
+                } 
+            }
+            
             $forms[] = $obj;
         }
 
-        // for ($i=0; $i < sizeof($forms) ; $i++) { 
-        //     if($forms[$i]['name_element'] == "Select"){
-        //         $forms[$i]['options'] = DB::table($forms[$i]['tb'])->select($forms[$i]['stext'].' as text', $forms[$i]['svalue'].' as value')->get();
-        //     }
-        // }
         return $forms;
     }
 
@@ -55,7 +59,7 @@ class FritterDynamic
 
             foreach ($formItems as $item) {
                 if ($item['component_no'] == $component_no) {
-                    $value = $item['value'] == "true" || $item['value'] == "false" ? boolval($item['value']) : $item['value'];
+                    $value = $item['value'] == "true" || $item['value'] == "false" ? $item['value'] : $item['value'];
                     $obj += [$item['name_attribute_column'] => $value];
                 }
             }
@@ -80,7 +84,7 @@ class FritterDynamic
 
         $props_table = [];
         foreach ($props as $prop) {
-            $value = $prop->value == "true" || $prop->value == "false" ? boolval($prop->value) : $prop->value;
+            $value = $prop->value == "0" || $prop->value == "1" ? boolval($prop->value) : $prop->value;
             $props_table += [$prop->name_props_table => $value];
         }
         return $props_table;

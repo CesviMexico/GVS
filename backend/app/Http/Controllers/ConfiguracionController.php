@@ -53,8 +53,8 @@ class ConfiguracionController extends Controller
             ->where('forms_id', $id)
             ->update($arr);
 
-        $message = "Se modificó correctamente el registro!";    
-        if(array_key_exists("status", $arr)){
+        $message = "Se modificó correctamente el registro!";
+        if (array_key_exists("status", $arr)) {
             $message = "Se elimino correctamente el registro!";
         }
 
@@ -68,12 +68,35 @@ class ConfiguracionController extends Controller
         return response()->json($response, 200);
     }
 
-    public function showComponetizar()
+    public function showComponetizar($id)
     {
-        $form = FritterDynamic::itemsForm('Fritter Forms');
-        $columns = FritterDynamic::columnsTable('Agregar Forms');
-        $data = DB::table('sys_forms')->where('status', 'alta')->get();
-        $props_table = [];
+        $form = FritterDynamic::itemsForm('Form Elementos');
+        $columns = FritterDynamic::columnsTable('Agregar Elementos');
+        $sys_data_forms = DB::table('sys_data_forms')->where('form_id', $id)->get();
+        $data = [];
+        $row = [];
+        foreach ($sys_data_forms as $dataform) {
+            $attributes = [];
+            $row['form_id'] = $dataform->form_id;
+            $row['component_no'] = $dataform->component_no;
+            $components = DB::table('sys_components')
+                ->join('sys_elements', 'sys_components.element_id', '=', 'sys_elements.element_id')
+                ->join('sys_attributes', 'sys_components.attribute_id', '=', 'sys_attributes.attribute_id')
+                ->select('sys_components.*', 'sys_elements.name_element', 'sys_attributes.name_attribute')
+                ->where('component_no', $dataform->component_no)->get();
+            foreach ($components as $component) {
+                if($component->attribute_id == 1){
+                    $row['name_element'] = $component->name_element;
+                    $row['label'] = $component->value;
+                }                
+                $attributes[] = ['element_id'=>$component->element_id, 'attribute_id'=>$component->attribute_id, 'name_attribute'=>$component->name_attribute,'value'=>$component->value];
+                
+            }
+            $row['attributes'] = $attributes;
+            array_push($data,$row);
+        }
+        
+        $props_table = FritterDynamic::propsTable(3);
 
         $response = [
             "status" => 200,
@@ -85,6 +108,22 @@ class ConfiguracionController extends Controller
             "type" => "success"
         ];
         return response()->json($response);
+    }
+
+    public function showAttributes($id){
+        $columns = FritterDynamic::columnsTable('Agregar Atributos');
+        $data = [];
+        $form = [];
+        $props_table = FritterDynamic::propsTable(1);
+        $response = [
+            "status" => 200,
+            "data" => $data,
+            "formItems" => $form,
+            "columns" => $columns,
+            "props_table" => $props_table,
+            "message" => "Info Actualizada",
+            "type" => "success"
+        ];
     }
 
 }
