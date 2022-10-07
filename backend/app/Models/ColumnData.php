@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FormData extends Model
+class ColumnData extends Model
 {
 
     /**
@@ -12,14 +12,14 @@ class FormData extends Model
      *
      * @var string
      */
-    protected $table = 'view_form_data';
+    protected $table = 'view_column_data';
     //protected $table = 'cat_formcomponentes';
       /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'data_form_id';
+    protected $primaryKey = 'data_table_id';
 
     /**
      * The attributes that are mass assignable.
@@ -31,7 +31,7 @@ class FormData extends Model
     // ];
 
     protected $fillable = [
-        'data_form_id', 'name_form', 'component_no', 'name_element', 'name_attribute', 'value', 'order', 'dependency', 'type', 'module', 
+        'data_table_id', 'name_table', 'component_no', 'name_element', 'name_attribute_column', 'value', 'order', 'type', 'module', 
     ];
 
     /**
