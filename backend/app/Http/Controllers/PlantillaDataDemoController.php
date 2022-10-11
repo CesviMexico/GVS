@@ -13,7 +13,7 @@ class PlantillaDataDemoController extends Controller
 
     public function showAll()
     {
-        $data = PlantillaDataDemo::where("estatus", "=", "ALTA")->get();
+        $data = PlantillaDataDemo::all();
 
         $columnas = ColumnasFront::columnasTablaDemo();
         $columns = TablaFront::getColumns($columnas);

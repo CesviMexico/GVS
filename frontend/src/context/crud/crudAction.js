@@ -164,7 +164,7 @@ const CrudAction = (props) => {
         payload: payload,
     });
 
-    const SetloadingCrud = (payload) => (
+    const setLoadingCrud = (payload) => (
         dispatch(loadingCrud(payload))
    );
    
@@ -187,7 +187,7 @@ const CrudAction = (props) => {
                 chCurrentRowIDAction,
                 chTitleBtnCAction,
 
-                SetloadingCrud,
+                setLoadingCrud,
 
                 
             }}

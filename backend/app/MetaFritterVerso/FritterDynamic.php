@@ -84,8 +84,16 @@ class FritterDynamic
 
         $props_table = [];
         foreach ($props as $prop) {
-            $value = $prop->value == "0" || $prop->value == "1" ? boolval($prop->value) : $prop->value;
-            $props_table += [$prop->name_props_table => $value];
+            if($prop->value == "true"){
+                $value = boolval("1");
+            }else if($prop->value == "false"){
+                $value = boolval("0");
+            }else{
+                $value = $prop->value;
+            }
+            
+            //$value = $prop->value == "false" ? boolval("0") : $prop->value;
+            $props_table += [$prop->name_props_table => $value]; 
         }
         return $props_table;
     }

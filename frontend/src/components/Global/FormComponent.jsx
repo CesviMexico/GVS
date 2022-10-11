@@ -244,7 +244,7 @@ export const FormAntdCrud = (props) => {
         placeholder={placeholder}
         showSearch
         optionFilterProp="children"
-        onChange={(event) => onChangeSelect && onChangeSelect(event,key)}
+        onChange={(value,event) => onChangeSelect && onChangeSelect(value,event,key)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
       >
         {arrayOption.map((dato_row, index) =>
@@ -292,7 +292,7 @@ export const FormAntdCrud = (props) => {
     "": () => { "Erro en tipo" },
   }
   const ItemsForm = () => {
-    formItems .length && formItems.forEach(Item => {
+    formItems.length && formItems.forEach(Item => {
       let obj =
       {
         ...Item,
@@ -346,7 +346,7 @@ export const FormAntdCrud = (props) => {
     // console.log('formItem', formItem.length)
   }
 
-  formItem.length == 0 && ItemsForm();
+  formItem.length === 0 && ItemsForm();
 
   return (
     <ConfigProvider locale={idiomaGral}>

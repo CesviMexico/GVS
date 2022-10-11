@@ -31,6 +31,7 @@ $router->group(['prefix' => 'configuracion'], function () use ($router) {
     $router->get('forms',  ['uses' => 'ConfiguracionController@showAll']);
     $router->get('forms/elements/{id}',  ['uses' => 'ConfiguracionController@showComponetizar']);
     $router->get('forms/elements/attributes/{id}',  ['uses' => 'ConfiguracionController@showAttributes']);
+    $router->post('forms/elements/attributes',  ['uses' => 'ConfiguracionController@createAttributes']);
     $router->post('forms',  ['uses' => 'ConfiguracionController@create']);
     $router->put('forms/{id}', ['uses' => 'ConfiguracionController@update']);
 });

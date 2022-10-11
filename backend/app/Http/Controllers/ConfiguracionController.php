@@ -85,17 +85,16 @@ class ConfiguracionController extends Controller
                 ->select('sys_components.*', 'sys_elements.name_element', 'sys_attributes.name_attribute')
                 ->where('component_no', $dataform->component_no)->get();
             foreach ($components as $component) {
-                if($component->attribute_id == 1){
+                if ($component->attribute_id == 1) {
                     $row['name_element'] = $component->name_element;
                     $row['label'] = $component->value;
-                }                
-                $attributes[] = ['element_id'=>$component->element_id, 'attribute_id'=>$component->attribute_id, 'name_attribute'=>$component->name_attribute,'value'=>$component->value];
-                
+                }
+                $attributes[] = ['element_id' => $component->element_id, 'attribute_id' => $component->attribute_id, 'name_attribute' => $component->name_attribute, 'value' => $component->value];
             }
             $row['attributes'] = $attributes;
-            array_push($data,$row);
+            array_push($data, $row);
         }
-        
+
         $props_table = FritterDynamic::propsTable(3);
 
         $response = [
@@ -110,11 +109,16 @@ class ConfiguracionController extends Controller
         return response()->json($response);
     }
 
-    public function showAttributes($id){
+    public function showAttributes($id)
+    {
         $columns = FritterDynamic::columnsTable('Agregar Atributos');
-        $data = [];
+        $data = DB::table('sys_elements_attributes')
+            ->join('sys_elements', 'sys_elements_attributes.element_id', '=', 'sys_elements.element_id')
+            ->join('sys_attributes', 'sys_elements_attributes.attribute_id', '=', 'sys_attributes.attribute_id')
+            ->where('sys_elements_attributes.element_id', $id)
+            ->get();
         $form = [];
-        $props_table = FritterDynamic::propsTable(1);
+        $props_table = FritterDynamic::propsTable(2);
         $response = [
             "status" => 200,
             "data" => $data,
@@ -124,6 +128,30 @@ class ConfiguracionController extends Controller
             "message" => "Info Actualizada",
             "type" => "success"
         ];
+        return response()->json($response);
     }
 
+    public function createAttributes(Request $request)
+    {
+        $params = $request->all();
+        $arr = $params['parametros'];
+        //DB::table('sys_components')->insert($arr);
+        $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']); 
+        
+        foreach ($arr['component'] as $comp) {
+            $comp['component_no'] = $no_componente->component_no + 1 ;
+            DB::table('sys_components')->insert($comp);
+        }
+        $order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']); 
+        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => $order->order, "dependency" => 0];
+        DB::table('sys_data_forms')->insert($sys_data_forms);
+
+        $response = [
+            "status" => 200,
+            "message" => "Se creo correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
+        return response()->json($response, 200);
+    }
 }

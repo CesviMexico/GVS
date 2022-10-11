@@ -325,22 +325,22 @@ const TablaANTD = (props) => {
   })
 
   //input
-  const input = (row, key, IconAction, placeholder,) => {
+  const input = (row, key, placeholder) => {
     return (
       <>
         <Input
-          key={row.id_asignacion}
-          onBlur={(e) => OnClickAction(row, key, e.target.value)}
+          key={row.attribute_id}
+          onBlur={(event) => OnClickAction(row, key, event)}
           placeholder={placeholder}
           // maxLength={25}
-          defaultValue={row.monto_presupuesto}
+          defaultValue={row.default}
         />
       </>
     );
   };
 
-  const objInput = (key, IconAction, placeholder,) => ({
-    render: (row) => input(row, key, IconAction, placeholder,),
+  const objInput = (key, placeholder,) => ({
+    render: (row) => input(row, key, placeholder),
   })
 
   //textArea
@@ -490,7 +490,7 @@ const TablaANTD = (props) => {
         col.img && objImg(col.key, col.icon, col.titleIMG, col.srcIMG),
 
         col.datePicker && objDatePicker(col.key, col.icon, col.placeholder, col.format, col.showTime),
-        col.Input && objInput(col.key, col.icon, col.placeholder,),
+        col.Input && objInput(col.key, col.placeholder),
         col.textArea && objTextArea(col.key, col.icon, col.placeholder, col.height),
         col.Select && objSelect(col.key, col.icon, col.placeholder, col.arrayOption, col.width),
         col.upload && objUploads(
