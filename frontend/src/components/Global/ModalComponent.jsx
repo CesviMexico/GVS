@@ -75,7 +75,7 @@ export const ModdalANTD = (props) => {
    const themeContext = useContext(ThemeContext)
    const { idiomaGral } = themeContext
  
-  const { visible, title, footer, onCancel, width, centered } = props;
+  const { visible, title, footer, onCancel, width,height, centered } = props;
 
   return (
     <>
@@ -86,9 +86,11 @@ export const ModdalANTD = (props) => {
           footer={footer}
           onCancel={onCancel}
           width={width}
+          height={height}
           centered={centered}
 
           destroyOnClose={true}
+          maskClosable={false}         
         >
           {props.children}
 

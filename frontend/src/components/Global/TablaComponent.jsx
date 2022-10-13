@@ -7,6 +7,8 @@ import {
   Typography as TypographyAntd, DatePicker, Image, Badge,
 } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
+
 
 import 'antd/dist/antd.css';
 
@@ -325,7 +327,7 @@ const TablaANTD = (props) => {
   })
 
   //input
-  const input = (row, key, placeholder) => {
+  const input = (row, key, placeholder,suffixTitle) => {
     return (
       <>
         <Input
@@ -333,14 +335,19 @@ const TablaANTD = (props) => {
           onBlur={(event) => OnClickAction(row, key, event)}
           placeholder={placeholder}
           // maxLength={25}
-          defaultValue={row.default}
+          defaultValue={row.defaultValue}
+          suffix={suffixTitle &&
+            <Tooltip title={row.help_description}>
+              <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+            </Tooltip>
+          }
         />
       </>
     );
   };
 
-  const objInput = (key, placeholder,) => ({
-    render: (row) => input(row, key, placeholder),
+  const objInput = (key, placeholder,suffixTitle) => ({
+    render: (row) => input(row, key, placeholder,suffixTitle),
   })
 
   //textArea
@@ -490,13 +497,13 @@ const TablaANTD = (props) => {
         col.img && objImg(col.key, col.icon, col.titleIMG, col.srcIMG),
 
         col.datePicker && objDatePicker(col.key, col.icon, col.placeholder, col.format, col.showTime),
-        col.Input && objInput(col.key, col.placeholder),
+        col.Input && objInput(col.key, col.placeholder, col.suffixTitle),
         col.textArea && objTextArea(col.key, col.icon, col.placeholder, col.height),
         col.Select && objSelect(col.key, col.icon, col.placeholder, col.arrayOption, col.width),
         col.upload && objUploads(
           col.key,
           col.iconC,
-          col.iconD,
+          col.iconD,                                                                                                                                                                                                                                                                                                                                  
           col.titleMSGC,
           col.titleMSGD,
           col.tipoFile,
@@ -618,80 +625,82 @@ const TablaANTD = (props) => {
       <ConfigProvider locale={idiomaGral}>
 
         {!tbSimple ?
-          <CardMUI
-            styleCardHeader={{ backgroundColor: colorTable }}
-            title={
-              <Typography
-                variant="h6"
-                component="div"
-                gutterBottom
-                style={{ color: colorIcon }}
-              >  {Title}
-              </Typography>
-            }
-            avatarCardHeader={
-              <>
-                <BadgeMUIImg
-                  sizeIcon={sizeIconTable}
-                  icon={IconAvatar}
-                  badgeContent={datasource && datasource.length}
-                  max={9999}
-                />
-              </>
-            }
+          <div style={{ position: "relative", overflow: "hidden", }}>
+            <CardMUI
+              styleCardHeader={{ backgroundColor: colorTable }}
+              title={
+                <Typography
+                  variant="h6"
+                  component="div"
+                  gutterBottom
+                  style={{ color: colorIcon }}
+                >  {Title}
+                </Typography>
+              }
+              avatarCardHeader={
+                <>
+                  <BadgeMUIImg
+                    sizeIcon={sizeIconTable}
+                    icon={IconAvatar}
+                    badgeContent={datasource && datasource.length}
+                    max={9999}
+                  />
+                </>
+              }
 
-            actionsCardHeader={
-              <>
-                {Agregar &&
-                  <Tooltip title="Agregar">
-                    <IconButton aria-label="settings"
-                      onClick={() => Agregar()}
-                      disabled={loadingAdd}
-                    >
+              actionsCardHeader={
+                <>
+                  {Agregar &&
+                    <Tooltip title="Agregar">
+                      <IconButton aria-label="settings"
+                        onClick={() => Agregar()}
+                        disabled={loadingAdd}
+                      >
 
-                      {loadingAdd ?
-                        <Spin indicator={antIcon} spinning={true} />
-                        :
-                        <Icon icon={AgregarIcon ? AgregarIcon : "clarity:add-line"} style={{ fontSize: sizeIcon, color: colorIcon }} />
-                      }
-                    </IconButton>
-                  </Tooltip>
-                }
-
-                {ExportaExcel &&
-                  // < a href={currenturlapi + "ExportaExcel/" + urlexportaExcel} target="_blank" >
-                  <IconButton aria-label="settings" onClick={() => ExportToExcelButton()}>
-                    <Tooltip title={"Exportar a Excel"} >
-                      <Icon icon={"mdi:microsoft-excel"} style={{ fontSize: sizeIcon, color: colorIcon }} />
+                        {loadingAdd ?
+                          <Spin indicator={antIcon} spinning={true} />
+                          :
+                          <Icon icon={AgregarIcon ? AgregarIcon : "clarity:add-line"} style={{ fontSize: sizeIcon, color: colorIcon }} />
+                        }
+                      </IconButton>
                     </Tooltip>
-                  </IconButton>
-                  // </a>
-                }
+                  }
 
-
-                {ActualizaTabla &&
-                  <Tooltip title="Actualizar tabla">
-                    <IconButton aria-label="settings"
-                      onClick={() => ActualizaTabla()}
-                    >
-                      {/* <Icon icon={"mdi:table-refresh"} style={{ fontSize: sizeIcon, color: colorIcon }} /> */}
-                      <SyncOutlined spin={loading}
-                        style={{ fontSize: sizeIcon, color: colorIcon }}
-                      />
-
+                  {ExportaExcel &&
+                    // < a href={currenturlapi + "ExportaExcel/" + urlexportaExcel} target="_blank" >
+                    <IconButton aria-label="settings" onClick={() => ExportToExcelButton()}>
+                      <Tooltip title={"Exportar a Excel"} >
+                        <Icon icon={"mdi:microsoft-excel"} style={{ fontSize: sizeIcon, color: colorIcon }} />
+                      </Tooltip>
                     </IconButton>
-                  </Tooltip>
-                }
+                    // </a>
+                  }
 
 
-              </>
-            }
-          >
-            <div style={{ position: "relative", overflow: "hidden", }}>
+                  {ActualizaTabla &&
+                    <Tooltip title="Actualizar tabla">
+                      <IconButton aria-label="settings"
+                        onClick={() => ActualizaTabla()}
+                      >
+                        {/* <Icon icon={"mdi:table-refresh"} style={{ fontSize: sizeIcon, color: colorIcon }} /> */}
+                        <SyncOutlined spin={loading}
+                          style={{ fontSize: sizeIcon, color: colorIcon }}
+                        />
+
+                      </IconButton>
+                    </Tooltip>
+                  }
+
+
+                </>
+              }
+            >
+              {/* <div style={{ position: "relative", overflow: "hidden", }}> */}
               <TableCP />
               {props.children}
-            </div>
-          </CardMUI>
+              {/* </div> */}
+            </CardMUI>
+          </div>
           : <TableCP />
         }
 

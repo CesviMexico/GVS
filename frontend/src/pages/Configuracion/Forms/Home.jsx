@@ -14,6 +14,7 @@ import {
   DetalleElementos,
   TableAtributtes,
   AddElementForm,
+  DeleteElementForm,
 } from "./Services";
 
 import { Button } from "antd";
@@ -57,6 +58,11 @@ const Home = () => {
     Editar: (row) => onEditarRow(row),
     Componetizar: (row) => DetalleComponentes(row),
     Input: (row, event) => onInputAttribute(row, event),
+
+    //Elementos
+    "Editar elemento": (row) => EditElement(row),
+    "Eliminar elemento": (row) => onEliminarRowElemento(row),
+
   };
 
   const ActualizaTabla = () => {
@@ -81,11 +87,12 @@ const Home = () => {
   };
 
   let newcomponent = [];
-  const onInputAttribute = (row, event) => {
+  const [newcomponentHook, setNewcomponentHook] = useState([]);
+  const onInputAttribute = (row, event, value) => {
     let attribute = {
       element_id: row.element_id,
       attribute_id: row.attribute_id,
-      value: event.target.value,
+      value: event ? event.target.value : value,
       type: "form",
     };
     if (validarNewComponnet(attribute)) {
@@ -134,7 +141,7 @@ const Home = () => {
     setTablePropsDetalle(response.props_table);
     setFormTablePropsDetalle(response.formItems);
 
-    console.log("DetalleComponentes", response);
+    // console.log("DetalleComponentes", response);
 
     setRowForms(row);
     chCurrentRowIDAction(row.forms_id);
@@ -146,47 +153,116 @@ const Home = () => {
   const [colmnsattributes, setColumnsAttributes] = useState([]);
   const [datasourceattributes, setDataSourceAttributes] = useState([]);
 
-  const TablaAtributos = async (id) => {
+
+  const TablaAtributos = async (id, dfi) => {
+    setlLoadingAtributos(true)
     const response = await TableAtributtes(
       setloadingDetalle,
       msErrorApi,
       keycloak,
       logoutOptions,
-      id
+      id,
+      dfi
     );
-    console.log("TablaAtributos", response);
+
+    // console.log("TablaAtributos", response);
     setDataSourceAttributes(response.data);
     setColumnsAttributes(response.columns);
+
+    // EDITA ARREGLO PARA MODIFICAR DE
+    response.data.forEach(row => { onInputAttribute(row, undefined, row.defaultValue) });
+    setNewcomponentHook(newcomponent)
+    // console.log("newcomponent", newcomponent)
+
+    setlLoadingAtributos(false)
+
   };
 
   const addElementForm = async () => {
+   
+    // let newcomponentFin = [...newcomponentHook];
+    // newcomponent.forEach(row => {
+    //   let attribute = {
+    //     element_id: row.element_id,
+    //     attribute_id: row.attribute_id,
+    //     value: row.value,
+    //     type: "form",
+    //   };
+    //   if (validarNewComponnet(attribute)) {
+    //     newcomponentFin = newcomponentFin.filter(
+    //       (comp) => comp.attribute_id !== attribute.attribute_id
+    //     );
+    //   }
+    //   newcomponentFin.push(attribute);
+    // });
+
     let parameters = {
       form_id: currentrowid,
+      component_no: componentNo,
       component: newcomponent
     }
-    await AddElementForm(
+
+
+    // console.log("parameters", parameters)
+    newcomponent.length !== 0 && await AddElementForm(
       setloadingDetalle,
       msErrorApi,
       keycloak,
       logoutOptions,
-      parameters
+      parameters,
+      editElementBandT === 'edit' && "put"
     );
+
+    DetalleComponentes(rowForms)
     setVisibleDrawer(false);
   };
 
   const [loadingAdd, setlLoadingAdd] = useState(false);
   const NewElement = () => {
+    setEditElementBand(false)
+    setDataSourceAttributes([]);
+    setColumnsAttributes([]);
     setlLoadingAdd(true);
     setVisibleDrawer(true);
     setlLoadingAdd(false);
   };
 
+  const [loadingAtributos, setlLoadingAtributos] = useState(false);
   const onChangeSelect = (value, event, key) => {
     newcomponent = []
-    TablaAtributos(value);
+    setNewcomponentHook([])
+    setEditElementBandT('add')
+    TablaAtributos(value, 0);
   };
 
+  const onEliminarRowElemento = async (row) => {
+    await DeleteElementForm(
+      setLoadingCrud,
+      msErrorApi,
+      keycloak,
+      logoutOptions,
+      row.data_form_id
+    );
 
+    DetalleComponentes(rowForms)
+  };
+
+  const [editElementBand, setEditElementBand] = useState("");
+  const [editElementBandT, setEditElementBandT] = useState("add");
+
+  const [componentNo, setComponentNo] = useState(0);
+  //component_no
+
+  const EditElement = (row) => {
+    setEditElementBandT('edit')
+    setComponentNo(row.component_no)
+    setEditElementBand(row.name_element)
+    TablaAtributos(row.element_id, row.component_no);
+
+    setlLoadingAdd(true);
+    setVisibleDrawer(true);
+    setlLoadingAdd(false);
+  }
 
   return (
     <>
@@ -221,20 +297,23 @@ const Home = () => {
           AgregarIcon={tablePropsDetalle && tablePropsDetalle.IconAgregar}
         >
           <DrawerAntd
-            title={"Nuevo Elemento"}
+            title={!editElementBand ? " Nuevo Elemento" : editElementBand}
             onClose={() => setVisibleDrawer(false)}
             visible={visibleDrawer}
             getContainer={false}
             style={{ position: "absolute" }}
           >
-            <FormAntdCrud
-              formItems={formPropsDetalle}
-              onChangeSelect={onChangeSelect}
-            />
+
+            {!editElementBand &&
+              <FormAntdCrud
+                formItems={formPropsDetalle}
+                onChangeSelect={onChangeSelect}
+              />
+            }
 
             <TablaANTD
               tbSimple={true}
-              loading={loading}
+              loading={loadingAtributos}
               columnsTable={colmnsattributes}
               datasource={datasourceattributes}
               pagination={tablePropsDetalle && tablePropsDetalle.pagination}
@@ -253,17 +332,16 @@ const Home = () => {
               // IconAvatar={tablePropsDetalle && tablePropsDetalle.IconAvatar}
 
               OnClickAction={OnClickAction}
-              // ActualizaTabla={ActualizaTabla}
-
-              // Agregar={() => NewElement()}
-              // AgregarIcon={tablePropsDetalle && tablePropsDetalle.IconAgregar}
             />
-            <div style={{textAlign:'center'}}>
-              <Button type="primary" onClick={addElementForm}>
-                Agregar elemento
+            <div style={{ textAlign: 'center' }}>
+
+              <Button loading={loadingDetalle}  type="primary" onClick={() => addElementForm()}>
+                {!editElementBand ? "  Agregar elemento" : "  Modificar elemento"}
               </Button>
+              
             </div>
           </DrawerAntd>
+
         </TablaANTD>
       </ModdalANTD>
       <Crud

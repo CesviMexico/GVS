@@ -15,8 +15,6 @@ export const DetalleElementos = async (setloading ,msErrorApi ,keycloak ,logoutO
     })
     return response
 }
-
-
 export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
     const response = await getAxiosLumen({
        uri: "configuracion/forms",
@@ -30,10 +28,9 @@ export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,log
    })
    return response
 }
-
-export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id) => {
+export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id,dfi) => {
     const response = await getAxiosLumen({
-       uri: `configuracion/forms/elements/attributes/${id}`,
+       uri: `configuracion/forms/elements/attributes/${id}?_dfi=${dfi}`,
        setloading: setloading,
        msErrorApi: msErrorApi,
        keycloak: keycloak,
@@ -44,19 +41,33 @@ export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOp
    })
    return response
 }
-export const AddElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, parametros) => {
+export const AddElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, parametros, request) => {
     const response = await getAxiosLumen({
        uri: `configuracion/forms/elements/attributes`,
        setloading: setloading,
        msErrorApi: msErrorApi,
        keycloak: keycloak,
        notification: true,
-       request: 'post',
+       request: request?request:'post',
        logoutOptions: logoutOptions,
        parametros,
    })
    return response
 }
+export const DeleteElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, data_form_id) => {
+    const response = await getAxiosLumen({
+       uri: `configuracion/forms/elements/${data_form_id}`,
+       setloading: setloading,
+       msErrorApi: msErrorApi,
+       keycloak: keycloak,
+       notification: true,
+       request: 'delete',
+       logoutOptions: logoutOptions,       
+   })
+   return response
+}
+
+
 
 
 export default DetalleElementos;
