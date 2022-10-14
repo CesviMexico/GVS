@@ -1,34 +1,85 @@
-import React from "react";
-//MIU
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import React, { useState, useContext, useEffect } from "react";
+import CrudContext from "../../../context/crud/crudContext";
+import Crud from "../../../components/Global/Crud";
+import ThemeContext from "../../../context/ThemContext";
+import { useKeycloak } from "@react-keycloak/web";
+
+import { FormAntdCrud } from "../../../components/Global/FormComponent";
+import { ModdalANTD } from "../../../components/Global/ModalComponent";
+import TablaANTD from "../../../components/Global/TablaComponent";
+import DrawerAntd from "../../../components/Global/DrawerComponent";
+
+// import {
+//     DetalleElementos,
+//     TableAtributtes,
+//     AddElementForm,
+//     DeleteElementForm,
+// } from "./Services";
+
+import { Button } from "antd";
 
 const Home = () => {
+
+    const crudContext = useContext(CrudContext);
+    const themeContext = useContext(ThemeContext);
+    const { keycloak } = useKeycloak();
+    const [uri] = useState("configuracion/tables");
+
+    const {
+        datasource,
+        form,
+        loading,
+        currentrowid,
+        obtenerDatosAction,
+        editarDatosAction,
+        openModalCAction,
+        chCurrentRowIDAction,
+        chTitleBtnCAction,
+        setLoadingCrud,
+    } = crudContext;
+   
+    const {
+        backgroundColor,
+        primaryColor,
+        secondaryColor,
+        colorTable,
+        sizeIcon,
+        msErrorApi,
+        logoutOptions,
+    } = themeContext;
+   
+   
+    useEffect(() => {
+         ActualizaTabla();
+    }, []);
+
+    const ActualizaTabla = () => {
+        obtenerDatosAction(uri);
+    };
+
+    const OnClickAction = (row, key, event) => {
+        // swicthComponentAction[key](row, event);
+    };
+
+    
 
 
 
     return (
         <>
-            <Box sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                '& > :not(style)': {
-                    m: 1,
-                    width: '100%',
-                    height: '98%',
-
-                },
-            }}
+            <Crud
+                title={"Nuevo Tabla"}
+                uri={uri}
+                columns={datasource.columns}
+                datasource={datasource.data}
+                tableProps={datasource.props_table}
+                OnClickAction={OnClickAction}
+                ActualizaTabla={ActualizaTabla}
+                loading={loading}
+                viewFab={false}
             >
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                        Tables
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-            </Box>
+                <FormAntdCrud formItems={datasource.formItems} />
+            </Crud>
         </>
     )
 

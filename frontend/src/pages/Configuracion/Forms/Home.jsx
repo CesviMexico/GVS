@@ -180,31 +180,31 @@ const Home = () => {
 
   const addElementForm = async () => {
    
-    // let newcomponentFin = [...newcomponentHook];
-    // newcomponent.forEach(row => {
-    //   let attribute = {
-    //     element_id: row.element_id,
-    //     attribute_id: row.attribute_id,
-    //     value: row.value,
-    //     type: "form",
-    //   };
-    //   if (validarNewComponnet(attribute)) {
-    //     newcomponentFin = newcomponentFin.filter(
-    //       (comp) => comp.attribute_id !== attribute.attribute_id
-    //     );
-    //   }
-    //   newcomponentFin.push(attribute);
-    // });
+    let newcomponentFin = [...newcomponentHook];
+    newcomponent.forEach(row => {
+      let attribute = {
+        element_id: row.element_id,
+        attribute_id: row.attribute_id,
+        value: row.value,
+        type: "form",
+      };
+      if (validarNewComponnet(attribute)) {
+        newcomponentFin = newcomponentFin.filter(
+          (comp) => comp.attribute_id !== attribute.attribute_id
+        );
+      }
+      newcomponentFin.push(attribute);
+    });
 
     let parameters = {
       form_id: currentrowid,
       component_no: componentNo,
-      component: newcomponent
+      component: newcomponentFin
     }
 
 
-    // console.log("parameters", parameters)
-    newcomponent.length !== 0 && await AddElementForm(
+    console.log("parameters", parameters)
+   await AddElementForm(
       setloadingDetalle,
       msErrorApi,
       keycloak,
