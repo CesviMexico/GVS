@@ -59,7 +59,13 @@ class FritterDynamic
 
             foreach ($formItems as $item) {
                 if ($item['component_no'] == $component_no) {
-                    $value = $item['value'] == "true" || $item['value'] == "false" ? $item['value'] : $item['value'];
+                    if($item['value'] == "true"){
+                        $value = boolval("1");
+                    }else if($item['value'] == "false"){
+                        $value = boolval("0");
+                    }else{
+                        $value = $item['value'];
+                    }
                     $obj += [$item['name_attribute_column'] => $value];
                 }
             }

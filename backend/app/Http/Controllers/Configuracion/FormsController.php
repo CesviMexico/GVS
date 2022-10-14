@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Configuracion;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\MetaFritterVerso\FritterDynamic;
 use Illuminate\Support\Facades\DB;
 
-class ConfiguracionController extends Controller
+class FormsController extends Controller
 {
 
     public function showAll()
@@ -14,7 +15,8 @@ class ConfiguracionController extends Controller
         $form = FritterDynamic::itemsForm('Fritter Forms');
         $columns = FritterDynamic::columnsTable('Agregar Forms');
         $props_table = FritterDynamic::propsTable(2);
-        $data = DB::table('sys_forms')->where('status', 'alta')->get();
+        $raw = " SELECT  COUNT(component_no) FROM sys_data_forms WHERE form_id = sys_forms.forms_id ";
+        $data = DB::table('sys_forms')->selectRaw('forms_id, name_form, module, ('.$raw.') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
 
         $response = [
             "status" => 200,
@@ -68,7 +70,7 @@ class ConfiguracionController extends Controller
         return response()->json($response, 200);
     }
 
-    public function showComponetizar($id)
+    public function showElement($id)
     {
         $form = FritterDynamic::itemsForm('Form Elementos');
         $columns = FritterDynamic::columnsTable('Agregar Elementos');
@@ -77,6 +79,7 @@ class ConfiguracionController extends Controller
         $row = [];
         foreach ($sys_data_forms as $dataform) {
             $attributes = [];
+            $row['data_form_id'] = $dataform->data_form_id;
             $row['form_id'] = $dataform->form_id;
             $row['component_no'] = $dataform->component_no;
             $components = DB::table('sys_components')
@@ -86,6 +89,7 @@ class ConfiguracionController extends Controller
                 ->where('component_no', $dataform->component_no)->get();
             foreach ($components as $component) {
                 if ($component->attribute_id == 1) {
+                    $row['element_id'] = $component->element_id;
                     $row['name_element'] = $component->name_element;
                     $row['label'] = $component->value;
                 }
@@ -109,12 +113,21 @@ class ConfiguracionController extends Controller
         return response()->json($response);
     }
 
-    public function showAttributes($id)
+    public function showAttributes($id, Request $request)
     {
+        if (isset($request->_dfi)) {
+            $component_id = $request->_dfi;
+            $raw = " sys_elements_attributes.*, sys_elements.*, sys_attributes.*, ( SELECT sys_components.value FROM sys_components WHERE sys_components.attribute_id = sys_elements_attributes.attribute_id AND sys_components.component_no = $component_id ) as defaultValue ";
+            if ($component_id == 0) {
+                $raw = " sys_elements_attributes.*, sys_elements_attributes.default as defaultValue, sys_elements.*, sys_attributes.* ";
+            }
+        }
+
         $columns = FritterDynamic::columnsTable('Agregar Atributos');
         $data = DB::table('sys_elements_attributes')
             ->join('sys_elements', 'sys_elements_attributes.element_id', '=', 'sys_elements.element_id')
             ->join('sys_attributes', 'sys_elements_attributes.attribute_id', '=', 'sys_attributes.attribute_id')
+            ->selectRaw($raw)
             ->where('sys_elements_attributes.element_id', $id)
             ->get();
         $form = [];
@@ -136,19 +149,56 @@ class ConfiguracionController extends Controller
         $params = $request->all();
         $arr = $params['parametros'];
         //DB::table('sys_components')->insert($arr);
-        $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']); 
-        
+        $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']);
+
         foreach ($arr['component'] as $comp) {
-            $comp['component_no'] = $no_componente->component_no + 1 ;
+            $comp['component_no'] = $no_componente->component_no + 1;
             DB::table('sys_components')->insert($comp);
         }
-        $order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']); 
-        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => $order->order, "dependency" => 0];
+        //$order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']);
+        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => 1, "dependency" => 0];
         DB::table('sys_data_forms')->insert($sys_data_forms);
 
         $response = [
             "status" => 200,
             "message" => "Se creo correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function updateAttributes(Request $request)
+    {
+        $params = $request->all();
+        $arr = $params['parametros'];
+        $no_componente = $arr['component_no'];
+        foreach ($arr['component'] as $comp) {
+            // $comp['component_no'] = $no_componente;
+            $revisar = [];
+            $actualizar = [];
+            $revisar['component_no'] = $no_componente;
+            $revisar['element_id'] = $comp['element_id'];
+            $revisar['attribute_id'] = $comp['attribute_id'];
+            $revisar['type'] = $comp['type'];
+            $actualizar['value'] = $comp['value'];
+            DB::table('sys_components')->updateOrInsert($revisar, $actualizar);
+        }
+        $response = [
+            "status" => 200,
+            "message" => "Se actualizo correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function deleteElement($id)
+    {
+        DB::table('sys_data_forms')->where('data_form_id', $id)->delete();
+        $response = [
+            "status" => 200,
+            "message" => "Se elimino correctamente el registro!",
             "type" => "success",
             "tipoComponent" => "notification"
         ];
