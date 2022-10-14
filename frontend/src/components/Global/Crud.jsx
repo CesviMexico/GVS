@@ -17,7 +17,10 @@ import TablaANTD from "./TablaComponent";
 
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { green } from '@mui/material/colors';
 
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Crud = (props) => {
 
@@ -39,19 +42,22 @@ const Crud = (props) => {
   };
 
   const onFinish = (values) => {
+
     if (btntitle === "Guardar") {
       guardarDatosAction(uri, values);
-    } else {    
+    } else {
       editarDatosAction(uri, values, currentrowid);
     }
+
   };
 
   return (
     <>
       <Dialog
+        //disableEscapeKeyDown={true}
         fullScreen={fullScreen}
         open={openmodal}
-        onClose={closeModalCAction}
+        //onClose={closeModalCAction}
         aria-labelledby="responsive-dialog-title"
         fullWidth={true}
         maxWidth="sm"
@@ -69,9 +75,25 @@ const Crud = (props) => {
             <Button autoFocus onClick={closeModalCAction}>
               Cancelar
             </Button>
-            <Button type="submit" autoFocus>
-              {btntitle}
-            </Button>
+            <Box sx={{ m: 1, position: 'relative' }}>
+              <Button type="submit" autoFocus disabled={loading}>
+                {btntitle}
+              </Button>
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: green[500],
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-12px',
+                    marginLeft: '-12px',
+                  }}
+                />
+              )}
+            </Box>
+
           </DialogActions>
         </Form>
       </Dialog>

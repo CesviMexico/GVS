@@ -36,13 +36,13 @@ export default (state, action) => {
         case CRUD_SAVE:
             return {
                 ...state,
-                loading: false,
+                loading: true,
                 error: false,
             };
         case CRUD_EDIT:
             return {
                 ...state,
-                loading: false,
+                loading: true,
                 error: false,
             };
         case CRUD_ON_MODAL:
