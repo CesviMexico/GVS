@@ -9,7 +9,7 @@ import {
   Input, InputNumber,
   DatePicker, TimePicker,
   Select, Upload,
-  Checkbox, Switch, Slider, Radio, Rate
+  Checkbox, Switch, Slider, Radio, Rate, Spin
 } from 'antd';
 
 import { Icon } from '@iconify/react';
@@ -214,7 +214,7 @@ export const FormAntdCrud = (props) => {
   // Hook y funciones o metodos Globales
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
-  const { formItems, onChangeSelect } = props
+  const { formItems, onChangeSelect , loading= false} = props
   const [formItem] = useState([])
 
   ///Upload
@@ -244,7 +244,7 @@ export const FormAntdCrud = (props) => {
         placeholder={placeholder}
         showSearch
         optionFilterProp="children"
-        onChange={(value,event) => onChangeSelect && onChangeSelect(value,event,key)}
+        onChange={(value, event) => onChangeSelect && onChangeSelect(value, event, key)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
       >
         {arrayOption.map((dato_row, index) =>
@@ -350,25 +350,28 @@ export const FormAntdCrud = (props) => {
 
   return (
     <ConfigProvider locale={idiomaGral}>
-      <Grid container spacing={1}>
-        {formItem.map((row, index) =>
-          <Grid item xs={12} sm={12} md={12} key={index}>
-            <Form.Item
-              key={index}
-              label={row.label}
-              name={row.name}
-              rules={row.rules}
-              hasFeedback={row.hasFeedback}
-              tooltip={row.tooltip}
-              extra={row.extra}
-              valuePropName={row.valuePropName}
-            //getValueFromEvent={(e) => normFile(e)}
-            >
-              {row.name_element}
-            </Form.Item>
-          </Grid>
-        )}
-      </Grid>
+      <Spin tip="Loading..." spinning={loading}>
+        <Grid container spacing={1}>
+          {formItem.map((row, index) =>
+            <Grid item xs={12} sm={12} md={12} key={index}>
+              <Form.Item
+                key={index}
+                label={row.label}
+                name={row.name}
+                rules={row.rules}
+                hasFeedback={row.hasFeedback}
+                tooltip={row.tooltip}
+                extra={row.extra}
+                valuePropName={row.valuePropName}
+                initialValue={row.initialValue}
+              //getValueFromEvent={(e) => normFile(e)}
+              >
+                {row.name_element}
+              </Form.Item>
+            </Grid>
+          )}
+        </Grid>
+      </Spin>
     </ConfigProvider>
   );
 };

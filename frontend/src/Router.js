@@ -9,13 +9,11 @@ import { HashRouter, Routes, Route, } from 'react-router-dom';
 import DemosComponents from './pages/DemosComponents'
 import Login from './pages/login'
 
-import Cat from './pages/Cat'
-import Cat2 from './pages/Cat2'
-
 //configuracion
 import Users from './pages/Configuracion/Users/Home'
 import Forms from './pages/Configuracion/Forms/Home'
 import Tables from './pages/Configuracion/Tables/Home'
+import Catalogos from './components/Catalogos/Home'
 
 import Page404 from './pages/Page404'
 import Page403 from './pages/Page403'
@@ -38,8 +36,8 @@ const Router = () => {
                     <Routes>
                         <Route path="/DemosComponents" element={<PrivateRoute><Layout><DemosComponents /></Layout></PrivateRoute>} />
                         
-                        <Route path="/Cat" element={<PrivateRoute><Layout><Cat /></Layout></PrivateRoute>} />
-                        <Route path="/Cat2" element={<PrivateRoute><Layout><Cat2 /></Layout></PrivateRoute>} />
+                        <Route path="/Cat" element={<PrivateRoute><Layout><Page403 /></Layout></PrivateRoute>} />
+                        <Route path="/Cat2" element={<PrivateRoute><Layout><Page403 /></Layout></PrivateRoute>} />
                         
                         <Route path="/" element={<Layout><Login /></Layout>} />                        
                         <Route path="/login" element={<Layout><Login /></Layout>} />
@@ -51,6 +49,7 @@ const Router = () => {
                         <Route path="Configuracion/Users" element={<PrivateRoute><Layout><Users /></Layout></PrivateRoute>} />
                         <Route path="Configuracion/Forms" element={<PrivateRoute><Layout><Forms /></Layout></PrivateRoute>} />
                         <Route path="Configuracion/Tables" element={<PrivateRoute><Layout><Tables /></Layout></PrivateRoute>} />
+                        <Route path="Configuracion/Catalogos" element={<PrivateRoute><Layout><Catalogos /></Layout></PrivateRoute>} />
 
 
                         <Route path="/Page403" element={<PrivateRoute><Page403 /></PrivateRoute>} />

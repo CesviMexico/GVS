@@ -1,10 +1,10 @@
 
-import React, {useContext} from "react";
+// import React, {useContext} from "react";
 import { getAxiosLumen } from '../../../components/Global/funciones'
 
-export const DetalleElementos = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id) => {
+export const DetalleColumnas = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id) => {
      const response = await getAxiosLumen({
-        uri:`configuracion/forms/elements/${id}`,
+        uri:`configuracion/tables/columns/${id}`,
         setloading: setloading,
         msErrorApi: msErrorApi,
         keycloak: keycloak,
@@ -15,22 +15,22 @@ export const DetalleElementos = async (setloading ,msErrorApi ,keycloak ,logoutO
     })
     return response
 }
-export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
-    const response = await getAxiosLumen({
-       uri: "configuracion/forms",
-       setloading: setloading,
-       msErrorApi: msErrorApi,
-       keycloak: keycloak,
-       notification: false,
-       request: 'get',
-       logoutOptions: logoutOptions
+// export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
+//     const response = await getAxiosLumen({
+//        uri: "configuracion/forms",
+//        setloading: setloading,
+//        msErrorApi: msErrorApi,
+//        keycloak: keycloak,
+//        notification: false,
+//        request: 'get',
+//        logoutOptions: logoutOptions
 
-   })
-   return response
-}
+//    })
+//    return response
+// }
 export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id,dfi) => {
     const response = await getAxiosLumen({
-       uri: `configuracion/forms/elements/attributes/${id}?_dfi=${dfi}`,
+       uri: `configuracion/tables/columns/attributes/${id}?_dti=${dfi}`,
        setloading: setloading,
        msErrorApi: msErrorApi,
        keycloak: keycloak,
@@ -41,9 +41,9 @@ export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOp
    })
    return response
 }
-export const AddElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, parametros, request) => {
+export const AddColumnaForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, parametros, request) => {
     const response = await getAxiosLumen({
-       uri: `configuracion/forms/elements/attributes`,
+       uri: `configuracion/tables/columns/attributes`,
        setloading: setloading,
        msErrorApi: msErrorApi,
        keycloak: keycloak,
@@ -54,9 +54,9 @@ export const AddElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOpt
    })
    return response
 }
-export const DeleteElementForm = async (setloading ,msErrorApi ,keycloak ,logoutOptions, data_form_id) => {
+export const DeleteElementColumn = async (setloading ,msErrorApi ,keycloak ,logoutOptions, data_form_id) => {
     const response = await getAxiosLumen({
-       uri: `configuracion/forms/elements/${data_form_id}`,
+       uri: `configuracion/tables/columns/${data_form_id}`,
        setloading: setloading,
        msErrorApi: msErrorApi,
        keycloak: keycloak,
@@ -70,4 +70,4 @@ export const DeleteElementForm = async (setloading ,msErrorApi ,keycloak ,logout
 
 
 
-export default DetalleElementos;
+export default DetalleColumnas;

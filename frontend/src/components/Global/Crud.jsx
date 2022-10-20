@@ -7,6 +7,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from '@mui/material/DialogContentText';
+
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
@@ -49,34 +51,43 @@ const Crud = (props) => {
       editarDatosAction(uri, values, currentrowid);
     }
 
+    // console.log("onFinish", values)
+
   };
 
   return (
     <>
       <Dialog
-        //disableEscapeKeyDown={true}
+        scroll={"paper"}
         fullScreen={fullScreen}
         open={openmodal}
         //onClose={closeModalCAction}
-        aria-labelledby="responsive-dialog-title"
+
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+
         fullWidth={true}
         maxWidth="sm"
+
         BackdropProps={{
           sx: {
             backgroundColor: "rgba(111, 126, 140, 0.2)",
             backdropFilter: "blur(4px)",
           },
         }}
+
       >
         <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
         <Form form={form} name="control-hooks" layout="vertical" onFinish={onFinish}>
-          <DialogContent>{props.children}</DialogContent>
+          <DialogContent dividers={'paper'} >           
+              {props.children}         
+          </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={closeModalCAction}>
+            <Button variant="contained" onClick={closeModalCAction}>
               Cancelar
             </Button>
             <Box sx={{ m: 1, position: 'relative' }}>
-              <Button type="submit" autoFocus disabled={loading}>
+              <Button type="submit" variant="contained" disabled={loading}>
                 {btntitle}
               </Button>
               {loading && (
@@ -93,7 +104,6 @@ const Crud = (props) => {
                 />
               )}
             </Box>
-
           </DialogActions>
         </Form>
       </Dialog>

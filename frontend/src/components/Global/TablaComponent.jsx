@@ -327,7 +327,7 @@ const TablaANTD = (props) => {
   })
 
   //input
-  const input = (row, key, placeholder,suffixTitle) => {
+  const input = (row, key, placeholder, suffixTitle) => {
     return (
       <>
         <Input
@@ -346,8 +346,8 @@ const TablaANTD = (props) => {
     );
   };
 
-  const objInput = (key, placeholder,suffixTitle) => ({
-    render: (row) => input(row, key, placeholder,suffixTitle),
+  const objInput = (key, placeholder, suffixTitle) => ({
+    render: (row) => input(row, key, placeholder, suffixTitle),
   })
 
   //textArea
@@ -503,7 +503,7 @@ const TablaANTD = (props) => {
         col.upload && objUploads(
           col.key,
           col.iconC,
-          col.iconD,                                                                                                                                                                                                                                                                                                                                  
+          col.iconD,
           col.titleMSGC,
           col.titleMSGD,
           col.tipoFile,
@@ -606,11 +606,13 @@ const TablaANTD = (props) => {
 
         title={() =>
           noChange > 0 && noChange !== datasource.length ?
+          searchText &&  
             <Typography
               variant="body2"
               style={{ color: colorTable }}
             ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
             </Typography>
+
             : ""}
 
         summary={(pageData) => Sumary && Sumary(pageData)}
@@ -723,7 +725,7 @@ const TablaANTD = (props) => {
 
 
         {/* VER IMAGEN DE TABLA */}
-        <Image
+        {/* <Image
           width={200}
           style={{
             display: 'none',
@@ -735,7 +737,7 @@ const TablaANTD = (props) => {
               setVisibleIMG(value);
             },
           }}
-        />
+        /> */}
 
       </ConfigProvider >
     </>

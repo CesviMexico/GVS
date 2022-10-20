@@ -97,7 +97,7 @@ const Layout = ({ children }) => {
        
             switch (response.data.length) {
                 default:
-                    ActualizaUser([{ ...keycloak.tokenParsed, id_keycloak: keycloak.subject, }])
+                   // ActualizaUser([{ ...keycloak.tokenParsed, id_keycloak: keycloak.subject, }])
                     setItems([])
                     response.data.map((row) => {
                         const { label, key, icon, children } = row
