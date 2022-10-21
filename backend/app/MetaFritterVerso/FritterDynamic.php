@@ -30,16 +30,23 @@ class FritterDynamic
                     $obj += [$item['name_attribute'] => $item['value']];
                     $obj['name_element'] = $item['name_element'];
                     $dependency = (int) $item['dependency'];
-                    
-                }               
+                }
             }
-            if($dependency > 0){
+            if ($dependency > 0) {
                 $dependecys = DB::table('sys_dependencys')->where('component_id', $component_no)->get();
                 foreach ($dependecys as $dep) {
-                    $obj['options'] = DB::table($dep->name_table)->select($dep->label.' as label', $dep->value.' as value')->whereRaw($dep->where)->get();
-                } 
+                    if($dep->name_table == "type_catalog"){
+                        $obj['options'] = [['label'=>'system', 'value'=>'system'], ['label'=>'operation', 'value'=>'operation']];
+                    } else {
+                        if ($dep->where == "" || $dep->where == null) {
+                            $obj['options'] = DB::table($dep->name_table)->select($dep->label . ' as label', $dep->value . ' as value')->get();
+                        } else {
+                            $obj['options'] = DB::table($dep->name_table)->select($dep->label . ' as label', $dep->value . ' as value')->whereRaw($dep->where)->get();
+                        }
+                    }
+                }
             }
-            
+
             $forms[] = $obj;
         }
 
@@ -59,11 +66,11 @@ class FritterDynamic
 
             foreach ($formItems as $item) {
                 if ($item['component_no'] == $component_no) {
-                    if($item['value'] == "true"){
+                    if ($item['value'] == "true") {
                         $value = boolval("1");
-                    }else if($item['value'] == "false"){
+                    } else if ($item['value'] == "false") {
                         $value = boolval("0");
-                    }else{
+                    } else {
                         $value = $item['value'];
                     }
                     $obj += [$item['name_attribute_column'] => $value];
@@ -90,16 +97,16 @@ class FritterDynamic
 
         $props_table = [];
         foreach ($props as $prop) {
-            if($prop->value == "true"){
+            if ($prop->value == "true") {
                 $value = boolval("1");
-            }else if($prop->value == "false"){
+            } else if ($prop->value == "false") {
                 $value = boolval("0");
-            }else{
+            } else {
                 $value = $prop->value;
             }
-            
+
             //$value = $prop->value == "false" ? boolval("0") : $prop->value;
-            $props_table += [$prop->name_props_table => $value]; 
+            $props_table += [$prop->name_props_table => $value];
         }
         return $props_table;
     }

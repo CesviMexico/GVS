@@ -16,11 +16,33 @@ class TablesController extends Controller
         $columns = FritterDynamic::columnsTable('Agregar Tablas');
         $props_table = FritterDynamic::propsTable(4);
         $raw = " SELECT  COUNT(component_no) FROM sys_data_tables WHERE table_id = sys_tables.table_id ";
-        $data = DB::table('sys_tables')->selectRaw('table_id, name_table, module, ('.$raw.') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
+        $data = DB::table('sys_tables')->selectRaw('table_id, name_table, module, name_table as "sys_tables@name_table", module as "sys_tables@module", (' . $raw . ') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
+
+        $aux_data = [];
+
+        foreach ($data as $value) {
+            $propstable = DB::table('sys_props_table')
+                ->join('sys_cat_props_table', 'sys_props_table.cat_props_table_id', '=', 'sys_cat_props_table.cat_props_table_id')
+                ->where('sys_props_table.table_id', $value->table_id)
+                ->get();
+
+            $data_aux = json_decode(json_encode($value), true);
+            foreach ($propstable as $prop) {
+                if ($prop->value == "true") {
+                    $value = boolval("1");
+                } else if ($prop->value == "false") {
+                    $value = boolval("0");
+                } else {
+                    $value = $prop->value;
+                }
+                $data_aux += [$prop->name_props_table => $value];
+            }
+            $aux_data[] = $data_aux;
+        }
 
         $response = [
             "status" => 200,
-            "data" => $data,
+            "data" => $aux_data,
             "formItems" => $form,
             "columns" => $columns,
             "props_table" => $props_table,
@@ -32,16 +54,37 @@ class TablesController extends Controller
 
     public function create(Request $request)
     {
-
         $params = $request->all();
         $arr = $params['parametros'];
-        DB::table('sys_forms')->insert($arr);
+
+        $sys_tables = [];
+        $sys_props_table = [];
+
+        foreach ($arr as $key => $value) {
+            $key = explode("@", $key);
+            if (sizeof($key) > 1) {
+                $key = $key[1];
+                $sys_tables += [$key => $value];
+            } else {
+                $cat_props_table_id = DB::table('sys_cat_props_table')->where('name_props_table', $key)->get(['cat_props_table_id']);
+                $value = is_bool($value) ? ($value ? 'true' : 'false')  : $value;
+                $sys_props_table[] = ['cat_props_table_id' => $cat_props_table_id[0]->cat_props_table_id, 'value' =>   $value];
+            }
+        }
+
+        $table_id = DB::table('sys_tables')->insertGetId($sys_tables);
+        foreach ($sys_props_table as $syspt) {
+            $syspt['table_id'] = $table_id;
+            DB::table('sys_props_table')->insert($syspt);
+        }
 
         $response = [
             "status" => 200,
             "message" => "Se creo correctamente el registro!",
             "type" => "success",
-            "tipoComponent" => "notification"
+            "tipoComponent" => "notification",
+            // "sys_tables" => $sys_tables,
+            // "sys__props_table" => $sys_props_table
         ];
         return response()->json($response, 200);
     }
@@ -51,13 +94,35 @@ class TablesController extends Controller
 
         $params = $request->all();
         $arr = $params['parametros'];
-        DB::table('sys_forms')
-            ->where('forms_id', $id)
-            ->update($arr);
+
+        $sys_tables = [];
+        $sys_props_table = [];
 
         $message = "Se modificó correctamente el registro!";
-        if (array_key_exists("status", $arr)) {
-            $message = "Se elimino correctamente el registro!";
+
+        foreach ($arr as $key => $value) {
+            $key = explode("@", $key);
+            if (sizeof($key) > 1) {
+                $key = $key[1];
+                if ($key == "status") {
+                    $message = "Se elimino correctamente el registro!";
+                }
+                $sys_tables += [$key => $value];
+            } else {
+                if (!array_key_exists("sys_tables@status", $arr)) {
+                    $cat_props_table_id = DB::table('sys_cat_props_table')->where('name_props_table', $key)->get(['cat_props_table_id']);
+                    $value = is_bool($value) ? ($value ? 'true' : 'false')  : $value;
+                    $sys_props_table[] = ['cat_props_table_id' => $cat_props_table_id[0]->cat_props_table_id, 'value' => $value];
+                }
+            }
+        }
+        $table_id = $id;
+        DB::table('sys_tables')->where('table_id', $table_id)->update($sys_tables);
+        if (!array_key_exists("sys_tables@status", $arr)) {
+            foreach ($sys_props_table as $syspt) {
+                $cat_props_table_id = $syspt['cat_props_table_id'];
+                DB::table('sys_props_table')->where('table_id', $table_id)->where('cat_props_table_id', $cat_props_table_id)->update($syspt);
+            }
         }
 
         $response = [
@@ -70,30 +135,38 @@ class TablesController extends Controller
         return response()->json($response, 200);
     }
 
-    public function showElement($id)
+    public function showColumn($id)
     {
-        $form = FritterDynamic::itemsForm('Form Elementos');
-        $columns = FritterDynamic::columnsTable('Agregar Elementos');
-        $sys_data_forms = DB::table('sys_data_forms')->where('form_id', $id)->get();
+        $form = FritterDynamic::itemsForm('Form Columnas');
+        $columns = FritterDynamic::columnsTable('Agregar Columnas');
+        $sys_data_tables = DB::table('sys_data_tables')->where('table_id', $id)->get();
         $data = [];
         $row = [];
-        foreach ($sys_data_forms as $dataform) {
+        foreach ($sys_data_tables as $datatables) {
             $attributes = [];
-            $row['data_form_id'] = $dataform->data_form_id;
-            $row['form_id'] = $dataform->form_id;
-            $row['component_no'] = $dataform->component_no;
+            $row['data_table_id'] = $datatables->data_table_id;
+            $row['table_id'] = $datatables->table_id;
+            $row['component_no'] = $datatables->component_no;
             $components = DB::table('sys_components')
                 ->join('sys_elements', 'sys_components.element_id', '=', 'sys_elements.element_id')
-                ->join('sys_attributes', 'sys_components.attribute_id', '=', 'sys_attributes.attribute_id')
-                ->select('sys_components.*', 'sys_elements.name_element', 'sys_attributes.name_attribute')
-                ->where('component_no', $dataform->component_no)->get();
+                ->join('sys_attributes_columns', 'sys_components.attribute_id', '=', 'sys_attributes_columns.attribute_column_id')
+                ->select('sys_components.*', 'sys_elements.name_element', 'sys_attributes_columns.name_attribute_column')
+                ->where('component_no', $datatables->component_no)->get();
             foreach ($components as $component) {
                 if ($component->attribute_id == 1) {
                     $row['element_id'] = $component->element_id;
-                    $row['name_element'] = $component->name_element;
+                    $row['columna'] = $component->value;
                     $row['label'] = $component->value;
+                    break;
+                } else if ($component->attribute_id == 3) {
+                    $row['element_id'] = $component->element_id;
+                    $row['columna'] = $component->value;
+                    $row['label'] = $component->value;
+                    break;
                 }
-                $attributes[] = ['element_id' => $component->element_id, 'attribute_id' => $component->attribute_id, 'name_attribute' => $component->name_attribute, 'value' => $component->value];
+            }
+            foreach ($components as $component) {
+                $attributes[] = ['element_id' => $component->element_id, 'attribute_id' => $component->attribute_id, 'name_attribute_column' => $component->name_attribute_column, 'value' => $component->value];
             }
             $row['attributes'] = $attributes;
             array_push($data, $row);
@@ -115,20 +188,20 @@ class TablesController extends Controller
 
     public function showAttributes($id, Request $request)
     {
-        if (isset($request->_dfi)) {
-            $component_id = $request->_dfi;
-            $raw = " sys_elements_attributes.*, sys_elements.*, sys_attributes.*, ( SELECT sys_components.value FROM sys_components WHERE sys_components.attribute_id = sys_elements_attributes.attribute_id AND sys_components.component_no = $component_id ) as defaultValue ";
+        if (isset($request->_dti)) {
+            $component_id = $request->_dti;
+            $raw = " sys_columns_attributes.*, sys_elements.*, sys_attributes_columns.*, ( SELECT sys_components.value FROM sys_components WHERE sys_components.attribute_id = sys_columns_attributes.attribute_column_id AND sys_components.component_no = $component_id ) as defaultValue, sys_attributes_columns.name_attribute_column as name_attribute ";
             if ($component_id == 0) {
-                $raw = " sys_elements_attributes.*, sys_elements_attributes.default as defaultValue, sys_elements.*, sys_attributes.* ";
+                $raw = " sys_columns_attributes.*, sys_columns_attributes.default as defaultValue, sys_elements.*, sys_attributes_columns.*, sys_attributes_columns.name_attribute_column as name_attribute ";
             }
         }
 
         $columns = FritterDynamic::columnsTable('Agregar Atributos');
-        $data = DB::table('sys_elements_attributes')
-            ->join('sys_elements', 'sys_elements_attributes.element_id', '=', 'sys_elements.element_id')
-            ->join('sys_attributes', 'sys_elements_attributes.attribute_id', '=', 'sys_attributes.attribute_id')
+        $data = DB::table('sys_columns_attributes')
+            ->join('sys_elements', 'sys_columns_attributes.element_id', '=', 'sys_elements.element_id')
+            ->join('sys_attributes_columns', 'sys_columns_attributes.attribute_column_id', '=', 'sys_attributes_columns.attribute_column_id')
             ->selectRaw($raw)
-            ->where('sys_elements_attributes.element_id', $id)
+            ->where('sys_columns_attributes.element_id', $id)
             ->get();
         $form = [];
         $props_table = FritterDynamic::propsTable(2);
@@ -156,8 +229,8 @@ class TablesController extends Controller
             DB::table('sys_components')->insert($comp);
         }
         //$order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']);
-        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => 1, "dependency" => 0];
-        DB::table('sys_data_forms')->insert($sys_data_forms);
+        $sys_data_tables = ["table_id" => $arr['table_id'], "component_no" => ($no_componente->component_no + 1), "order" => 1];
+        DB::table('sys_data_tables')->insert($sys_data_tables);
 
         $response = [
             "status" => 200,
@@ -195,7 +268,7 @@ class TablesController extends Controller
 
     public function deleteElement($id)
     {
-        DB::table('sys_data_forms')->where('data_form_id', $id)->delete();
+        DB::table('sys_data_tables')->where('data_table_id', $id)->delete();
         $response = [
             "status" => 200,
             "message" => "Se elimino correctamente el registro!",
