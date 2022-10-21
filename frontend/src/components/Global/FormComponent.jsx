@@ -59,6 +59,7 @@ const FormAntd = (props) => {
         showSearch
         allowClear
         optionFilterProp="children"
+        dropdownStyle={{ zIndex: 2000 }}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
       >
         {arrayOption.map((dato_row, index) =>
@@ -246,6 +247,7 @@ export const FormAntdCrud = (props) => {
         optionFilterProp="children"
         onChange={(value, event) => onChangeSelect && onChangeSelect(value, event, key)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+        dropdownStyle={{ zIndex: 2000 }}
       >
         {arrayOption.map((dato_row, index) =>
           <Option key={index} value={dato_row.value} >{dato_row.label}</Option>

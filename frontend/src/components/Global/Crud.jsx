@@ -82,7 +82,7 @@ const Crud = (props) => {
           <DialogContent dividers={'paper'} >           
               {props.children}         
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{position:'sticky', bottom:0}}>
             <Button variant="contained" onClick={closeModalCAction}>
               Cancelar
             </Button>

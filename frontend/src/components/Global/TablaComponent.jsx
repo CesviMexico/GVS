@@ -493,9 +493,7 @@ const TablaANTD = (props) => {
         col,
         col.no && objNo(),
         col.actions && objAcciones(col.key, col.icon, col.titleMSG,),
-
         col.img && objImg(col.key, col.icon, col.titleIMG, col.srcIMG),
-
         col.datePicker && objDatePicker(col.key, col.icon, col.placeholder, col.format, col.showTime),
         col.Input && objInput(col.key, col.placeholder, col.suffixTitle),
         col.textArea && objTextArea(col.key, col.icon, col.placeholder, col.height),
@@ -529,6 +527,7 @@ const TablaANTD = (props) => {
 
       )
       columns.push(obj)
+      // console.log("columns",columns)
     });
   }
 
