@@ -9,8 +9,10 @@ import { HashRouter, Routes, Route, } from 'react-router-dom';
 import DemosComponents from './pages/DemosComponents'
 import Login from './pages/login'
 
+
+import Users from './pages/Users/Home'
+
 //configuracion
-import Users from './pages/Configuracion/Users/Home'
 import Forms from './pages/Configuracion/Forms/Home'
 import Tables from './pages/Configuracion/Tables/Home'
 import Catalogos from './components/Catalogos/Home'
@@ -18,10 +20,8 @@ import Catalogos from './components/Catalogos/Home'
 import Page404 from './pages/Page404'
 import Page403 from './pages/Page403'
 
-import GraficasANTD from './pages/GraficasANTD'
 import GraficasChart from './pages/GraficasChart'
 
-import 'antd/dist/antd.css';
 import { Spin } from 'antd';
 import Layout from './components/Layout/Layout'
 
@@ -42,11 +42,11 @@ const Router = () => {
                         <Route path="/" element={<Layout><Login /></Layout>} />                        
                         <Route path="/login" element={<Layout><Login /></Layout>} />
 
-                        <Route path="/antd" element={<PrivateRoute><Layout><GraficasANTD /></Layout></PrivateRoute>} />
                         <Route path="/chartjs" element={<PrivateRoute><Layout><GraficasChart /></Layout></PrivateRoute>} />
 
 
-                        <Route path="Configuracion/Users" element={<PrivateRoute><Layout><Users /></Layout></PrivateRoute>} />
+                        <Route path="/Users" element={<PrivateRoute><Layout><Users /></Layout></PrivateRoute>} />
+                        
                         <Route path="Configuracion/Forms" element={<PrivateRoute><Layout><Forms /></Layout></PrivateRoute>} />
                         <Route path="Configuracion/Tables" element={<PrivateRoute><Layout><Tables /></Layout></PrivateRoute>} />
                         <Route path="Configuracion/Catalogos" element={<PrivateRoute><Layout><Catalogos /></Layout></PrivateRoute>} />

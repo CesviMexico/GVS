@@ -11,8 +11,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
 import { ConfigProvider,Form, Modal } from "antd";
-import 'antd/dist/antd.css';
-
 
 const ModdalMUI = (props) => {
   // Hook y funciones o metodos Globales
@@ -81,7 +79,7 @@ export const ModdalANTD = (props) => {
     <>
       <ConfigProvider locale={idiomaGral}>
         <Modal
-          visible={visible}
+          open={visible}
           title={title}
           footer={footer}
           onCancel={onCancel}

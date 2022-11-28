@@ -13,8 +13,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
 import { Form } from "antd";
-import "antd/dist/antd.css";
-
 import TablaANTD from "./TablaComponent";
 
 import Grid from "@mui/material/Grid";
@@ -31,7 +29,7 @@ const Crud = (props) => {
   const { tableProps, loading, columns, datasource, OnClickAction, ActualizaTabla, title, uri, viewFab } = props
 
   const { form, openmodal, currentrowid, btntitle, guardarDatosAction, editarDatosAction,
-    openModalCAction, closeModalCAction, chCurrentRowIDAction, chTitleBtnCAction, } = crudContext;
+    openModalCAction, closeModalCAction, chCurrentRowIDAction, chTitleBtnCAction, setDataSourceCrud } = crudContext;
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -119,7 +117,7 @@ const Crud = (props) => {
               loading={loading}
               columnsTable={columns}
               datasource={datasource}
-
+              setDataSource={setDataSourceCrud}
               pagination={tableProps && tableProps.pagination}
               pageSize={tableProps && tableProps.pageSize}
               simplepage={tableProps && tableProps.simplepage}
@@ -131,6 +129,7 @@ const Crud = (props) => {
               scrollX={tableProps && tableProps.scrollX}
               scrollY={tableProps && tableProps.scrollY}
               tableLayout={tableProps && tableProps.tableLayout}
+              dragSorting={tableProps && tableProps.dragSorting}
 
               Title={tableProps && tableProps.Title}
               IconAvatar={tableProps && tableProps.IconAvatar}

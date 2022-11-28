@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import ThemeContext from '../../context/ThemContext'
 import Grid from "@mui/material/Grid";
 //antd
-import 'antd/dist/antd.css';
 import {
   ConfigProvider,
   Button, Form,
@@ -22,14 +21,25 @@ const { Option } = Select;
 const FormAntd = (props) => {
   // Hook y funciones o metodos Globales
   const themeContext = useContext(ThemeContext)
-  const { idiomaGral, sizeIcon, backgroundColor, loading } = themeContext
+  const { idiomaGral, sizeIcon, backgroundColor } = themeContext
 
   const {
-    formItems, onFinish, titleSubmit = 'Submit', iconButton = 'line-md:search',
-    iconButtonSec = 'mdi:microsoft-excel', titleSubmitSec = '', ButtonSec,
-    onClickSec
+    form,
+    formItems,
+    onFinish,
+    titleSubmit = 'Submit',
+    iconButton = 'line-md:search',
+    iconButtonSec = 'mdi:microsoft-excel',
+    titleSubmitSec = '',
+    ButtonSec,
+    onClickSec,
+    // onChangeSelect,
+    loading
   } = props
-  const [formItem] = useState([])
+
+  const [formItem, setFormItem] = useState([])
+  const [arrayOption, setArrayOption] = useState(0)
+
 
   ///Upload
   const normFile = (e) => {
@@ -59,11 +69,13 @@ const FormAntd = (props) => {
         showSearch
         allowClear
         optionFilterProp="children"
-        dropdownStyle={{ zIndex: 2000 }}
+       // onChange={(value, event) => handleChange && handleChange(value, event, key)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+        dropdownStyle={{ zIndex: 2000 }}
+
       >
         {arrayOption.map((dato_row, index) =>
-          <Option key={index} value={dato_row.value} >{dato_row.text}</Option>
+          <Option key={index} value={dato_row.value} >{dato_row.label}</Option>
         )}
       </Select>,
 
@@ -107,53 +119,99 @@ const FormAntd = (props) => {
     "": () => { "Erro en tipo" },
   }
   const ItemsForm = () => {
-    formItems && formItems.forEach(Item => {
+
+    const formItemNew = []
+    const arrayOptionNew = []
+    let i = 0;
+    let x = 0;
+    let obj2 = {}
+
+    formItems.length > 0 && formItems.forEach(Item => {
+
       let obj =
       {
         ...Item,
-        tipo: swicthTipo[Item.tipo] && swicthTipo[Item.tipo](
+        rules: [
           {
-            key: Item.name,
-            placeholder: Item.placeholder,
-            min: Item.min,
-            max: Item.max,
-            maxLength: Item.maxLength,
-            showCount: Item.showCount,
-            showTime: Item.showTime == 1 ? true : false,
-            format: Item.format,
-            arrayOption: Item.arrayOption,
-            mode: Item.mode,
-            valuePropName: Item.valuePropName,
-            marksSlider: Item.marksSlider,
-            arrayRadio: Item.arrayRadio,
-            groupButton: Item.groupButton,
-            arrayCheckbox: Item.arrayCheckbox,
+            required: Item.rulesRequired == '1' && Item.rulesRequired,
+            message: Item.rulesMessage && Item.rulesMessage,
+          },
 
-            dragger: Item.dragger,
-            namefile: Item.namefile,
-            actionUrl: Item.actionUrl,
-            listType: Item.listType,
-            tipoFile: Item.tipoFile,
-            multipleFile: Item.multipleFile,
-            textButton: Item.textButton,
-            antuploadtext: Item.antuploadtext,
-            antuploadhint: Item.antuploadhint,
+          {
+            type: Item.rulestype && Item.rulestype,
+            message: Item.rulestypemessage && Item.rulestypemessage,
+          },
 
-          }
-        )
+        ],
+        name_element: swicthTipo[Item.name_element] && swicthTipo[Item.name_element]
+          (
+            {
+              key: Item.name,
+              placeholder: Item.placeholder && Item.placeholder,
+              min: Item.min && Item.min,
+              max: Item.max && Item.max,
+              maxLength: Item.maxLength && Item.maxLength,
+              showCount: Item.showCount && Item.showCountItem.showCount,
+              showTime: Item.showTime && Item.showTime,
+              format: Item.format && Item.format,
+              arrayOption: Item.options && Item.options,
+              mode: Item.mode && Item.mode,
+              valuePropName: Item.valuePropName && Item.valuePropName,
+              marksSlider: Item.marksSlider && Item.marksSlider,
+              arrayRadio: Item.arrayRadio && Item.arrayRadio,
+              groupButton: Item.groupButton && Item.groupButton,
+              arrayCheckbox: Item.arrayCheckbox && Item.arrayCheckbox,
+
+              dragger: Item.dragger && Item.dragger,
+              namefile: Item.namefile && Item.namefile,
+              actionUrl: Item.actionUrl && Item.actionUrl,
+              listType: Item.listType && Item.listType,
+              tipoFile: Item.tipoFile && Item.tipoFile,
+              multipleFile: Item.multipleFile && Item.multipleFile,
+              textButton: Item.textButton && Item.textButton,
+              antuploadtext: Item.antuploadtext && Item.antuploadtext,
+              antuploadhint: Item.antuploadhint && Item.antuploadhint,
+
+            }
+          )
       }
-      formItem.push(obj)
-    });
+      i = i + 1;
+      formItemNew.push(obj)
+    })
 
-    // console.log('formItem', formItem)
-    // console.log('formItem', formItem.length)
+    setFormItem(formItemNew)
+
   }
 
-  formItem.length == 0 && ItemsForm();
+  const handleChange = (value, key, event) => {
+
+    console.log('key', key)
+    console.log('value', value)
+    console.log('event', event)
+
+    // if (key === 'id_estado') {
+    //   setArrayOption(value)
+    //   setId_estado(event ? event.children : 0 )
+    //   setFields(
+    //     [
+    //       {
+    //         "name": [
+    //           "id_municipio"
+    //         ],
+    //         "value": ""
+    //       }
+    //     ]
+    //   )
+    // }
+
+  }
+  useEffect(() => {
+    ItemsForm()
+  }, [formItems])
 
   return (
     <ConfigProvider locale={idiomaGral}>
-      <Form name="basic" onFinish={onFinish} >
+      <Form name="basic" onFinish={onFinish} form={form} >
         <Grid container spacing={1}>
           {formItem.map((row, index) =>
             <Grid item xs={12} sm={6} md={3} key={index}>
@@ -166,9 +224,10 @@ const FormAntd = (props) => {
                 tooltip={row.tooltip}
                 extra={row.extra}
                 valuePropName={row.valuePropName}
+              //initialValue={row.initialValue}
               //getValueFromEvent={(e) => normFile(e)}
               >
-                {row.tipo}
+                {row.name_element}
               </Form.Item>
             </Grid>
           )}
@@ -215,7 +274,7 @@ export const FormAntdCrud = (props) => {
   // Hook y funciones o metodos Globales
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
-  const { formItems, onChangeSelect , loading= false} = props
+  const { formItems, onChangeSelect, loading = false } = props
   const [formItem] = useState([])
 
   ///Upload

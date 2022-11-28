@@ -1,14 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
-
 import { useKeycloak } from "@react-keycloak/web";
 
 //ANTD
-import "antd/dist/antd.css"
 import { Layout as AntLayout, } from 'antd'
-// import { FileOutlined, PieChartOutlined, UserOutlined, DesktopOutlined, TeamOutlined } from '@ant-design/icons';
-
-//ESTILOS
-import styles from "../../css/styles.module.css"
 
 //CONTEX
 import ThemeContext from '../../context/ThemContext'
@@ -77,7 +71,6 @@ const HeaderComponent = () => {
                     premium: true,
                     email: keycloak.tokenParsed.email,
                     rol: keycloak.tokenParsed.family_name,
-
                 }
             )
         }
@@ -175,7 +168,7 @@ const HeaderComponent = () => {
 
     return (
         <Header
-            className={styles['site-layout-background']}
+            className="site-layout-background"
             style={{
                 textAlign: 'center',
                 background: backgroundColor,
@@ -187,7 +180,7 @@ const HeaderComponent = () => {
                 color="white"
                 style={{ top: 10, position: "relative" }}
             >
-                Title Header
+                Cotizador de daños ecologicos 
             </Typography>
 
 

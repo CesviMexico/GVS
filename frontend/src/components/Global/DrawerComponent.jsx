@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import ThemeContext from '../../context/ThemContext'
 
-import 'antd/dist/antd.css';
 import { ConfigProvider, Drawer } from 'antd';
 import  '../../css/stylesDraw.css'
 
@@ -20,7 +19,7 @@ const DrawerAntd = (props) => {
         title={title && title}
         placement={placement ? placement : "right"}
         onClose={onClose && onClose}
-        visible={visible}
+        open={visible}
         getContainer={getContainer}
         style={style}       
 

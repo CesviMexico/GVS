@@ -13,7 +13,6 @@ import { AvatarANTD } from './AvatarComponent'
 
 
 //ant.design/
-import 'antd/dist/antd.css';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import { ConfigProvider, Card as CardAnt } from 'antd';
 

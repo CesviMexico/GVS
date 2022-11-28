@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef, useCallback } from 'react'
 import ThemeContext from '../../context/ThemContext'
 
 import {
@@ -8,9 +8,6 @@ import {
 } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import { InfoCircleOutlined } from '@ant-design/icons';
-
-
-import 'antd/dist/antd.css';
 
 import Highlighter from 'react-highlight-words';
 
@@ -37,9 +34,63 @@ import { green, red, yellow } from '@mui/material/colors';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 
+import update from "immutability-helper";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 
 const { Link } = TypographyAntd;
 const { Option } = Select;
+
+const type = "DraggableBodyRow";
+
+const DraggableBodyRow = ({
+  index,
+  moveRow,
+  className,
+  style,
+  ...restProps
+}) => {
+  const ref = useRef(null);
+  const [{ isOver, dropClassName }, drop] = useDrop({
+    accept: type,
+    collect: (monitor) => {
+      const { index: dragIndex } = monitor.getItem() || {};
+      if (dragIndex === index) {
+        return {};
+      }
+      return {
+        isOver: monitor.isOver(),
+        dropClassName:
+          dragIndex < index ? " drop-over-downward" : " drop-over-upward"
+      };
+    },
+    drop: (item) => {
+      moveRow(item.index, index);
+    }
+  });
+  const [, drag] = useDrag({
+    type,
+    item: {
+      index
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+  drop(drag(ref));
+  return (
+    <tr
+      ref={ref}
+      className={`${className}${isOver ? dropClassName : ""}`}
+      style={{
+        cursor: "move",
+        ...style
+      }}
+      {...restProps}
+    />
+  );
+};
 
 const TablaANTD = (props) => {
 
@@ -48,21 +99,23 @@ const TablaANTD = (props) => {
   const { backgroundColor, colorIcon, sizeIconTable, sizeIcon, colorTable, idiomaGral } = themeContext
 
   const {
-    loading,
-    loadingAdd,
-    datasource,
+    loading = false,
+    loadingAdd = false,
+    datasource = [],
+    setDataSource,
 
-    pagination,
-    pageSize,
-    simplepage,
-    positionBottom,
-    positionTop,
+    pagination = false,
+    pageSize = "10",
+    simplepage = false,
+    positionBottom = "bottomRight",
+    positionTop = "topRight",
 
-    size,
-    bordered,
-    scrollX,
-    scrollY,
-    tableLayout,
+    size = "small",
+    bordered = false,
+    scrollX = false,
+    scrollY = false,
+    tableLayout = "auto",
+    dragSorting = false,
 
     Title,
     IconAvatar,
@@ -77,7 +130,7 @@ const TablaANTD = (props) => {
     ExportaExcelOtro,
 
     Sumary,
-    tbSimple
+    tbSimple,
 
   } = props
 
@@ -88,6 +141,40 @@ const TablaANTD = (props) => {
   const [searchedColumnT, setSearchedColumnT] = useState('');
 
   let searchInput
+
+  const components = {
+    body: {
+      row: DraggableBodyRow
+    }
+  };
+
+  const moveRow = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragRow = datasource[dragIndex];
+      let infoRow = {
+        drag_row: {
+          row_data: dragRow,
+          last_position: dragIndex,
+          current_position: hoverIndex
+        },
+        hover_row: {
+          row_data: datasource[hoverIndex],
+          last_position: hoverIndex,
+          current_position: dragIndex
+        }
+      };
+      console.log(infoRow);
+      setDataSource.length > 0 && setDataSource(
+        update(datasource, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, dragRow]
+          ]
+        })
+      );
+    },
+    [datasource]
+  );
 
   const getColumnSearchProps = (dataIndex, title) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -175,7 +262,7 @@ const TablaANTD = (props) => {
     render: (text, record, index) => (index + 1),
   })
 
-  const action = (row, key, IconAction, titleMSG) => {
+  const action = (row, key, IconAction, titleMSG, text) => {
     return (
       <>
         <Tooltip title={key} key={key}>
@@ -199,6 +286,7 @@ const TablaANTD = (props) => {
               />
             </Popconfirm>
             :
+
             <Icon icon={IconAction} key={key}
               style={{
                 cursor: "pointer",
@@ -208,6 +296,7 @@ const TablaANTD = (props) => {
               }}
               onClick={() => OnClickAction(row, key)}
             />
+
           }
         </Tooltip>
       </>
@@ -215,7 +304,7 @@ const TablaANTD = (props) => {
   };
 
   const objAcciones = (key, IconAction, titleMSG,) => ({
-    render: (row, index) => action(row, key, IconAction, titleMSG, index),
+    render: (text, row, index) => action(row, key, IconAction, titleMSG, index, text),
   })
 
   // ver imagen
@@ -479,8 +568,6 @@ const TablaANTD = (props) => {
     ),
   })
 
-
-
   //CREA COLUMNAS 
   const columns = []
   const columnasTabla = () => {
@@ -579,43 +666,53 @@ const TablaANTD = (props) => {
 
   const TableCP = () => {
     return (
-      <Table
-        //className={}
-        loading={loading}
-        dataSource={datasource}
-        //onChange={onChange}
-        onChange={onChange}
-        bordered={bordered}
-        size={size}
-        tableLayout={tableLayout} //"fixed" //- | auto | fixed
+      <DndProvider backend={HTML5Backend}>
+        <Table
+          //className={}
+          loading={loading}
+          dataSource={datasource}
+          //onChange={onChange}
+          onChange={onChange}
+          bordered={bordered}
+          size={size}
+          tableLayout={tableLayout} //"fixed" //- | auto | fixed
 
-        pagination={
-          pagination &&
-          {
-            responsive: true,
-            pageSize: pageSize,
-            simple: simplepage,
-            position: [positionTop, positionBottom],
-            // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
+          pagination={
+            pagination &&
+            {
+              responsive: true,
+              pageSize: pageSize,
+              simple: simplepage,
+              position: [positionTop, positionBottom],
+              // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
+            }
           }
-        }
 
-        scroll={{ x: scrollX, y: scrollY }}
-        columns={columns}
+          scroll={{ x: scrollX, y: scrollY }}
+          columns={columns}
 
-        title={() =>
-          noChange > 0 && noChange !== datasource.length ?
-          searchText &&  
-            <Typography
-              variant="body2"
-              style={{ color: colorTable }}
-            ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-            </Typography>
+          title={() =>
+            noChange > 0 && noChange !== datasource.length ?
+              searchText &&
+              <Typography
+                variant="body2"
+                style={{ color: colorTable }}
+              ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+              </Typography>
 
-            : ""}
+              : ""}
 
-        summary={(pageData) => Sumary && Sumary(pageData)}
-      />
+          summary={(pageData) => Sumary && Sumary(pageData)}
+          components={dragSorting && components}
+          onRow={dragSorting ? ((_, index) => {
+            const attr = {
+              index,
+              moveRow
+            };
+            return attr;
+          }):null}
+        />
+      </DndProvider>
     )
   }
 

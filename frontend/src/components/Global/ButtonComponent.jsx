@@ -9,10 +9,6 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 
 
-//IDIOMA
-import { ConfigProvider } from 'antd';
-import es_ES from 'antd/lib/locale/es_ES';
-
 
 // size-->'small'| 'medium'| 'large'| 
 

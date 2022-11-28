@@ -279,6 +279,7 @@ const Home = () => {
           loading={loading}
           columnsTable={columnsDetalle}
           datasource={datasourceDetalle}
+          setDataSource={setDataSourceDetalle}
           pagination={tablePropsDetalle && tablePropsDetalle.pagination}
           pageSize={tablePropsDetalle && tablePropsDetalle.pageSize}
           simplepage={tablePropsDetalle && tablePropsDetalle.simplepage}
@@ -289,6 +290,7 @@ const Home = () => {
           scrollX={tablePropsDetalle && tablePropsDetalle.scrollX}
           scrollY={tablePropsDetalle && tablePropsDetalle.scrollY}
           tableLayout={tablePropsDetalle && tablePropsDetalle.tableLayout}
+          dragSorting={tablePropsDetalle && tablePropsDetalle.dragSorting}
           Title={rowForms.name_form}
           IconAvatar={tablePropsDetalle && tablePropsDetalle.IconAvatar}
           OnClickAction={OnClickAction}
@@ -316,6 +318,7 @@ const Home = () => {
               loading={loadingAtributos}
               columnsTable={colmnsattributes}
               datasource={datasourceattributes}
+              setDataSource={setDataSourceDetalle}
               pagination={tablePropsDetalle && tablePropsDetalle.pagination}
               pageSize={tablePropsDetalle && tablePropsDetalle.pageSize}
               simplepage={tablePropsDetalle && tablePropsDetalle.simplepage}
@@ -328,6 +331,7 @@ const Home = () => {
               scrollX={tablePropsDetalle && tablePropsDetalle.scrollX}
               scrollY={tablePropsDetalle && tablePropsDetalle.scrollY}
               tableLayout={tablePropsDetalle && tablePropsDetalle.tableLayout}
+              dragSorting={tablePropsDetalle && tablePropsDetalle.dragSorting}
               // Title={rowForms.name_form}
               // IconAvatar={tablePropsDetalle && tablePropsDetalle.IconAvatar}
 

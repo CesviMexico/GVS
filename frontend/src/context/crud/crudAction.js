@@ -122,7 +122,7 @@ const CrudAction = (props) => {
         type: CRUD_SAVE_ERROR,
         payload: true,
     });
-    const editarDatosAction = async (uri, values, id, request='put') => {
+    const editarDatosAction = async (uri, values, id, request = 'put') => {
         dispatch(editarInit());
         try {
 
@@ -166,8 +166,17 @@ const CrudAction = (props) => {
 
     const setLoadingCrud = (payload) => (
         dispatch(loadingCrud(payload))
-   );
-   
+    );
+
+    const datasourceCrud = (payload) => ({
+        type: "CRUD_DATASOURCE",
+        payload: payload,
+    });
+
+    const setDataSourceCrud = (payload) => (
+        dispatch(datasourceCrud(payload))
+    );
+
 
     return (
         <CrudContext.Provider
@@ -188,8 +197,8 @@ const CrudAction = (props) => {
                 chTitleBtnCAction,
 
                 setLoadingCrud,
+                setDataSourceCrud,
 
-                
             }}
         >
             {props.children}

@@ -1,8 +1,7 @@
 import React, { useState, createContext } from 'react'
 import { green, red, blue, yellow, grey } from '@mui/material/colors';
 
-import es_ES from 'antd/lib/locale/es_ES';
-
+import es_ES from 'antd/locale/es_ES';
 
 const ThemeContext = createContext();
 export const ThemeConsumer = ThemeContext.Consumer;
@@ -34,7 +33,7 @@ export const ThemeProvider = (props) => {
     //IDIOMA
     const [idiomaGral, setIdiomaGral] = useState(es_ES)
 
-    const [logoutOptions , setLogoutOptions ] = useState('http://localhost:3000/#/Historico') 
+    const [logoutOptions , setLogoutOptions ] = useState('http://localhost:3000/#/') 
     //const [logoutOptions, setLogoutOptions] = useState('http://appweb.cesvimexico.com.mx/carpeta/#')
 
 

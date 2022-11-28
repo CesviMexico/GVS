@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 import ThemeContext from '../../context/ThemContext'
-
-import 'antd/dist/antd.css';
 import { Result, ConfigProvider, Button,  } from 'antd';
 
 const ResultComponent = (props) => {

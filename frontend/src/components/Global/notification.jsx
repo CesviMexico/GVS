@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import 'antd/dist/antd.css';
 import { notification, message } from 'antd';
 
 //MUI
