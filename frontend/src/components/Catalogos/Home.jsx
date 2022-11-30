@@ -11,6 +11,9 @@ import Crud from "../Global/Crud";
 import { useKeycloak } from "@react-keycloak/web";
 import CatCatalogos from './Services'
 
+import { Button, Tooltip } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
+
 
 const Home = (props) => {
 
@@ -30,12 +33,13 @@ const Home = (props) => {
   } = crudContext;
 
   const themeContext = useContext(ThemeContext)
-  const { idiomaGral, msErrorApi, logoutOptions, } = themeContext
+  const { idiomaGral, msErrorApi, logoutOptions, colorIcon, sizeIcon, backgroundColor } = themeContext
 
 
   const [loadingComboCatalogos, setloadingComboCatalogos] = useState(false);
   const [formItemsCombo, setFormItemsCombo] = useState([]);
   const ComboCatalogos = async () => {
+    setFormItemsCombo([])
     setloadingComboCatalogos(true)
     const response = await CatCatalogos(
       setloadingComboCatalogos,
@@ -44,7 +48,7 @@ const Home = (props) => {
       logoutOptions,
       "id",
     );
-    console.log("ComboCatalogos", response);
+    //console.log("ComboCatalogos", response.formItems);
     setFormItemsCombo(response.formItems)
     setloadingComboCatalogos(false)
   };
@@ -53,10 +57,10 @@ const Home = (props) => {
 
   useEffect(() => {
     ComboCatalogos();
-    obtenerDatosAction(`${uri}/0`);
+    obtenerDatosAction(`${uri}/3`);
   }, []);
 
-  const onChangeSelect = (value, event) => {    
+  const onChangeSelect = (value, event) => {
     setUri(`${uri}/${value}`)
     obtenerDatosAction(`${uri}/${value}`);
   };
@@ -80,7 +84,7 @@ const Home = (props) => {
   };
 
   const onEliminarRow = (row) => {
-    
+
     editarDatosAction(uri, row, row[datasource.id], 'delete');
   };
 
@@ -95,12 +99,26 @@ const Home = (props) => {
         }}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <FormAntdCrud formItems={formItemsCombo} onChangeSelect={onChangeSelect} loading={loadingComboCatalogos} />
+
+              <Grid container spacing={1}>
+                <Grid item xs={10}>
+                  <FormAntdCrud formItems={formItemsCombo} onChangeSelect={onChangeSelect} loading={loadingComboCatalogos} />
+                </Grid>
+                <Grid item xs={2}>
+                  <Tooltip title="Actualizar Combo">
+                    <Button shape="circle" style={{ backgroundColor: backgroundColor }}
+                       onClick={() =>   ComboCatalogos()}
+                      icon={<SyncOutlined spin={loadingComboCatalogos}
+                        style={{ fontSize: 15, color: colorIcon }}
+                      />} />
+                  </Tooltip>
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={12}>
               <Crud
-                title={"Nuevo Catalogo"}
+                title={"Nuevo Registro"}
                 uri={uri}
                 columns={datasource.columns}
                 datasource={datasource.data}
@@ -116,7 +134,6 @@ const Home = (props) => {
           </Grid>
 
         </Box>
-
 
       </ConfigProvider>
     </>

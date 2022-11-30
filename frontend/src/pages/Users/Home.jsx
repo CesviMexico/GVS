@@ -464,6 +464,7 @@ const Home = () => {
               loading={loading}
               columnsTable={columns}
               datasource={datasource}
+              
               setDataSource={setDataSource}
               pagination={tableProps && tableProps.pagination}
               pageSize={tableProps && tableProps.pageSize}
@@ -478,6 +479,7 @@ const Home = () => {
               dragSorting={tableProps && tableProps.dragSorting}
               Title={tableProps.Title}
               IconAvatar={tableProps && tableProps.IconAvatar}
+              
               OnClickAction={OnClickAction}
               ActualizaTabla={() => ActualizaTabla()}
             />
