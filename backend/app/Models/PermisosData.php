@@ -12,13 +12,13 @@ class PermisosData extends Model
      *
      * @var string
      */
-    protected $table = 'cat_permisos';
+    protected $table = 'sys_permissions';
        /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'id_user';
+    protected $primaryKey = 'permission_id';
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class PermisosData extends Model
      * @var array
      */
     protected $fillable = [
-        'id_permimso', 'id_keycloak', 'id_menu', 'id_user',
+        'permission_id', 'keycloak_id', 'menu_id', 'user_id',
     ];
 
     /**

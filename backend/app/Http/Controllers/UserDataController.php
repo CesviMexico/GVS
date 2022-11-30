@@ -3,125 +3,107 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserData;
-use App\Models\FormData;
+use App\Models\MenuData;
 use App\Models\PermisosData;
 use Illuminate\Http\Request;
-use App\MetaFritterVerso\TablaFront;
-use App\MetaFritterVerso\UserColumnasFront;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-// use Illuminate\Support\Facades\DB;
-// use Symfony\Component\Console\Helper\Table;
+use App\MetaFritterVerso\FritterDynamic;
 
 class UserDataController extends Controller
 {
 
-    // public function showAll()
-    // {
-    //     $data = UserData::where("estatus", "=", "ALTA")->get();
+    public function index()
+    {
+        $data = UserData::join("sys_cat_rol", "sys_users.id_rol", "=", "sys_cat_rol.id_rol")
+            ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
+            ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
+            ->where("sys_users.status", "alta")
+            ->get();
+        $form = FritterDynamic::itemsForm('Usuarios');
+        $columns = FritterDynamic::columnsTable('Usuarios');
+        $props_table = FritterDynamic::propsTable(16);
 
-    //     $formItems = FormData::where("tb_name", "=", "cat_user")->get();
-    //     $noComponents = FormData::where("tb_name", "cat_user")->distinct()->get(['orden']);
-    //     $arr = [];
+        $response = [
+            "status" => 200,
+            "data" => $data,
+            "formItems" => $form,
+            "columns" => $columns,
+            "props_table" => $props_table,
+            "message" => "Información Actualizada",
+            "type" => "success"
+        ];
+        return response()->json($response);
+    }
 
+    public function show($id)
+    {
+        return response()->json(UserData::find($id));
+    }
 
-    //     foreach ($noComponents as $key => $value) {
-    //         $orden = $value['orden'];
-    //         $obj = [];
-    //         foreach ($formItems as $item) {
-    //             if ($item['orden'] == $orden) {
-    //                 $obj += [$item['propiedad'] => $item['value']];
-    //                 $obj['tipo'] = $item['tipo'];
-    //             }
-    //         }
-    //         $arr[] = $obj;
-    //     }
+    public function store(Request $request)
+    {
+        $params = $request->all();
+        $arr = $params['parametros'];
 
+        try {
+            UserData::create($arr);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
-    //     $columnas = UserColumnasFront::columnasTablaDemo();
-    //     $columns = TablaFront::getColumns($columnas);
+        $response = [
+            "status" => 200,
+            "message" => "Se creo correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
 
-    //     $response = [
-    //         "status" => 200,
-    //         "data" => $data,
-    //         "columns" => $columns,
-    //         "formItems" => $arr,
-    //         "message" => "Info Actualizada",
-    //         "props_table" => TablaFront::getPropsTable(
-    //             [
-    //                 "Title" => 'Usuarios',
-    //                 "IconAvatar" => 'ph:users-three-fill',
-    //                 "scrollX" => 600,
-    //                 "scrollY" => 300,
-    //             ]
-    //         ),
-    //         "type" => "success"
-    //     ];
-    //     return response()->json($response);
-    // }
+        return response()->json($response, 200);
+    }
 
-    // public function showOne($id)
-    // {
-    //     return response()->json(UserData::find($id));
-    // }
+    public function update($id, Request $request)
+    {
+        $data = UserData::findOrFail($id);
+        $params = $request->all();
+        $arr = $params['parametros'];
+        $data->update($arr);
 
-    // public function create(Request $request)
-    // {
-    //     $params = $request->all();
-    //     $arr = $params['parametros'];
-        
-    //     try {
-    //         UserData::create($arr);
-    //     } catch (\Throwable $th) {
-    //         //throw $th;
-    //     }
-      
+        $response = [
+            "status" => 200,
+            "data" => $data,
+            "message" => "Se modificó correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
+        return response()->json($response, 200);
+    }
 
-    //     $response = [
-    //         "status" => 200,
-    //         "message" => "Se creo correctamente el registro!",
-    //         "type" => "success",
-    //         "tipoComponent" => "notification"
-    //     ];
+    public function destroy($id)
+    {
+        $data = UserData::findOrFail($id)->delete();
 
-    //     return response()->json($response, 200);
-    // }
-
-    // public function update($id, Request $request)
-    // {
-    //     $data = UserData::findOrFail($id);
-    //     $params = $request->all();
-    //     $arr = $params['parametros'];
-    //     $data->update($arr);
-
-    //     $response = [
-    //         "status" => 200,
-    //         "data" => $data,
-    //         "message" => "Se modificó correctamente el registro!",
-    //         "type" => "success",
-    //         "tipoComponent" => "notification"
-    //     ];
-    //     return response()->json($response, 200);
-    // }
-
-    // public function delete($id)
-    // {
-    //     $data = UserData::findOrFail($id)->delete();
-
-    //     try {
-    //         $data2 = PermisosData::findOrFail($id)->delete();
-    //     } catch (ModelNotFoundException  $ex) {
-    //         $ex->getMessage();
-    //     }
+        // try {
+        //PermisosData::findOrFail($id)->delete();
+        // } catch (ModelNotFoundException  $ex) {
+        //     $ex->getMessage();
+        // }
 
 
-    //     $response = [
-    //         "status" => 200,
-    //         "data" => $data,
-    //         "message" => "Se elimino correctamente el registro!",
-    //         "type" => "success",
-    //         "tipoComponent" => "notification"
-    //     ];
-    //     return response()->json($response, 200);
-    // }
+        $response = [
+            "status" => 200,
+            "data" => $data,
+            "message" => "Se elimino correctamente el registro!",
+            "type" => "success",
+            "tipoComponent" => "notification"
+        ];
+        return response()->json($response, 200);
+    }
+
+    public static function validateUser($id)
+    {
+        $validate = UserData::where("id_keycloak", $id)->count("id_user");
+        if ($validate > 0) {
+            return ["validate" => true];
+        }
+        return ["validate" => false];;
+    }
 }

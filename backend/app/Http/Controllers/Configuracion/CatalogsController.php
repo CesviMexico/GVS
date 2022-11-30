@@ -61,7 +61,11 @@ class CatalogsController extends Controller
             $columns = FritterDynamic::columnsTable($aux_name_table);
             $props_table = FritterDynamic::propsTable($table_id);
             if($view_table == "NA"){
-                $data = DB::table($name_table)->where('status','alta')->get();
+                if($name_table === "sys_cat_tables"){
+                    $data = DB::table($name_table)->where('type','operation')->where('status','alta')->get();
+                }else{
+                    $data = DB::table($name_table)->where('status','alta')->get();
+                }        
             }else{
                 $data = DB::table($view_table)->get();
             }
@@ -91,6 +95,7 @@ class CatalogsController extends Controller
             $name_table = $value->name_table;
         }
         $cont = 0;
+        // Desarrollo para cachar valores del multiple select 
         // $aux_arr_val = [];
         // $aux_val = "";
         // $aux_key = "";

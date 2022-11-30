@@ -16,7 +16,7 @@ class FormsController extends Controller
         $columns = FritterDynamic::columnsTable('Agregar Forms');
         $props_table = FritterDynamic::propsTable(2);
         $raw = " SELECT  COUNT(component_no) FROM sys_data_forms WHERE form_id = sys_forms.forms_id ";
-        $data = DB::table('sys_forms')->selectRaw('forms_id, name_form, module, ('.$raw.') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
+        $data = DB::table('sys_forms')->selectRaw('forms_id, name_form, module, (' . $raw . ') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
 
         $response = [
             "status" => 200,
@@ -150,13 +150,27 @@ class FormsController extends Controller
         $arr = $params['parametros'];
         //DB::table('sys_components')->insert($arr);
         $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']);
-
+        $dependecys = [];
         foreach ($arr['component'] as $comp) {
             $comp['component_no'] = $no_componente->component_no + 1;
+            $attribute_id = $comp->attribute_id;
+            $array_attibutes_id = [19, 20, 21, 22, 27];
+            if (in_array($attribute_id, $array_attibutes_id)) {
+                $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
+                $dependecys[str_replace("_option", "", $name_attribute)] = $comp->value;
+            }
             DB::table('sys_components')->insert($comp);
         }
-        //$order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']);
-        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => 1, "dependency" => 0];
+        $dependecy = 0;
+        if (sizeof($dependecys) > 0) {
+            $dependecys['component_id'] = $no_componente->component_no + 1;
+            DB::table('sys_dependencys')->insert($dependecys);
+            $dependecy = 1;
+        }
+
+        $aux_order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']);
+        $order = (is_null($aux_order)) ? 1 : ($aux_order->order + 1);
+        $sys_data_forms = ["form_id" => $arr['form_id'], "component_no" => ($no_componente->component_no + 1), "order" => $order, "dependency" => $dependecy];
         DB::table('sys_data_forms')->insert($sys_data_forms);
 
         $response = [
@@ -173,6 +187,7 @@ class FormsController extends Controller
         $params = $request->all();
         $arr = $params['parametros'];
         $no_componente = $arr['component_no'];
+        $dependecys = [];
         foreach ($arr['component'] as $comp) {
             // $comp['component_no'] = $no_componente;
             $revisar = [];
@@ -182,8 +197,22 @@ class FormsController extends Controller
             $revisar['attribute_id'] = $comp['attribute_id'];
             $revisar['type'] = $comp['type'];
             $actualizar['value'] = $comp['value'];
+
+            $attribute_id = $comp['attribute_id'];
+            $array_attibutes_id = [19, 20, 21, 22, 27];
+            if (in_array($attribute_id, $array_attibutes_id)) {
+                $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
+                $dependecys[str_replace("_option", "", $name_attribute)] = $comp['value'];
+            }
             DB::table('sys_components')->updateOrInsert($revisar, $actualizar);
         }
+
+        if (sizeof($dependecys) > 0) {
+            // $dependecys['component_id'] = $no_componente;
+            // DB::table('sys_dependencys')->update($dependecys,['component_id']);
+            DB::table('sys_dependencys')->where('component_id', $no_componente)->update($dependecys);
+        }
+
         $response = [
             "status" => 200,
             "message" => "Se actualizo correctamente el registro!",

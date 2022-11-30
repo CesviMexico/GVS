@@ -35,15 +35,19 @@ class FritterDynamic
             if ($dependency > 0) {
                 $dependecys = DB::table('sys_dependencys')->where('component_id', $component_no)->get();
                 foreach ($dependecys as $dep) {
-                    if($dep->name_table == "type_catalog"){
-                        $obj['options'] = [['label'=>'system', 'value'=>'system'], ['label'=>'operation', 'value'=>'operation']];
-                    } else {
-                        if ($dep->where == "" || $dep->where == null) {
-                            $obj['options'] = DB::table($dep->name_table)->select($dep->label . ' as label', $dep->value . ' as value')->get();
+                    $dependency_combo = DB::table('sys_dependencys_combos')->where('dependency_combo_id', $dep->dependency_combo_id)->get();
+                    foreach ($dependency_combo as $dep_combo) {
+                        if ($dep_combo->name_table == "type_catalog") {
+                            $obj['options'] = [['label' => 'system', 'value' => 'system'], ['label' => 'operation', 'value' => 'operation']];
                         } else {
-                            $obj['options'] = DB::table($dep->name_table)->select($dep->label . ' as label', $dep->value . ' as value')->whereRaw($dep->where)->get();
+                            if ($dep_combo->where == "" || $dep_combo->where == null) {
+                                $obj['options'] = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value')->get();
+                            } else {
+                                $obj['options'] = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value')->whereRaw($dep_combo->where)->get();
+                            }
                         }
                     }
+                    $obj['parent'] = $dep->parent;
                 }
             }
 
