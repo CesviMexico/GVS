@@ -15,6 +15,7 @@ export const DetalleElementos = async (setloading ,msErrorApi ,keycloak ,logoutO
     })
     return response
 }
+
 export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
     const response = await getAxiosLumen({
        uri: "configuracion/forms",
@@ -67,7 +68,19 @@ export const DeleteElementForm = async (setloading ,msErrorApi ,keycloak ,logout
    return response
 }
 
+export const Combos = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
+    const response = await getAxiosLumen({
+       uri:`configuracion/forms/combos`,
+       setloading: setloading,
+       msErrorApi: msErrorApi,
+       keycloak: keycloak,
+       notification: false,
+       request: 'get',
+       logoutOptions: logoutOptions
 
+   })
+   return response
+}
 
 
 export default DetalleElementos;

@@ -40,11 +40,43 @@ class FritterDynamic
                         if ($dep_combo->name_table == "type_catalog") {
                             $obj['options'] = [['label' => 'system', 'value' => 'system'], ['label' => 'operation', 'value' => 'operation']];
                         } else {
-                            if ($dep_combo->where == "" || $dep_combo->where == null) {
-                                $obj['options'] = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value')->get();
+                            $combos = [];
+                            $combos = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value');
+
+                            if ($dep->parent > 0) {
+
+                                $name_combo_parent = DB::table("sys_dependencys_combos")->where('dependency_combo_id', $dep->parent)->value("name_table");
+                                $id_combo_parent = DB::table("sys_dependencys_combos")->where('dependency_combo_id', $dep->parent)->value("value");
+                                $combo_parent = DB::table($name_combo_parent)->get([$id_combo_parent]);
+
+                                if ($dep_combo->where == "" || $dep_combo->where == null) {
+                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->get();
+                                } else {
+                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->whereRaw($dep_combo->where)->get();
+                                }
+
+                                foreach ($combo_parent as  $combop) {
+                                    $id_relacional = $combop->$id_combo_parent;
+                                    foreach ($combos as $combo) {
+                                        if ($id_relacional == $combo->$id_combo_parent) {
+                                            $combo->value_parent = $id_relacional;
+                                        }
+                                    }
+                                }
                             } else {
-                                $obj['options'] = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value')->whereRaw($dep_combo->where)->get();
+                                if ($dep_combo->where == "" || $dep_combo->where == null) {
+                                    $combos = $combos->get();
+                                } else {
+                                    $combos = $combos->whereRaw($dep_combo->where)->get();
+                                }
                             }
+                            $array = json_decode(json_encode($combos), true);
+                            $obj['options'] = array_map(function ($a) {
+                                if(array_key_exists('value_parent',$a)){
+                                    return ['label' => $a['label'], 'value' => $a['value'], 'value_parent' => $a['value_parent']];
+                                }
+                                return ['label' => $a['label'], 'value' => $a['value']];
+                            }, $array);
                         }
                     }
                     $obj['parent'] = $dep->parent;

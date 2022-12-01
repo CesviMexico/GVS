@@ -26,6 +26,7 @@ $router->group(['prefix' => 'configuracion', 'middleware' => 'jwt'], function ()
     $router->get('forms',  ['uses' => 'Configuracion\FormsController@showAll']);
     $router->post('forms',  ['uses' => 'Configuracion\FormsController@create']);
     $router->put('forms/{id}', ['uses' => 'Configuracion\FormsController@update']);
+    $router->get('forms/combos',  ['uses' => 'Configuracion\FormsController@combos']);
     
     $router->get('forms/elements/{id}',  ['uses' => 'Configuracion\FormsController@showElement']);
     $router->delete('forms/elements/{id}',  ['uses' => 'Configuracion\FormsController@deleteElement']);

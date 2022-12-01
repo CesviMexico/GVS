@@ -15,9 +15,12 @@ import {
   TableAtributtes,
   AddElementForm,
   DeleteElementForm,
+  Combos
 } from "./Services";
 
-import { Button } from "antd";
+import { Button, Switch } from "antd";
+// import { Select } from "@mui/material";
+import { Select } from 'antd';
 
 const Home = () => {
   const crudContext = useContext(CrudContext);
@@ -62,7 +65,6 @@ const Home = () => {
     //Elementos
     "Editar elemento": (row) => EditElement(row),
     "Eliminar elemento": (row) => onEliminarRowElemento(row),
-
   };
 
   const ActualizaTabla = () => {
@@ -153,9 +155,8 @@ const Home = () => {
   const [colmnsattributes, setColumnsAttributes] = useState([]);
   const [datasourceattributes, setDataSourceAttributes] = useState([]);
 
-
   const TablaAtributos = async (id, dfi) => {
-    setlLoadingAtributos(true)
+    setlLoadingAtributos(true);
     const response = await TableAtributtes(
       setloadingDetalle,
       msErrorApi,
@@ -170,18 +171,18 @@ const Home = () => {
     setColumnsAttributes(response.columns);
 
     // EDITA ARREGLO PARA MODIFICAR DE
-    response.data.forEach(row => { onInputAttribute(row, undefined, row.defaultValue) });
-    setNewcomponentHook(newcomponent)
+    response.data.forEach((row) => {
+      onInputAttribute(row, undefined, row.defaultValue);
+    });
+    setNewcomponentHook(newcomponent);
     // console.log("newcomponent", newcomponent)
 
-    setlLoadingAtributos(false)
-
+    setlLoadingAtributos(false);
   };
 
   const addElementForm = async () => {
-   
     let newcomponentFin = [...newcomponentHook];
-    newcomponent.forEach(row => {
+    newcomponent.forEach((row) => {
       let attribute = {
         element_id: row.element_id,
         attribute_id: row.attribute_id,
@@ -199,27 +200,26 @@ const Home = () => {
     let parameters = {
       form_id: currentrowid,
       component_no: componentNo,
-      component: newcomponentFin
-    }
+      component: newcomponentFin,
+    };
 
-
-    console.log("parameters", parameters)
-   await AddElementForm(
+    console.log("parameters", parameters);
+    await AddElementForm(
       setloadingDetalle,
       msErrorApi,
       keycloak,
       logoutOptions,
       parameters,
-      editElementBandT === 'edit' && "put"
+      editElementBandT === "edit" && "put"
     );
 
-    DetalleComponentes(rowForms)
+    DetalleComponentes(rowForms);
     setVisibleDrawer(false);
   };
 
   const [loadingAdd, setlLoadingAdd] = useState(false);
   const NewElement = () => {
-    setEditElementBand(false)
+    setEditElementBand(false);
     setDataSourceAttributes([]);
     setColumnsAttributes([]);
     setlLoadingAdd(true);
@@ -227,12 +227,35 @@ const Home = () => {
     setlLoadingAdd(false);
   };
 
+  const [selectform, setSelectForm] = useState(false);
+  const [parent, setParent] = useState(null)
+  const [reutilizable, setReutilizable] = useState();
+  const [combos, setCombos] = useState();
+
+  const CombosSelect = async () => {
+    setLoadingCrud(true);
+
+    const response = await Combos(
+      setloadingDetalle,
+      msErrorApi,
+      keycloak,
+      logoutOptions,
+    );
+    setCombos(response.data)
+  }
+
   const [loadingAtributos, setlLoadingAtributos] = useState(false);
   const onChangeSelect = (value, event, key) => {
-    newcomponent = []
-    setNewcomponentHook([])
-    setEditElementBandT('add')
+    newcomponent = [];
+    setNewcomponentHook([]);
+    setEditElementBandT("add");
     TablaAtributos(value, 0);
+    if (value === 8) {
+      CombosSelect()
+      setSelectForm(true);
+    } else {
+      setSelectForm(false);
+    }
   };
 
   const onEliminarRowElemento = async (row) => {
@@ -244,7 +267,7 @@ const Home = () => {
       row.data_form_id
     );
 
-    DetalleComponentes(rowForms)
+    DetalleComponentes(rowForms);
   };
 
   const [editElementBand, setEditElementBand] = useState("");
@@ -254,15 +277,15 @@ const Home = () => {
   //component_no
 
   const EditElement = (row) => {
-    setEditElementBandT('edit')
-    setComponentNo(row.component_no)
-    setEditElementBand(row.name_element)
+    setEditElementBandT("edit");
+    setComponentNo(row.component_no);
+    setEditElementBand(row.name_element);
     TablaAtributos(row.element_id, row.component_no);
 
     setlLoadingAdd(true);
     setVisibleDrawer(true);
     setlLoadingAdd(false);
-  }
+  };
 
   return (
     <>
@@ -305,13 +328,14 @@ const Home = () => {
             getContainer={false}
             style={{ position: "absolute" }}
           >
-
-            {!editElementBand &&
+            {!editElementBand && (
               <FormAntdCrud
                 formItems={formPropsDetalle}
                 onChangeSelect={onChangeSelect}
               />
-            }
+            )}
+
+            {selectform && <Switch />}
 
             <TablaANTD
               tbSimple={true}
@@ -337,15 +361,38 @@ const Home = () => {
 
               OnClickAction={OnClickAction}
             />
-            <div style={{ textAlign: 'center' }}>
 
-              <Button loading={loadingDetalle}  type="primary" onClick={() => addElementForm()}>
-                {!editElementBand ? "  Agregar elemento" : "  Modificar elemento"}
+            { selectform && 
+              <div style={{ textAlign: "center", marginTop: "8px" }}>
+                <Select
+                  showSearch
+                  placeholder="Selecciona combo para relacionar "
+                  optionFilterProp="children"
+                  // onChange={onChange}
+                  // onSearch={onSearch}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  style={{width:"100%"}}
+                  options={combos}
+                />
+              </div>
+            }
+
+            <div style={{ textAlign: "center", marginTop: "8px" }}>
+              <Button
+                loading={loadingDetalle}
+                type="primary"
+                onClick={() => addElementForm()}
+              >
+                {!editElementBand
+                  ? "  Agregar elemento"
+                  : "  Modificar elemento"}
               </Button>
-              
             </div>
           </DrawerAntd>
-
         </TablaANTD>
       </ModdalANTD>
       <Crud

@@ -233,4 +233,18 @@ class FormsController extends Controller
         ];
         return response()->json($response, 200);
     }
+
+    public function combos()
+    {
+        
+        $data = DB::table('sys_dependencys_combos')->selectRaw('dependency_combo_id as value, alias_combo as label')->where('status', 'alta')->get();
+
+        $response = [
+            "status" => 200,
+            "data" => $data,
+            "message" => "Info Actualizada",
+            "type" => "success"
+        ];
+        return response()->json($response);
+    }
 }
