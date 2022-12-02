@@ -79,7 +79,8 @@ class FritterDynamic
                             }, $array);
                         }
                     }
-                    $obj['parent'] = $dep->parent;
+                    $obj['parent'] = DB::table("sys_dependencys_combos")->where('dependency_combo_id', $dep->parent)->value("value");;
+                    $obj['children'] = DB::table("sys_dependencys_combos")->where('dependency_combo_id', $dep->children)->value("value");
                 }
             }
 

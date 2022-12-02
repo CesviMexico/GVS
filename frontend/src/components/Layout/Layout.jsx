@@ -81,15 +81,28 @@ const Layout = ({ children }) => {
 
     }
 
-    const ActualizaMenu = async (subject) => {
-        console.log("subject",subject)
+    const ActualizaMenu = async (keycloak) => {  
+        await keycloak.loadUserInfo()
+        let user_info = keycloak.userInfo
+        let user = {
+            id_keycloak: user_info.sub,
+            preferred_username: user_info.preferred_username,
+            email: user_info.email,
+            given_name: user_info.given_name,
+            family_name: user_info.family_name,
+            name: user_info.name,
+            id_company: 1,
+            rol: keycloak.resourceAccess ? keycloak.resourceAccess[process.env.REACT_APP_clientId].roles[0] : null
+        }
 
+        let subject = keycloak.subject
         const response = await DataMenu(
             setloading,
             msErrorApi,
             keycloak,
             logoutOptions,
-            subject
+            subject,
+            user
         );
 
 
@@ -132,7 +145,7 @@ const Layout = ({ children }) => {
 
     useEffect(() => {
         if (!!keycloak.authenticated) {
-            ActualizaMenu(keycloak.subject)
+            ActualizaMenu(keycloak)
         }
     }, [keycloak])
 

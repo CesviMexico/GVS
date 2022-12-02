@@ -29,8 +29,24 @@ class MenuDataController extends Controller
         return response()->json($response, 200);
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
+
+        if (!UserDataController::validateUser($id)) {
+            $parametros = $request->all();
+            $us = json_decode($parametros['_us'], true);
+            $rol_id = DB::table('sys_cat_rol')->where('rol', $us['rol'])->value('id_rol');
+            $us['id_rol'] = is_null($rol_id) ? 1 : $rol_id;
+            unset($us['rol']);
+            UserData::create($us);
+            $permission = [];
+            foreach (MenuData::where('menu_basic','Si')->get(['menu_id']) as $value) {
+                $permission['menu_id'] = $value->menu_id;
+                $permission['user_id'] = UserData::where('id_keycloak',$id)->value('id_user');
+            }
+            PermisosData::create($permission);            
+        }
+
         $data = MenuData::whereNull("submenu_id")
             ->where("keycloak_id", $id)
             ->get();
@@ -41,20 +57,16 @@ class MenuDataController extends Controller
                 ->get(["menu_id", "key", "label", "icon", "order"]);
         }
 
-        if(!UserDataController::validateUser($id)){
-            $user = [];
-            $permission = [];
-            //UserData::created($user);
-            foreach (MenuData::where('menu_basic','Si')->get(['menu_id']) as $value) {
-                $permission['menu_id'] = $value->menu_id;
-                $permission['user_id'] = UserData::where('id_keycloak',$id)->value('id_user');
-                PermisosData::create($permission);
-            }            
-        }
+        $user = UserData::join("sys_cat_rol", "sys_users.id_rol", "=", "sys_cat_rol.id_rol")
+        ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
+        ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
+        ->where("sys_users.status", "alta")
+        ->find($id);
 
         $response = [
             "status" => 200,
             "data" => $data,
+            "user" => $user,
             "message" => "Menu Actualizado",
             "type" => "success"
         ];

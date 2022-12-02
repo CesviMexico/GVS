@@ -61,7 +61,7 @@ const FormAntd = (props) => {
     "RangePicker": ({ showTime, format }) => <RangePicker showTime={showTime} format={format} />,
     "TimePicker": ({ format }) => <TimePicker format={format} />,
 
-    "Select": ({ placeholder, arrayOption, mode, key }) =>
+    "Select": ({ placeholder, arrayOption, mode, key, parent, id, children }) =>
       <Select
         key={key}
         mode={mode}
@@ -69,15 +69,12 @@ const FormAntd = (props) => {
         showSearch
         allowClear
         optionFilterProp="children"
-       // onChange={(value, event) => handleChange && handleChange(value, event, key)}
+        onChange={(value, event) => handleChange && handleChange(value, event, key, children, parent)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
         dropdownStyle={{ zIndex: 2000 }}
-
-      >
-        {arrayOption.map((dato_row, index) =>
-          <Option key={index} value={dato_row.value} >{dato_row.label}</Option>
-        )}
-      </Select>,
+        options={options(arrayOption, parent, id)}
+      />
+    ,
 
 
     "Switch": () => <Switch />,
@@ -155,6 +152,9 @@ const FormAntd = (props) => {
               showTime: Item.showTime && Item.showTime,
               format: Item.format && Item.format,
               arrayOption: Item.options && Item.options,
+              parent: Item.parent && Item.parent,
+              id: Item.value_option && Item.value_option,
+              children: Item.children && Item.children,
               mode: Item.mode && Item.mode,
               valuePropName: Item.valuePropName && Item.valuePropName,
               marksSlider: Item.marksSlider && Item.marksSlider,
@@ -183,12 +183,48 @@ const FormAntd = (props) => {
 
   }
 
-  const handleChange = (value, key, event) => {
+  const options = (arrayOption, parent, children) => {
+    
+    if (parent === null) {
+      return arrayOption
+    } else {
+      return arrayOption.filter(dato_row => dato_row.value_parent === valuetmp[dato_row.id])
+    }
+  }
+  const [valuetmp, setValueTmp] = useState({})
+  const [auxvaluetmp, setAuxValueTmp] = useState([])
+  const [auxparent, setAuxParent] = useState("")
+  
+  let parents = []
+  let obj = {};
+  let hijos = []
+  
+  const handleChange = (value, key, event, children, parent) => {
 
-    console.log('key', key)
-    console.log('value', value)
-    console.log('event', event)
+    // console.log('key', key)
+    // console.log('value', value)
+    // console.log('event', event)
+    
+    if(parent === null && children !== null ){
+      hijos.push(children)
+      // obj={
+      //   [event]: hijos
+      // }
+      //parents.push(obj)
 
+    }else if(parent !== null && children !== null ){
+      
+        hijos.push(children)
+        // obj = {
+        //   ...obj
+        // }
+          
+    }
+    
+    if(value !== undefined){
+      setValueTmp({ ...valuetmp, [event]: value })
+    }
+    console.log(hijos)
     // if (key === 'id_estado') {
     //   setArrayOption(value)
     //   setId_estado(event ? event.children : 0 )
@@ -207,7 +243,7 @@ const FormAntd = (props) => {
   }
   useEffect(() => {
     ItemsForm()
-  }, [formItems])
+  }, [formItems, valuetmp])
 
   return (
     <ConfigProvider locale={idiomaGral}>

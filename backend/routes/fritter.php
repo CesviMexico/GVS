@@ -53,5 +53,3 @@ $router->group(['prefix' => 'configuracion', 'middleware' => 'jwt'], function ()
     $router->delete('catalogs/{idcatalog}/{idcolumn}', ['uses' => 'Configuracion\CatalogsController@delete']);
     
 });
-
-

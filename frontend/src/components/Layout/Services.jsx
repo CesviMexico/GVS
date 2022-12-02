@@ -2,9 +2,9 @@
 import React, {useContext} from "react";
 import { getAxiosLumen } from '../../components/Global/funciones'
 
-export const DataMenu = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id) => {
+export const DataMenu = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id, user) => {
      const response = await getAxiosLumen({
-        uri:`menu/${id}`,       
+        uri:`menu/${id}?_us=${JSON.stringify(user)}`,       
         setloading: setloading,
         msErrorApi: msErrorApi,
         keycloak: keycloak,

@@ -102,8 +102,8 @@ class UserDataController extends Controller
     {
         $validate = UserData::where("id_keycloak", $id)->count("id_user");
         if ($validate > 0) {
-            return ["validate" => true];
+            return true;
         }
-        return ["validate" => false];;
+        return false;
     }
 }

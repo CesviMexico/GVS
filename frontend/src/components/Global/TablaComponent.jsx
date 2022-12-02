@@ -37,6 +37,7 @@ import { Spin } from 'antd';
 import update from "immutability-helper";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { SearchOutlined } from '@ant-design/icons';
 
 
 const { Link } = TypographyAntd;
@@ -140,7 +141,7 @@ const TablaANTD = (props) => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const [searchedColumnT, setSearchedColumnT] = useState('');
 
-  let searchInput
+  const searchInput = useRef(null);
 
   const components = {
     body: {
@@ -176,13 +177,12 @@ const TablaANTD = (props) => {
     [datasource]
   );
 
+
   const getColumnSearchProps = (dataIndex, title) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      <div style={{ padding: 8 }}>
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
-          ref={node => {
-            searchInput = node;
-          }}
+          ref={searchInput}
           placeholder={`Buscar en ${title}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -193,8 +193,8 @@ const TablaANTD = (props) => {
           type="primary"
           onClick={() => handleSearch(selectedKeys, confirm, dataIndex, title)}
           icon={
-            <Icon icon={'line-md:search'} style={{ fontSize: 12 }} />
-            // <SearchOutlined />
+            // <Icon icon={'line-md:search'} style={{ fontSize: 12 }} />
+            <SearchOutlined />
           }
           size="small"
           style={{ width: 90, marginRight: 8, }}
@@ -224,10 +224,11 @@ const TablaANTD = (props) => {
     filterIcon: filtered => <Icon icon={'line-md:search'} style={{ fontSize: 15, color: filtered ? backgroundColor : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: visible => {
+    onFilterDropdownOpenChange: visible => {
       if (visible) {
-        setTimeout(() => searchInput.select());
-        //setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.select());
+        setTimeout(() => searchInput.current?.select(), 100);
+
       }
     },
     render: (text) =>
@@ -597,7 +598,7 @@ const TablaANTD = (props) => {
           col.actionUrl,
         ),
 
-        col.busqueda && getColumnSearchProps(col.key, col.title),
+        col.busqueda && getColumnSearchProps(col.dataIndex, col.title),
         col.orderNumber && objSorterNumber(col.dataIndex),
         col.orderString && objSorterString(col.dataIndex),
         col.orderDouble && objSorterNumber(col.dataIndex),
@@ -663,58 +664,6 @@ const TablaANTD = (props) => {
       ExportToExcel({ datasource: datasource, Title: Title })
   }
 
-
-  const TableCP = () => {
-    return (
-      <DndProvider backend={HTML5Backend}>
-        <Table
-          //className={}
-          loading={loading}
-          dataSource={datasource}
-          //onChange={onChange}
-          onChange={onChange}
-          bordered={bordered}
-          size={size}
-          tableLayout={tableLayout} //"fixed" //- | auto | fixed
-
-          pagination={
-            pagination &&
-            {
-              responsive: true,
-              pageSize: pageSize,
-              simple: simplepage,
-              position: [positionTop, positionBottom],
-              // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
-            }
-          }
-
-          scroll={{ x: scrollX, y: scrollY }}
-          columns={columns}
-
-          title={() =>
-            noChange > 0 && noChange !== datasource.length ?
-              searchText &&
-              <Typography
-                variant="body2"
-                style={{ color: colorTable }}
-              ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-              </Typography>
-
-              : ""}
-
-          summary={(pageData) => Sumary && Sumary(pageData)}
-          components={dragSorting && components}
-          onRow={dragSorting ? ((_, index) => {
-            const attr = {
-              index,
-              moveRow
-            };
-            return attr;
-          }):null}
-        />
-      </DndProvider>
-    )
-  }
 
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -793,13 +742,107 @@ const TablaANTD = (props) => {
                 </>
               }
             >
-              {/* <div style={{ position: "relative", overflow: "hidden", }}> */}
-              <TableCP />
+
+              <DndProvider backend={HTML5Backend}>
+                <Table
+                  //className={}
+                  loading={loading}
+                  dataSource={datasource}
+                  //onChange={onChange}
+                  onChange={onChange}
+                  bordered={bordered}
+                  size={size}
+                  tableLayout={tableLayout} //"fixed" //- | auto | fixed
+
+                  pagination={
+                    pagination &&
+                    {
+                      responsive: true,
+                      pageSize: pageSize,
+                      simple: simplepage,
+                      position: [positionTop, positionBottom],
+                      // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
+                    }
+                  }
+
+                  scroll={{ x: scrollX, y: scrollY }}
+                  columns={columns}
+
+                  title={() =>
+                    noChange > 0 && noChange !== datasource.length ?
+                      searchText &&
+                      <Typography
+                        variant="body2"
+                        style={{ color: colorTable }}
+                      ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                      </Typography>
+
+                      : ""}
+
+                  summary={(pageData) => Sumary && Sumary(pageData)}
+                  components={dragSorting && components}
+                  onRow={dragSorting ? ((_, index) => {
+                    const attr = {
+                      index,
+                      moveRow
+                    };
+                    return attr;
+                  }) : null}
+                />
+              </DndProvider>
+
               {props.children}
-              {/* </div> */}
             </CardMUI>
           </div>
-          : <TableCP />
+          :
+
+          <DndProvider backend={HTML5Backend}>
+            <Table
+              //className={}
+              loading={loading}
+              dataSource={datasource}
+              //onChange={onChange}
+              onChange={onChange}
+              bordered={bordered}
+              size={size}
+              tableLayout={tableLayout} //"fixed" //- | auto | fixed
+
+              pagination={
+                pagination &&
+                {
+                  responsive: true,
+                  pageSize: pageSize,
+                  simple: simplepage,
+                  position: [positionTop, positionBottom],
+                  // topLeft |topCenter |topRight| bottomLeft |bottomCenter|bottomRight
+                }
+              }
+
+              scroll={{ x: scrollX, y: scrollY }}
+              columns={columns}
+
+              title={() =>
+                noChange > 0 && noChange !== datasource.length ?
+                  searchText &&
+                  <Typography
+                    variant="body2"
+                    style={{ color: colorTable }}
+                  ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                  </Typography>
+
+                  : ""}
+
+              summary={(pageData) => Sumary && Sumary(pageData)}
+              components={dragSorting && components}
+              onRow={dragSorting ? ((_, index) => {
+                const attr = {
+                  index,
+                  moveRow
+                };
+                return attr;
+              }) : null}
+            />
+          </DndProvider>
         }
 
 
