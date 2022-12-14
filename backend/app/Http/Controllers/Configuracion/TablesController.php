@@ -14,7 +14,7 @@ class TablesController extends Controller
     {
         $form = FritterDynamic::itemsForm('Fritter Tables');
         $columns = FritterDynamic::columnsTable('Agregar Tablas');
-        $props_table = FritterDynamic::propsTable(4);
+        $props_table = FritterDynamic::propsTable('Agregar Tablas');
         $raw = " SELECT  COUNT(component_no) FROM sys_data_tables WHERE table_id = sys_tables.table_id ";
         $data = DB::table('sys_tables')->selectRaw('table_id, name_table, module, name_table as "sys_tables@name_table", module as "sys_tables@module", (' . $raw . ') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
 
@@ -139,6 +139,7 @@ class TablesController extends Controller
     {
         $form = FritterDynamic::itemsForm('Form Columnas');
         $columns = FritterDynamic::columnsTable('Agregar Columnas');
+        $props_table = FritterDynamic::propsTable('Agregar Columnas');
         $sys_data_tables = DB::table('sys_data_tables')->where('table_id', $id)->get();
         $data = [];
         $row = [];
@@ -172,8 +173,6 @@ class TablesController extends Controller
             array_push($data, $row);
         }
 
-        $props_table = FritterDynamic::propsTable(3);
-
         $response = [
             "status" => 200,
             "data" => $data,
@@ -197,6 +196,7 @@ class TablesController extends Controller
         }
 
         $columns = FritterDynamic::columnsTable('Agregar Atributos');
+        $props_table = FritterDynamic::propsTable('Agregar Atributos');
         $data = DB::table('sys_columns_attributes')
             ->join('sys_elements', 'sys_columns_attributes.element_id', '=', 'sys_elements.element_id')
             ->join('sys_attributes_columns', 'sys_columns_attributes.attribute_column_id', '=', 'sys_attributes_columns.attribute_column_id')
@@ -204,7 +204,6 @@ class TablesController extends Controller
             ->where('sys_columns_attributes.element_id', $id)
             ->get();
         $form = [];
-        $props_table = FritterDynamic::propsTable(2);
         $response = [
             "status" => 200,
             "data" => $data,
@@ -229,7 +228,9 @@ class TablesController extends Controller
             DB::table('sys_components')->insert($comp);
         }
         //$order = DB::table('sys_data_forms')->where('form_id', $arr['form_id'])->orderByDesc('order')->first(['order']);
-        $sys_data_tables = ["table_id" => $arr['table_id'], "component_no" => ($no_componente->component_no + 1), "order" => 1];
+        $aux_order = DB::table('sys_data_tables')->where('table_id', $arr['table_id'])->orderByDesc('order')->first(['order']);
+        $order = (is_null($aux_order)) ? 1 : ($aux_order->order + 1);
+        $sys_data_tables = ["table_id" => $arr['table_id'], "component_no" => ($no_componente->component_no + 1), "order" => $order];
         DB::table('sys_data_tables')->insert($sys_data_tables);
 
         $response = [

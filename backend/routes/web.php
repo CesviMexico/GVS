@@ -13,3 +13,7 @@ $router->get('/web', function () use ($router) {
 //     $router->put('/{id}',  ['uses' => '@update']); // Actualiza un registro
 //     $router->delete('/{id}',  ['uses' => '@destroy']); // Elimina un registro
 // });
+
+$router->group(['prefix' => 'service', ], function () use ($router) {
+    $router->get('pokemon',  ['uses' => 'Services\ServiceController@getPokemones']); // Mostar todos los registros
+});

@@ -61,7 +61,7 @@ const FormAntd = (props) => {
     "RangePicker": ({ showTime, format }) => <RangePicker showTime={showTime} format={format} />,
     "TimePicker": ({ format }) => <TimePicker format={format} />,
 
-    "Select": ({ placeholder, arrayOption, mode, key, parent, id, children }) =>
+    "Select": ({ placeholder, arrayOption, mode, key, parent, children }) =>
       <Select
         key={key}
         mode={mode}
@@ -72,7 +72,7 @@ const FormAntd = (props) => {
         onChange={(value, event) => handleChange && handleChange(value, event, key, children, parent)}
         filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
         dropdownStyle={{ zIndex: 2000 }}
-        options={options(arrayOption, parent, id)}
+        options={options(arrayOption, parent, children)}
       />
     ,
 
@@ -153,7 +153,6 @@ const FormAntd = (props) => {
               format: Item.format && Item.format,
               arrayOption: Item.options && Item.options,
               parent: Item.parent && Item.parent,
-              id: Item.value_option && Item.value_option,
               children: Item.children && Item.children,
               mode: Item.mode && Item.mode,
               valuePropName: Item.valuePropName && Item.valuePropName,
@@ -188,7 +187,7 @@ const FormAntd = (props) => {
     if (parent === null) {
       return arrayOption
     } else {
-      return arrayOption.filter(dato_row => dato_row.value_parent === valuetmp[dato_row.id])
+      return arrayOption.filter(dato_row => dato_row.value_parent === valuetmp[children])
     }
   }
   const [valuetmp, setValueTmp] = useState({})

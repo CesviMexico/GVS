@@ -72,7 +72,7 @@ class FritterDynamic
                             }
                             $array = json_decode(json_encode($combos), true);
                             $obj['options'] = array_map(function ($a) {
-                                if(array_key_exists('value_parent',$a)){
+                                if (array_key_exists('value_parent', $a)) {
                                     return ['label' => $a['label'], 'value' => $a['value'], 'value_parent' => $a['value_parent']];
                                 }
                                 return ['label' => $a['label'], 'value' => $a['value']];
@@ -124,8 +124,9 @@ class FritterDynamic
         return $columns;
     }
 
-    static function propsTable($table_id)
+    static function propsTable($name_table)
     {
+        $table_id = DB::table('sys_tables')->where('name_table', $name_table)->value('table_id');
         $props = DB::table('sys_props_table')
             ->join('sys_cat_props_table', 'sys_props_table.cat_props_table_id', '=', 'sys_cat_props_table.cat_props_table_id')
             ->select('sys_props_table.value', 'sys_cat_props_table.name_props_table')

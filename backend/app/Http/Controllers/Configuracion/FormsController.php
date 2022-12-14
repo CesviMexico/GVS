@@ -14,7 +14,7 @@ class FormsController extends Controller
     {
         $form = FritterDynamic::itemsForm('Fritter Forms');
         $columns = FritterDynamic::columnsTable('Agregar Forms');
-        $props_table = FritterDynamic::propsTable(2);
+        $props_table = FritterDynamic::propsTable('Agregar Forms');
         $raw = " SELECT  COUNT(component_no) FROM sys_data_forms WHERE form_id = sys_forms.forms_id ";
         $data = DB::table('sys_forms')->selectRaw('forms_id, name_form, module, (' . $raw . ') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
 
@@ -74,6 +74,7 @@ class FormsController extends Controller
     {
         $form = FritterDynamic::itemsForm('Form Elementos');
         $columns = FritterDynamic::columnsTable('Agregar Elementos');
+        $props_table = FritterDynamic::propsTable('Agregar Elementos');
         $sys_data_forms = DB::table('sys_data_forms')->where('form_id', $id)->get();
         $data = [];
         $row = [];
@@ -99,8 +100,6 @@ class FormsController extends Controller
             array_push($data, $row);
         }
 
-        $props_table = FritterDynamic::propsTable(3);
-
         $response = [
             "status" => 200,
             "data" => $data,
@@ -124,6 +123,7 @@ class FormsController extends Controller
         }
 
         $columns = FritterDynamic::columnsTable('Agregar Atributos');
+        $props_table = FritterDynamic::propsTable('Agregar Atributos');
         $data = DB::table('sys_elements_attributes')
             ->join('sys_elements', 'sys_elements_attributes.element_id', '=', 'sys_elements.element_id')
             ->join('sys_attributes', 'sys_elements_attributes.attribute_id', '=', 'sys_attributes.attribute_id')
@@ -131,7 +131,7 @@ class FormsController extends Controller
             ->where('sys_elements_attributes.element_id', $id)
             ->get();
         $form = [];
-        $props_table = FritterDynamic::propsTable(2);
+
         $response = [
             "status" => 200,
             "data" => $data,
@@ -150,21 +150,29 @@ class FormsController extends Controller
         $arr = $params['parametros'];
         //DB::table('sys_components')->insert($arr);
         $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']);
+        $dependecys_combos = [];
         $dependecys = [];
         foreach ($arr['component'] as $comp) {
             $comp['component_no'] = $no_componente->component_no + 1;
             $attribute_id = $comp->attribute_id;
-            $array_attibutes_id = [19, 20, 21, 22, 27];
+            $array_attibutes_id = [19, 20, 21, 22, 23, 24];
             if (in_array($attribute_id, $array_attibutes_id)) {
                 $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
-                $dependecys[str_replace("_option", "", $name_attribute)] = $comp->value;
+                $dependecys_combos[str_replace("_option", "", $name_attribute)] = $comp->value;
+            }
+            $array_attibutes_id_children = [24];
+            if (in_array($attribute_id, $array_attibutes_id_children)) {
+                $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
+                $dependecys[$name_attribute] = $comp->value;
+                DB::table('sys_components')->where('componenet_id')->update(["parent" => $comp->value]);
             }
             DB::table('sys_components')->insert($comp);
         }
         $dependecy = 0;
-        if (sizeof($dependecys) > 0) {
+        if (sizeof($dependecys_combos) > 0) {
+            $dependency_combo_id =  DB::table('sys_dependencys_combos')->insertGetId($dependecys_combos);
             $dependecys['component_id'] = $no_componente->component_no + 1;
-            DB::table('sys_dependencys')->insert($dependecys);
+            $dependecys['dependency_combo_id'] = $dependency_combo_id;
             $dependecy = 1;
         }
 
@@ -236,7 +244,6 @@ class FormsController extends Controller
 
     public function combos()
     {
-        
         $data = DB::table('sys_dependencys_combos')->selectRaw('dependency_combo_id as value, alias_combo as label')->where('status', 'alta')->get();
 
         $response = [

@@ -15,12 +15,12 @@ import {
   TableAtributtes,
   AddElementForm,
   DeleteElementForm,
-  Combos
+  Combos,
 } from "./Services";
 
 import { Button, Switch } from "antd";
 // import { Select } from "@mui/material";
-import { Select } from 'antd';
+import { Select } from "antd";
 
 const Home = () => {
   const crudContext = useContext(CrudContext);
@@ -228,9 +228,9 @@ const Home = () => {
   };
 
   const [selectform, setSelectForm] = useState(false);
-  const [parent, setParent] = useState(null)
+  const [parent, setParent] = useState(null);
   const [reutilizable, setReutilizable] = useState();
-  const [combos, setCombos] = useState();
+  const [combos, setCombos] = useState([]);
 
   const CombosSelect = async () => {
     setLoadingCrud(true);
@@ -239,10 +239,10 @@ const Home = () => {
       setloadingDetalle,
       msErrorApi,
       keycloak,
-      logoutOptions,
+      logoutOptions
     );
-    setCombos(response.data)
-  }
+    setCombos(response.data);
+  };
 
   const [loadingAtributos, setlLoadingAtributos] = useState(false);
   const onChangeSelect = (value, event, key) => {
@@ -251,7 +251,7 @@ const Home = () => {
     setEditElementBandT("add");
     TablaAtributos(value, 0);
     if (value === 8) {
-      CombosSelect()
+      CombosSelect();
       setSelectForm(true);
     } else {
       setSelectForm(false);
@@ -285,6 +285,22 @@ const Home = () => {
     setlLoadingAdd(true);
     setVisibleDrawer(true);
     setlLoadingAdd(false);
+  };
+
+  const onSelectFormCombo = (value) => {
+    let attribute = {
+      element_id: 8,
+      attribute_id: 23,
+      value: value,
+      type: "form",
+    };
+    if (validarNewComponnet(attribute)) {
+      newcomponent = newcomponent.filter(
+        (comp) => comp.attribute_id !== attribute.attribute_id
+      );
+    }
+    newcomponent.push(attribute)
+    //console.log(newcomponent);
   };
 
   return (
@@ -335,8 +351,6 @@ const Home = () => {
               />
             )}
 
-            {selectform && <Switch />}
-
             <TablaANTD
               tbSimple={true}
               loading={loadingAtributos}
@@ -362,24 +376,25 @@ const Home = () => {
               OnClickAction={OnClickAction}
             />
 
-            { selectform && 
+            {selectform && (
               <div style={{ textAlign: "center", marginTop: "8px" }}>
                 <Select
+                  allowClear
                   showSearch
-                  placeholder="Selecciona combo para relacionar "
+                  placeholder="Selecciona el combo para relacionar"
                   optionFilterProp="children"
-                  // onChange={onChange}
+                  onChange={onSelectFormCombo}
                   // onSearch={onSearch}
                   filterOption={(input, option) =>
                     (option?.label ?? "")
                       .toLowerCase()
                       .includes(input.toLowerCase())
                   }
-                  style={{width:"100%"}}
+                  style={{ width: "100%" }}
                   options={combos}
                 />
               </div>
-            }
+            )}
 
             <div style={{ textAlign: "center", marginTop: "8px" }}>
               <Button

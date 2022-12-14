@@ -43,6 +43,7 @@ class MenuDataController extends Controller
             foreach (MenuData::where('menu_basic','Si')->get(['menu_id']) as $value) {
                 $permission['menu_id'] = $value->menu_id;
                 $permission['user_id'] = UserData::where('id_keycloak',$id)->value('id_user');
+                $permission['keycloak_id'] = $id;
             }
             PermisosData::create($permission);            
         }

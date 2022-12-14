@@ -20,7 +20,7 @@ class UserDataController extends Controller
             ->get();
         $form = FritterDynamic::itemsForm('Usuarios');
         $columns = FritterDynamic::columnsTable('Usuarios');
-        $props_table = FritterDynamic::propsTable(16);
+        $props_table = FritterDynamic::propsTable('Usuarios');
 
         $response = [
             "status" => 200,

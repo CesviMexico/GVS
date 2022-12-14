@@ -59,17 +59,16 @@ class CatalogsController extends Controller
 
             $form = FritterDynamic::itemsForm($aux_name_form);
             $columns = FritterDynamic::columnsTable($aux_name_table);
-            $props_table = FritterDynamic::propsTable($table_id);
-            if($view_table == "NA"){
-                if($name_table === "sys_cat_tables"){
-                    $data = DB::table($name_table)->where('type','operation')->where('status','alta')->get();
-                }else{
-                    $data = DB::table($name_table)->where('status','alta')->get();
-                }        
-            }else{
-                $data = DB::table($view_table)->get();
+            $props_table = FritterDynamic::propsTable($aux_name_table);
+            if ($view_table == "NA") {
+                if ($name_table === "sys_cat_tables") {
+                    $data = DB::table($name_table)->where('type', 'operation')->where('status', 'alta')->get();
+                } else {
+                    $data = DB::table($name_table)->where('status', 'alta')->get();
+                }
+            } else {
+                $data = DB::table($view_table)->where('status', 'alta')->get();
             }
-           
         }
 
         $response = [
@@ -104,13 +103,13 @@ class CatalogsController extends Controller
         //     if(is_array($objeto)){
         //         $aux_key = $key;
         //         $arrLength = sizeof($objeto);
-                
+
         //     }else{
         //         $aux_arr_val += [$key=>$value];
         //     }
 
         // }
-        if($cont == 0){
+        if ($cont == 0) {
             DB::table($name_table)->insert($arr);
         }
 
@@ -154,7 +153,7 @@ class CatalogsController extends Controller
             $pk = $value->pk;
         }
 
-        DB::table($name_table)->where($pk, $idcolumn)->update(['status'=>'baja']);
+        DB::table($name_table)->where($pk, $idcolumn)->update(['status' => 'baja']);
 
         $response = [
             "status" => 200,

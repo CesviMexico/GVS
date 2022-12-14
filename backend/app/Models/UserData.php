@@ -35,4 +35,5 @@ class UserData extends Model
      * @var array
      */
     protected $hidden = [];
+    protected $guarded = [];  
 }
