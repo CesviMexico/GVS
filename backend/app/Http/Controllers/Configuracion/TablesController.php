@@ -91,7 +91,6 @@ class TablesController extends Controller
 
     public function update($id, Request $request)
     {
-
         $params = $request->all();
         $arr = $params['parametros'];
 
@@ -110,18 +109,22 @@ class TablesController extends Controller
                 $sys_tables += [$key => $value];
             } else {
                 if (!array_key_exists("sys_tables@status", $arr)) {
-                    $cat_props_table_id = DB::table('sys_cat_props_table')->where('name_props_table', $key)->get(['cat_props_table_id']);
+                    $cat_props_table_id = DB::table('sys_cat_props_table')->where('name_props_table', $key)->value('cat_props_table_id');
                     $value = is_bool($value) ? ($value ? 'true' : 'false')  : $value;
-                    $sys_props_table[] = ['cat_props_table_id' => $cat_props_table_id[0]->cat_props_table_id, 'value' => $value];
+                    $sys_props_table[] = ['table_id' => $id, 'cat_props_table_id' => $cat_props_table_id, 'value' => $value];
                 }
             }
         }
-        $table_id = $id;
-        DB::table('sys_tables')->where('table_id', $table_id)->update($sys_tables);
+        DB::table('sys_tables')->where('table_id', $id)->update($sys_tables);
         if (!array_key_exists("sys_tables@status", $arr)) {
             foreach ($sys_props_table as $syspt) {
-                $cat_props_table_id = $syspt['cat_props_table_id'];
-                DB::table('sys_props_table')->where('table_id', $table_id)->where('cat_props_table_id', $cat_props_table_id)->update($syspt);
+                $revisar = [];
+                $actualizar = [];
+                $revisar['table_id'] = $syspt['table_id'];
+                $revisar['cat_props_table_id'] = $syspt['cat_props_table_id'];
+                $actualizar['value'] = $syspt['value'];
+                DB::table('sys_props_table')->updateOrInsert($revisar, $actualizar);
+                //DB::table('sys_props_table')->upsert($syspt,['table_id','cat_props_table_id'],['value']);
             }
         }
 

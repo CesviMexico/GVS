@@ -177,6 +177,8 @@ const TablaANTD = (props) => {
     [datasource]
   );
 
+  
+
 
   const getColumnSearchProps = (dataIndex, title) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
