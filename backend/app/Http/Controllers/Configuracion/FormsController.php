@@ -171,6 +171,13 @@ class FormsController extends Controller
         $dependecy = 0;
         if (sizeof($dependecys_combos) > 0) {
             $dependency_combo_id =  DB::table('sys_dependencys_combos')->insertGetId($dependecys_combos);
+             ///// insert en sys_dependencys
+            $no = $no_componente->component_no + 1;           
+            $dataInsert = [
+                            "component_id" => $no,
+                            "dependency_combo_id" => $dependency_combo_id
+                        ];
+             DB::table('sys_dependencys')->insert($dataInsert);
             $dependecys['component_id'] = $no_componente->component_no + 1;
             $dependecys['dependency_combo_id'] = $dependency_combo_id;
             $dependecy = 1;
