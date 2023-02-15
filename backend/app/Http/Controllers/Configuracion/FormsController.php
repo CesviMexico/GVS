@@ -151,20 +151,21 @@ class FormsController extends Controller
         //DB::table('sys_components')->insert($arr);
         $no_componente = DB::table('sys_components')->orderByDesc('component_no')->first(['component_no']);
         $dependecys_combos = [];
-        $dependecys = [];
+        $dependecys = [];        
         foreach ($arr['component'] as $comp) {
             $comp['component_no'] = $no_componente->component_no + 1;
-            $attribute_id = $comp->attribute_id;
+            // $attribute_id = $comp->attribute_id;
+            $attribute_id = $comp["attribute_id"];
             $array_attibutes_id = [19, 20, 21, 22, 23, 24];
             if (in_array($attribute_id, $array_attibutes_id)) {
                 $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
-                $dependecys_combos[str_replace("_option", "", $name_attribute)] = $comp->value;
+                $dependecys_combos[str_replace("_option", "", $name_attribute)] = $comp['value'];
             }
             $array_attibutes_id_children = [24];
             if (in_array($attribute_id, $array_attibutes_id_children)) {
                 $name_attribute =  DB::table('sys_attributes')->where('attribute_id', $attribute_id)->value('name_attribute');
-                $dependecys[$name_attribute] = $comp->value;
-                DB::table('sys_components')->where('componenet_id')->update(["parent" => $comp->value]);
+                $dependecys[$name_attribute] = $comp['value'];
+                DB::table('sys_components')->where('componenet_id')->update(["parent" => $comp['value']]);
             }
             DB::table('sys_components')->insert($comp);
         }
@@ -178,6 +179,7 @@ class FormsController extends Controller
                             "dependency_combo_id" => $dependency_combo_id
                         ];
              DB::table('sys_dependencys')->insert($dataInsert);
+            
             $dependecys['component_id'] = $no_componente->component_no + 1;
             $dependecys['dependency_combo_id'] = $dependency_combo_id;
             $dependecy = 1;

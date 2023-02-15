@@ -118,7 +118,7 @@ const Home = (props) => {
 
             <Grid item xs={12}>
               <Crud
-                title={"Nuevo Registro"}
+                title={"Nuevo Registro......"}
                 uri={uri}
                 columns={datasource.columns}
                 datasource={datasource.data}
