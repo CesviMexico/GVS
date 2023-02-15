@@ -229,7 +229,7 @@ const TablaANTD = (props) => {
     onFilterDropdownOpenChange: visible => {
       if (visible) {
         //setTimeout(() => searchInput.select());
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
 
       }
     },

@@ -385,11 +385,11 @@ const Home = () => {
                   optionFilterProp="children"
                   onChange={onSelectFormCombo}
                   // onSearch={onSearch}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
+                  // filterOption={(input, option) =>
+                  //   (option?.label ?? "")
+                  //     .toLowerCase()
+                  //     .includes(input.toLowerCase())
+                  // }
                   style={{ width: "100%" }}
                   options={combos}
                 />
