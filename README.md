@@ -7,6 +7,6 @@
 2.-  Para levantar el backend es necesario posicionarnos en la carpeta desde consola de comando y ejecutar "composer update" 
 
 3.-  Para levantar el frontend es necesario posicionarse en la carpeta desde consola de comando y ejecutar 
-    1) "unc"
-    2) "unc update" 
+    1) "ncu"
+    2) "ncu update" 
     3) "npm install", 
