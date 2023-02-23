@@ -80,6 +80,9 @@ class MenuDataController extends Controller
     {
         $menus = DB::table("view_sys_cat_menu")->whereNull("submenu_id")->get();
         $permisos = PermisosData::where("user_id", $id)->get();
+        
+        $id_keycloak = UserData::where('id_user',$id)->value('id_keycloak');
+        
         foreach ($menus as $menu) {
             $aux = false;
             $permission_id = 0;
@@ -93,6 +96,7 @@ class MenuDataController extends Controller
             }
             $menu->checked = $aux;
             $menu->permission_id = $permission_id;
+            $menu->keycloak_id = $id_keycloak;
         }
         $response = [
             "status" => 200,
