@@ -78,7 +78,8 @@ class MenuDataController extends Controller
 
     public function menuPermisos($id)
     {
-        $menus = DB::table("view_sys_cat_menu")->whereNull("submenu_id")->get();
+         $menus = DB::table("view_sys_cat_menu")->get(); //// se quito el where para aparezcan tods los menus y submenus
+        //$menus = DB::table("view_sys_cat_menu")->whereNull("submenu_id")->get();
         $permisos = PermisosData::where("user_id", $id)->get();
         
         $id_keycloak = UserData::where('id_user',$id)->value('id_keycloak');
