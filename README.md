@@ -10,3 +10,7 @@
     1) "ncu"
     2) "ncu update" 
     3) "npm install", 
+
+Quitar error de group by en query de mysql vendor->illuminate->database->Connectors->MySqlConnector.php    quitar el mode ONLY_FULL_GROUP_BY de la funtion strictMode()
+
+    
