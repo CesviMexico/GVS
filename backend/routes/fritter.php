@@ -6,7 +6,7 @@ $router->get('/fritter', function () use ($router) {
     return response()->json(["MetaFritterVersoFritter" => "Cesvi México"], 200);
 });
 
-$router->group(['prefix' => 'menu', 'middleware' => 'jwt'], function () use ($router) {
+$router->group(['prefix' => 'menu', ], function () use ($router) { //'middleware' => 'jwt'
     $router->get('',  ['uses' => 'MenuDataController@index']);
     $router->get('/{id}', ['uses' => 'MenuDataController@show']);
     $router->get('/{id}/permisos',  ['uses' => 'MenuDataController@menuPermisos']);
@@ -14,7 +14,7 @@ $router->group(['prefix' => 'menu', 'middleware' => 'jwt'], function () use ($ro
     $router->delete('permisos/{id}',  ['uses' => 'MenuDataController@deletePermiso']);
 });
 
-$router->group(['prefix' => 'user', 'middleware' => 'jwt'], function () use ($router) {
+$router->group(['prefix' => 'user'], function () use ($router) { //, 'middleware' => 'jwt'
     $router->get('',  ['uses' => 'UserDataController@index']);
     $router->get('/{id}', ['uses' => 'UserDataController@show']);
     $router->post('', ['uses' => 'UserDataController@store']);
@@ -22,7 +22,7 @@ $router->group(['prefix' => 'user', 'middleware' => 'jwt'], function () use ($ro
     $router->put('/{id}', ['uses' => 'UserDataController@update']);
 });
 
-$router->group(['prefix' => 'configuracion', 'middleware' => 'jwt'], function () use ($router) {
+$router->group(['prefix' => 'configuracion'], function () use ($router) { //, 'middleware' => 'jwt'
     $router->get('forms',  ['uses' => 'Configuracion\FormsController@showAll']);
     $router->post('forms',  ['uses' => 'Configuracion\FormsController@create']);
     $router->put('forms/{id}', ['uses' => 'Configuracion\FormsController@update']);

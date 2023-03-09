@@ -1,0 +1,10 @@
+/nbproject/private/
+
+/backend/vendor
+/backend/.idea
+/backendHomestead.json
+/backendHomestead.yaml
+/backend.env
+/backend.env.example
+/backend.phpunit.result.cache
+/backend/routes/fritter.php
