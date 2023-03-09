@@ -64,6 +64,8 @@ const Home = () => {
 
 
   const [id_user, setId_user] = useState("");
+  const [keycloak_id, setKeycloak_id] = useState("");
+
 
   //TABLA
   useEffect(() => { ActualizaTabla() }, []);
@@ -212,6 +214,8 @@ const Home = () => {
 
   const onPersmiosRow = async (row) => {
     setId_user(row.id_user)
+    setKeycloak_id(row.id_keycloak)
+
 
     try {
       const response = await MenuPermissions(
@@ -286,7 +290,7 @@ const Home = () => {
         uri,
         request,
         {
-          keycloak_id: row.keycloak_id,
+          keycloak_id: keycloak_id,
           menu_id: row.menu_id,
           user_id: id_user,
         }
@@ -404,7 +408,7 @@ const Home = () => {
                           </Sheet>
                         </ListItemDecorator>
                         <ListItemContent htmlFor="airplane-mode" component="label">
-                          {row.label}
+                          {row.key}
                         </ListItemContent>
                         <Switch
 
