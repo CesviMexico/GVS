@@ -22,6 +22,11 @@ import { Button, Switch } from "antd";
 // import { Select } from "@mui/material";
 import { Select } from "antd";
 
+//MIU
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+
+
 const Home = () => {
   const crudContext = useContext(CrudContext);
   const {
@@ -310,7 +315,8 @@ const Home = () => {
         title={" "}
         footer={false}
         onCancel={() => setVisible(false)}
-        width={"75%"}
+        width={"85%"}
+        height={"85%"}
         centered
       >
         <TablaANTD
@@ -410,19 +416,30 @@ const Home = () => {
           </DrawerAntd>
         </TablaANTD>
       </ModdalANTD>
-      <Crud
-        title={"Nuevo Forms"}
-        uri={uri}
-        columns={datasource.columns}
-        datasource={datasource.data}
-        tableProps={datasource.props_table}
-        OnClickAction={OnClickAction}
-        ActualizaTabla={ActualizaTabla}
-        loading={loading}
-        viewFab={false}
-      >
-        <FormAntdCrud formItems={datasource.formItems} />
-      </Crud>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          '& > :not(style)': { m: 1, width: '96%', height: '100%', },
+        }}>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Crud
+              title={"Nuevo Forms"}
+              uri={uri}
+              columns={datasource.columns}
+              datasource={datasource.data}
+              tableProps={datasource.props_table}
+              OnClickAction={OnClickAction}
+              ActualizaTabla={ActualizaTabla}
+              loading={loading}
+              viewFab={false}
+            >
+              <FormAntdCrud formItems={datasource.formItems} />
+            </Crud>
+          </Grid>
+        </Grid>
+      </Box>
     </>
   );
 };

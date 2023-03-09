@@ -1,5 +1,4 @@
 
-// import React, {useContext} from "react";
 import { getAxiosLumen } from '../../../components/Global/funciones'
 
 export const DetalleColumnas = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id) => {
@@ -15,19 +14,6 @@ export const DetalleColumnas = async (setloading ,msErrorApi ,keycloak ,logoutOp
     })
     return response
 }
-// export const FormElementoAtributt = async (setloading ,msErrorApi ,keycloak ,logoutOptions) => {
-//     const response = await getAxiosLumen({
-//        uri: "configuracion/forms",
-//        setloading: setloading,
-//        msErrorApi: msErrorApi,
-//        keycloak: keycloak,
-//        notification: false,
-//        request: 'get',
-//        logoutOptions: logoutOptions
-
-//    })
-//    return response
-// }
 export const TableAtributtes = async (setloading ,msErrorApi ,keycloak ,logoutOptions, id,dfi) => {
     const response = await getAxiosLumen({
        uri: `configuracion/tables/columns/attributes/${id}?_dti=${dfi}`,
@@ -66,8 +52,5 @@ export const DeleteElementColumn = async (setloading ,msErrorApi ,keycloak ,logo
    })
    return response
 }
-
-
-
 
 export default DetalleColumnas;

@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react';
 const AvatarMUIIcon = (props) => {
 
     //Destructuracion de props
-    const { iconHijo, sizeHijo, altHijo, width, height, action, src } = props
+    const { iconHijo, sizeHijo, altHijo, width, height, action, src, srcHijo, style } = props
     const themeContext = useContext(ThemeContext)
     const { backgroundColor, idiomaGral } = themeContext
 
@@ -33,11 +33,19 @@ const AvatarMUIIcon = (props) => {
     return (
         <ConfigProvider locale={idiomaGral}>
             <Badge
+                style={style}
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 badgeContent={
                     <SmallAvatar alt={altHijo} onClick={() => action && action()}>
-                        <Icon icon={iconHijo} />
+                        {srcHijo ?
+                            <Avatar
+                                alt={altHijo}
+                                src={srcHijo}
+                            //sx={{ width: width, height: height }}
+                            /> :
+                            <Icon icon={iconHijo} />
+                        }
                     </SmallAvatar>
                 }
             >

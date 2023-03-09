@@ -16,18 +16,18 @@ export const DataMenu = async (setloading ,msErrorApi ,keycloak ,logoutOptions, 
     return response
 }
 
-export const ActualizaUserData = async (setloading ,msErrorApi ,keycloak ,logoutOptions, parametros, request) => {
+export const DataOneUser = async (setloading, msErrorApi, keycloak, logoutOptions,data_id) => {
     const response = await getAxiosLumen({
-       uri: `configuracion/forms/elements/attributes`,
-       setloading: setloading,
-       msErrorApi: msErrorApi,
-       keycloak: keycloak,
-       notification: false,
-       request: request?request:'post',
-       logoutOptions: logoutOptions,
-       parametros,
-   })
-   return response
+        uri: `/user/${data_id}`,
+        setloading: setloading,
+        msErrorApi: msErrorApi,
+        keycloak: keycloak,
+        notification: false,
+        request: 'get',
+        logoutOptions: logoutOptions
+
+    })
+    return response
 }
 
 

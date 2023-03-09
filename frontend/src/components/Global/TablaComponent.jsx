@@ -4,7 +4,8 @@ import ThemeContext from '../../context/ThemContext'
 import {
   ConfigProvider,
   Upload, Table, Button, Input, Tooltip, Popconfirm, Select,
-  Typography as TypographyAntd, DatePicker, Image, Badge,
+  Typography as TypographyAntd, DatePicker, Image, Badge, Avatar,
+  Rate,
 } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -24,7 +25,7 @@ import { ModdalANTD } from '../Global/ModalComponent';
 import CardMUI from '../Global/CardComponent';
 
 // FUNCIONES
-import separator, { formatDate, formatDateTime, ExportToExcel } from './funciones'
+import separator, { formatDate, formatDateTime, ExportToExcel, Uid } from './funciones'
 
 
 //colores
@@ -38,6 +39,7 @@ import update from "immutability-helper";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { SearchOutlined } from '@ant-design/icons';
+import Box from '@mui/material/Box';
 
 
 const { Link } = TypographyAntd;
@@ -177,9 +179,6 @@ const TablaANTD = (props) => {
     [datasource]
   );
 
-  
-
-
   const getColumnSearchProps = (dataIndex, title) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -258,8 +257,54 @@ const TablaANTD = (props) => {
     setSearchText('')
   };
 
-
   //Función para mostrar las acciones de cada fila -> editar o eliminar
+  const rate = (row, nameValue,) => {
+    return (
+      <>
+        <Rate allowHalf defaultValue={row[nameValue]} disabled />
+      </>
+    );
+  };
+
+  const objRate = (nameValue) => ({
+    render: (text, row, index) => rate(row, nameValue,),
+  })
+
+  const avatar = (row, nameUrl, size, nameTexShow) => {
+    return (
+      <>
+        <Avatar
+          size={Number(size)}
+          key={Uid()}
+          src={row[nameUrl]}
+          style={{
+            backgroundColor: colorTable,
+          }}
+        >
+          {row[nameTexShow]}
+        </Avatar>
+      </>
+    );
+  };
+
+  const objAvatar = (nameUrl, size, nameTexShow) => ({
+    render: (text, row, index) => avatar(row, nameUrl, size, nameTexShow),
+  })
+
+
+  const iconT = (row, nameUrl, size) => {
+    return (
+      <>
+        <Icon
+          icon={row[nameUrl] ? row[nameUrl] : "clarity:add-line"}
+          style={{ fontSize: sizeIcon, color: colorTable }}
+        />
+      </>
+    );
+  };
+  const objIcon = (nameUrl, size) => ({
+    render: (text, row, index) => iconT(row, nameUrl, size),
+  })
 
   const objNo = () => ({
     render: (text, record, index) => (index + 1),
@@ -583,6 +628,11 @@ const TablaANTD = (props) => {
         col,
         col.no && objNo(),
         col.actions && objAcciones(col.key, col.icon, col.titleMSG,),
+        col.avatar && objAvatar(col.nameUrl, col.size, col.nameTexShow),
+        col.icono && objIcon(col.nameUrl, col.size,),
+
+        col.rate && objRate(col.nameValue,),
+
         col.img && objImg(col.key, col.icon, col.titleIMG, col.srcIMG),
         col.datePicker && objDatePicker(col.key, col.icon, col.placeholder, col.format, col.showTime),
         col.Input && objInput(col.key, col.placeholder, col.suffixTitle),
@@ -714,7 +764,6 @@ const TablaANTD = (props) => {
                       </IconButton>
                     </Tooltip>
                   }
-
                   {ExportaExcel &&
                     // < a href={currenturlapi + "ExportaExcel/" + urlexportaExcel} target="_blank" >
                     <IconButton aria-label="settings" onClick={() => ExportToExcelButton()}>
@@ -724,8 +773,6 @@ const TablaANTD = (props) => {
                     </IconButton>
                     // </a>
                   }
-
-
                   {ActualizaTabla &&
                     <Tooltip title="Actualizar tabla">
                       <IconButton aria-label="settings"
@@ -739,8 +786,6 @@ const TablaANTD = (props) => {
                       </IconButton>
                     </Tooltip>
                   }
-
-
                 </>
               }
             >
@@ -773,12 +818,11 @@ const TablaANTD = (props) => {
                   title={() =>
                     noChange > 0 && noChange !== datasource.length ?
                       searchText &&
-                      <Typography
-                        variant="body2"
-                        style={{ color: colorTable }}
-                      ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-                      </Typography>
-
+                        <Typography
+                          variant="body2"
+                          style={{ color: colorTable }}
+                        ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                        </Typography>
                       : ""}
 
                   summary={(pageData) => Sumary && Sumary(pageData)}
@@ -826,12 +870,11 @@ const TablaANTD = (props) => {
               title={() =>
                 noChange > 0 && noChange !== datasource.length ?
                   searchText &&
-                  <Typography
-                    variant="body2"
-                    style={{ color: colorTable }}
-                  ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-                  </Typography>
-
+                    <Typography
+                      variant="body2"
+                      style={{ color: colorTable }}
+                    ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                    </Typography>
                   : ""}
 
               summary={(pageData) => Sumary && Sumary(pageData)}

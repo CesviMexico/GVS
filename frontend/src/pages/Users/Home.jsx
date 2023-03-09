@@ -457,14 +457,19 @@ const Home = () => {
 
       </DrawerAntd>
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', '& > :not(style)': { m: 1, width: '98%', height: '100%', }, }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          '& > :not(style)': { m: 1, width: '96%', height: '100%', },
+        }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <TablaANTD
               loading={loading}
               columnsTable={columns}
               datasource={datasource}
-              
+
               setDataSource={setDataSource}
               pagination={tableProps && tableProps.pagination}
               pageSize={tableProps && tableProps.pageSize}
@@ -479,7 +484,7 @@ const Home = () => {
               dragSorting={tableProps && tableProps.dragSorting}
               Title={tableProps.Title}
               IconAvatar={tableProps && tableProps.IconAvatar}
-              
+
               OnClickAction={OnClickAction}
               ActualizaTabla={() => ActualizaTabla()}
             />

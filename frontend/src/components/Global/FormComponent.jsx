@@ -14,6 +14,7 @@ import {
 import { Icon } from '@iconify/react';
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
+import { Uid } from './funciones'
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -34,7 +35,11 @@ const FormAntd = (props) => {
     ButtonSec,
     onClickSec,
     // onChangeSelect,
-    loading
+    loading,
+    xs = 12,
+    sm = 6,
+    md = 4,
+    layout = "horizontal"
   } = props
 
   const [formItem, setFormItem] = useState([])
@@ -54,7 +59,17 @@ const FormAntd = (props) => {
   const swicthTipo = {
     "Input": ({ placeholder }) => <Input placeholder={placeholder} />,
     "InputPassword": () => <Input.Password />,
-    "InputNumber": ({ min, max }) => <InputNumber min={min} max={max} />,
+    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 }) =>
+    <InputNumber
+      defaultValue="1"
+      min={min}
+      max={max}
+      step={step}
+      stringMode
+      style={{
+        width: width,
+      }}
+    />,
     "InputTextArea": ({ maxLength, showCount }) => <Input.TextArea showCount={showCount} maxLength={maxLength} />,
 
     "DatePicker": ({ showTime, format }) => <DatePicker showTime={showTime} format={format} />,
@@ -94,7 +109,7 @@ const FormAntd = (props) => {
           <Checkbox key={index} value={dato_row.value} >{dato_row.text}</Checkbox>
         )}
       </Checkbox.Group>,
-    "Rate": () => <Rate />,
+    "Rate": ({ allowHalf }) => <Rate allowHalf={allowHalf} />,
     "Upload": ({ namefile, actionUrl, listType, tipoFile, multipleFile, textButton, dragger, antuploadtext, antuploadhint }) => (
       <>
         {
@@ -145,10 +160,13 @@ const FormAntd = (props) => {
             {
               key: Item.name,
               placeholder: Item.placeholder && Item.placeholder,
+              allowHalf: Item.allowHalf && Item.allowHalf,
               min: Item.min && Item.min,
               max: Item.max && Item.max,
+              step: Item.step && Item.step,
+              width: Item.width && Item.width,
               maxLength: Item.maxLength && Item.maxLength,
-              showCount: Item.showCount && Item.showCountItem.showCount,
+              showCount: Item.showCount && Item.showCount,
               showTime: Item.showTime && Item.showTime,
               format: Item.format && Item.format,
               arrayOption: Item.options && Item.options,
@@ -183,7 +201,7 @@ const FormAntd = (props) => {
   }
 
   const options = (arrayOption, parent, children) => {
-    
+
     if (parent === null) {
       return arrayOption
     } else {
@@ -193,34 +211,34 @@ const FormAntd = (props) => {
   const [valuetmp, setValueTmp] = useState({})
   const [auxvaluetmp, setAuxValueTmp] = useState([])
   const [auxparent, setAuxParent] = useState("")
-  
+
   let parents = []
   let obj = {};
   let hijos = []
-  
+
   const handleChange = (value, key, event, children, parent) => {
 
     // console.log('key', key)
     // console.log('value', value)
     // console.log('event', event)
-    
-    if(parent === null && children !== null ){
+
+    if (parent === null && children !== null) {
       hijos.push(children)
       // obj={
       //   [event]: hijos
       // }
       //parents.push(obj)
 
-    }else if(parent !== null && children !== null ){
-      
-        hijos.push(children)
-        // obj = {
-        //   ...obj
-        // }
-          
+    } else if (parent !== null && children !== null) {
+
+      hijos.push(children)
+      // obj = {
+      //   ...obj
+      // }
+
     }
-    
-    if(value !== undefined){
+
+    if (value !== undefined) {
       setValueTmp({ ...valuetmp, [event]: value })
     }
     console.log(hijos)
@@ -244,14 +262,28 @@ const FormAntd = (props) => {
     ItemsForm()
   }, [formItems, valuetmp])
 
+  // sm={6} md={3}   horizontal vertical inline
+
   return (
     <ConfigProvider locale={idiomaGral}>
-      <Form name="basic" onFinish={onFinish} form={form} >
+      <Form
+        key={Uid()}
+        name="basic"
+        onFinish={onFinish}
+        form={form}
+        layout={layout} >
         <Grid container spacing={1}>
           {formItem.map((row, index) =>
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid
+              key={Uid(index)}
+              item
+              propsGrid
+              xs={xs}
+              sm={sm}
+              md={md}
+            >
               <Form.Item
-                key={index}
+                key={Uid(index)}
                 label={row.label}
                 name={row.name}
                 rules={row.rules}
@@ -266,16 +298,28 @@ const FormAntd = (props) => {
               </Form.Item>
             </Grid>
           )}
-          <Grid item xs={12} sm={6} md={3} >
-            <Form.Item >
+          <Grid item
+            xs={xs}
+            sm={sm}
+            md={md} key={Uid()} />
+          <Grid item
+            xs={xs}
+            sm={sm}
+            md={md} key={Uid()} >
+            <Form.Item key={Uid()}>
               <Button
+                key={Uid()}
                 loading={loading}
-                //block={true}
-                style={{ backgroundColor: backgroundColor, color: 'white' }}
+                block={true}
+                style={{
+                  backgroundColor: backgroundColor,
+                  color: 'white',
+                  position: 'absolute',
+                  align: 'center'
+                }}
                 htmlType="submit"
                 shape="round"
                 icon={<Icon icon={iconButton} style={{ fontSize: 20, verticalAlign: '-0.125em' }} />}
-                // icon={<SearchOutlined />}
                 size={"large"}
               >
                 <span style={{ marginLeft: '8px' }}  >{titleSubmit}</span>
@@ -284,6 +328,7 @@ const FormAntd = (props) => {
               {
                 ButtonSec &&
                 <Button
+                  key={Uid()}
                   loading={loading}
                   style={{ backgroundColor: backgroundColor, color: 'white', }}
                   icon={<Icon icon={iconButtonSec} style={{ fontSize: 20, verticalAlign: '-0.125em' }} />}
@@ -294,10 +339,9 @@ const FormAntd = (props) => {
                   <span style={{ marginLeft: '8px' }}  >{titleSubmitSec}</span>
                 </Button>
               }
-
-
             </Form.Item>
           </Grid>
+
         </Grid>
       </Form>
     </ConfigProvider>
@@ -325,8 +369,19 @@ export const FormAntdCrud = (props) => {
   const swicthTipo = {
     "Input": ({ placeholder }) => <Input placeholder={placeholder} />,
     "InputPassword": () => <Input.Password />,
-    "InputNumber": ({ min, max }) => <InputNumber min={min} max={max} />,
-    "InputTextArea": ({ maxLength, showCount }) => <Input.TextArea showCount={showCount} maxLength={maxLength} />,
+    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 }) =>
+      <InputNumber
+        defaultValue="1"
+        min={min}
+        max={max}
+        step={step}
+        stringMode
+        style={{
+          width: width,
+        }}
+      />,
+
+    "InputTextArea": ({ maxLength, showCount = false }) => <Input.TextArea showCount={showCount} maxLength={maxLength && maxLength} />,
 
     "DatePicker": ({ showTime, format }) => <DatePicker showTime={showTime} format={format} />,
     "RangePicker": ({ showTime, format }) => <RangePicker showTime={showTime} format={format} />,
@@ -410,8 +465,10 @@ export const FormAntdCrud = (props) => {
             placeholder: Item.placeholder && Item.placeholder,
             min: Item.min && Item.min,
             max: Item.max && Item.max,
+            step: Item.step && Item.step,
+            width: Item.width && Item.width,
             maxLength: Item.maxLength && Item.maxLength,
-            showCount: Item.showCount && Item.showCountItem.showCount,
+            showCount: Item.showCount && Item.showCount,
             showTime: Item.showTime && Item.showTime,
             format: Item.format && Item.format,
             arrayOption: Item.options && Item.options,
@@ -446,7 +503,7 @@ export const FormAntdCrud = (props) => {
 
   return (
     <ConfigProvider locale={idiomaGral}>
-      <Spin tip="Loading..." spinning={loading}>
+      <Spin spinning={loading}>
         <Grid container spacing={1}>
           {formItem.map((row, index) =>
             <Grid item xs={12} sm={12} md={12} key={index}>

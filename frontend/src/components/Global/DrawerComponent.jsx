@@ -10,7 +10,7 @@ const DrawerAntd = (props) => {
   const themeContext = useContext(ThemeContext)
   const { idiomaGral } = themeContext
 
-  const { title, placement, visible, onClose , getContainer,style} = props
+  const { title, placement, visible, onClose , getContainer,style,width,closable} = props
 
   return (
     <ConfigProvider locale={idiomaGral}>
@@ -21,7 +21,9 @@ const DrawerAntd = (props) => {
         onClose={onClose && onClose}
         open={visible}
         getContainer={getContainer}
-        style={style}       
+        style={style}     
+        width={width}  
+        closable={closable}
 
       >
         {props.children}

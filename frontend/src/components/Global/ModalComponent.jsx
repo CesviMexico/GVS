@@ -99,6 +99,37 @@ export const ModdalANTD = (props) => {
 
 }
 
+export const ModdalAntdConfirm = (props) => {
+
+  // Hook y funciones o metodos Globales
+  const themeContext = useContext(ThemeContext)
+  const { idiomaGral } = themeContext
+
+  const { open, title, handleOk, confirmLoading, handleCancel } = props;
+
+  return (
+    <>
+      <ConfigProvider locale={idiomaGral}>
+        <Modal
+          destroyOnClose={true}
+          title={title}
+          open={open}
+          onOk={handleOk}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancel}
+
+        >
+          {props.children}
+
+        </Modal>
+      </ConfigProvider>
+    </>
+  )
+
+}
+
+
+
 export default ModdalMUI;
 
 
