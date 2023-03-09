@@ -13,10 +13,16 @@ class TablesController extends Controller
     public function showAll()
     {
         $form = FritterDynamic::itemsForm('Fritter Tables');
-        $columns = FritterDynamic::columnsTable('Agregar Tablas');
-        $props_table = FritterDynamic::propsTable('Agregar Tablas');
+        $columns = FritterDynamic::columnsTable('Tablas de sistema');
+        $props_table = FritterDynamic::propsTable('Tablas de sistema');
         $raw = " SELECT  COUNT(component_no) FROM sys_data_tables WHERE table_id = sys_tables.table_id ";
-        $data = DB::table('sys_tables')->selectRaw('table_id, name_table, module, name_table as "sys_tables@name_table", module as "sys_tables@module", (' . $raw . ') AS total_elements')->where('status', 'alta')->where('editable', 1)->get();
+        $data = DB::table('sys_tables')
+            ->selectRaw('table_id, name_table, module, name_table as "sys_tables@name_table", module as "sys_tables@module", (' . $raw . ') AS total_elements')
+            ->where('status', 'alta')
+            ->where('editable', 1)
+            ->orderby("sys_tables@module")
+            ->orderby("sys_tables@name_table")
+            ->get();
 
         $aux_data = [];
 
@@ -143,7 +149,7 @@ class TablesController extends Controller
         $form = FritterDynamic::itemsForm('Form Columnas');
         $columns = FritterDynamic::columnsTable('Agregar Columnas');
         $props_table = FritterDynamic::propsTable('Agregar Columnas');
-        $sys_data_tables = DB::table('sys_data_tables')->where('table_id', $id)->get();
+        $sys_data_tables = DB::table('sys_data_tables')->where('table_id', $id)->orderby("order")->get();
         $data = [];
         $row = [];
         foreach ($sys_data_tables as $datatables) {

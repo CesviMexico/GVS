@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ViewUserData;
 use App\Models\UserData;
 use App\Models\MenuData;
 use App\Models\PermisosData;
@@ -13,11 +14,15 @@ class UserDataController extends Controller
 
     public function index()
     {
-        $data = UserData::join("sys_cat_rol", "sys_users.id_rol", "=", "sys_cat_rol.id_rol")
-            ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
-            ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
-            ->where("sys_users.status", "alta")
-            ->get();
+        // $data = UserData::join("sys_cat_rol", "sys_users.id_rol", "=", "sys_cat_rol.id_rol")
+        //     ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
+        //     ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
+        //     ->where("sys_users.status", "alta")
+        //     ->get();
+
+        $data = ViewUserData::where("view_users_data.status", "alta")->get();
+
+
         $form = FritterDynamic::itemsForm('Usuarios');
         $columns = FritterDynamic::columnsTable('Usuarios');
         $props_table = FritterDynamic::propsTable('Usuarios');
@@ -36,7 +41,9 @@ class UserDataController extends Controller
 
     public function show($id)
     {
-        return response()->json(UserData::find($id));
+        // return response()->json(UserData::find($id));
+        return response()->json(ViewUserData::where("id_keycloak", $id)->get());
+
     }
 
     public function store(Request $request)

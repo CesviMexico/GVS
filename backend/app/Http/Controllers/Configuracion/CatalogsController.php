@@ -75,7 +75,6 @@ class CatalogsController extends Controller
             "status" => 200,
             "data" => $data,
             "id" => $name_id,
-            "aux_name_form" => $aux_name_form,
             "formItems" => $form,
             "columns" => $columns,
             "props_table" => $props_table,
@@ -119,6 +118,7 @@ class CatalogsController extends Controller
             "message" => "Se creo correctamente el registro!",
             "type" => "success",
             "tipoComponent" => "notification",
+            "sys_cat_tables" => $sys_cat_tables
         ];
         return response()->json($response, 200);
     }
