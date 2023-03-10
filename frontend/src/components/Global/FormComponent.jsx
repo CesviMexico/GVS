@@ -59,13 +59,13 @@ const FormAntd = (props) => {
   const swicthTipo = {
     "Input": ({ placeholder }) => <Input placeholder={placeholder} />,
     "InputPassword": () => <Input.Password />,
-    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 }) =>
+    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 , stringMode=true }) =>
     <InputNumber
       defaultValue="1"
       min={min}
       max={max}
       step={step}
-      stringMode
+      stringMode={stringMode}
       style={{
         width: width,
       }}
@@ -165,6 +165,7 @@ const FormAntd = (props) => {
               max: Item.max && Item.max,
               step: Item.step && Item.step,
               width: Item.width && Item.width,
+              stringMode: Item.stringMode && Item.stringMode,
               maxLength: Item.maxLength && Item.maxLength,
               showCount: Item.showCount && Item.showCount,
               showTime: Item.showTime && Item.showTime,
