@@ -41,7 +41,7 @@ class FritterDynamic
                             $obj['options'] = [['label' => 'system', 'value' => 'system'], ['label' => 'operation', 'value' => 'operation']];
                         } else {
                             $combos = [];
-                            $combos = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value');
+                            $combos = DB::table($dep_combo->name_table)->select($dep_combo->label . ' as label', $dep_combo->value . ' as value')->orderBy('label');
 
                             if ($dep->parent > 0) {
 
@@ -50,9 +50,9 @@ class FritterDynamic
                                 $combo_parent = DB::table($name_combo_parent)->get([$id_combo_parent]);
 
                                 if ($dep_combo->where == "" || $dep_combo->where == null) {
-                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->get();
+                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->orderBy('label')->get();
                                 } else {
-                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->whereRaw($dep_combo->where)->get();
+                                    $combos = $combos->select($dep_combo->label . ' as label', $dep_combo->value . ' as value', $id_combo_parent)->whereRaw($dep_combo->where)->orderBy('label')->get();
                                 }
 
                                 foreach ($combo_parent as  $combop) {

@@ -18,6 +18,12 @@ import {
 
 import { Button } from "antd";
 
+
+//MIU
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+
+
 const Home = () => {
 
     const crudContext = useContext(CrudContext);
@@ -58,7 +64,7 @@ const Home = () => {
     };
 
     const OnClickAction = (row, key, event) => {
-        console.log("key", key)
+        //console.log("key", key)
         swicthComponentAction[key](row, event);
     };
 
@@ -118,7 +124,7 @@ const Home = () => {
         setTablePropsDetalle(response.props_table);
         setFormTablePropsDetalle(response.formItems);
 
-        // console.log("DetalleComponentes", response);
+        // //console.log("DetalleComponentes", response);
 
         setRowForms(row);
         chCurrentRowIDAction(row.table_id);
@@ -165,14 +171,14 @@ const Home = () => {
             dfi
         );
 
-        //console.log("TablaAtributos", response);
+        ////console.log("TablaAtributos", response);
         setDataSourceAttributes(response.data);
         setColumnsAttributes(response.columns);
 
         // EDITA ARREGLO PARA MODIFICAR DE
         response.data.forEach(row => { onInputAttribute(row, undefined, row.defaultValue) });
         setNewcomponentHook(newcomponent)
-        // console.log("newcomponent", newcomponent)
+        // //console.log("newcomponent", newcomponent)
 
         setlLoadingAtributos(false)
 
@@ -233,7 +239,7 @@ const Home = () => {
         }
 
 
-        console.log("parameters", parameters)
+        //console.log("parameters", parameters)
 
         await AddColumnaForm(
             setloadingDetalle,
@@ -262,18 +268,15 @@ const Home = () => {
 
     const onEliminarRowElemento = async (row) => {
         await DeleteElementColumn(
-          setLoadingCrud,
-          msErrorApi,
-          keycloak,
-          logoutOptions,
-          row.data_table_id
+            setLoadingCrud,
+            msErrorApi,
+            keycloak,
+            logoutOptions,
+            row.data_table_id
         );
-    
+
         DetalleComponentes(rowForms)
-      };
-    
-
-
+    };
 
     return (
         <>
@@ -283,7 +286,8 @@ const Home = () => {
                 title={" "}
                 footer={false}
                 onCancel={() => setVisible(false)}
-                width={"75%"}
+                width={"85%"}
+                height={"85%"}
                 centered
             >
                 <TablaANTD
@@ -358,20 +362,30 @@ const Home = () => {
 
                 </TablaANTD>
             </ModdalANTD>
-
-            <Crud
-                title={"Nuevo Tabla"}
-                uri={uri}
-                columns={datasource.columns}
-                datasource={datasource.data}
-                tableProps={datasource.props_table}
-                OnClickAction={OnClickAction}
-                ActualizaTabla={ActualizaTabla}
-                loading={loading}
-                viewFab={false}
-            >
-                <FormAntdCrud formItems={datasource.formItems} />
-            </Crud>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    '& > :not(style)': { m: 1, width: '96%', height: '100%', },
+                }}>
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <Crud
+                            title={"Nuevo Tabla"}
+                            uri={uri}
+                            columns={datasource.columns}
+                            datasource={datasource.data}
+                            tableProps={datasource.props_table}
+                            OnClickAction={OnClickAction}
+                            ActualizaTabla={ActualizaTabla}
+                            loading={loading}
+                            viewFab={false}
+                        >
+                            <FormAntdCrud formItems={datasource.formItems} />
+                        </Crud>
+                    </Grid>
+                </Grid>
+            </Box>
         </>
     )
 

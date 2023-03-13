@@ -40,12 +40,12 @@ class MenuDataController extends Controller
             unset($us['rol']);
             UserData::create($us);
             $permission = [];
-            foreach (MenuData::where('menu_basic','Si')->get(['menu_id']) as $value) {
+            foreach (MenuData::where('menu_basic', 'Si')->get(['menu_id']) as $value) {
                 $permission['menu_id'] = $value->menu_id;
-                $permission['user_id'] = UserData::where('id_keycloak',$id)->value('id_user');
+                $permission['user_id'] = UserData::where('id_keycloak', $id)->value('id_user');
                 $permission['keycloak_id'] = $id;
             }
-            PermisosData::create($permission);            
+            PermisosData::create($permission);
         }
 
         $data = MenuData::whereNull("submenu_id")
@@ -59,10 +59,10 @@ class MenuDataController extends Controller
         }
 
         $user = UserData::join("sys_cat_rol", "sys_users.id_rol", "=", "sys_cat_rol.id_rol")
-        ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
-        ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
-        ->where("sys_users.status", "alta")
-        ->find($id);
+            ->join("sys_cat_companys", "sys_users.id_company", "=", "sys_cat_companys.id_company")
+            ->select('sys_users.*', 'sys_cat_rol.rol', 'sys_cat_companys.company')
+            ->where("sys_users.status", "alta")
+            ->find($id);
 
         $response = [
             "status" => 200,
@@ -78,8 +78,11 @@ class MenuDataController extends Controller
 
     public function menuPermisos($id)
     {
-        $menus = DB::table("view_sys_cat_menu")->whereNull("submenu_id")->get();
+        $menus = DB::table("view_sys_cat_menu")->get(); //// se quito el where para aparezcan tods los menus y submenus
         $permisos = PermisosData::where("user_id", $id)->get();
+
+        // $id_keycloak = UserData::where('id_user', $id)->value('id_keycloak');
+
         foreach ($menus as $menu) {
             $aux = false;
             $permission_id = 0;
@@ -93,6 +96,7 @@ class MenuDataController extends Controller
             }
             $menu->checked = $aux;
             $menu->permission_id = $permission_id;
+            // $menu->keycloak_id = $id_keycloak;
         }
         $response = [
             "status" => 200,

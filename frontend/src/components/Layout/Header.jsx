@@ -175,7 +175,7 @@ const HeaderComponent = () => {
         color="white"
         style={{ top: 10, position: "relative" }}
       >
-        Cotizador de daños ecologicos
+        Template Dinamic
       </Typography>
 
       <Box sx={{ position: "relative", float: "right", mt: -5 }}>

@@ -2,15 +2,20 @@ import NotificationMessageANTD from './notification'
 import clienteAxios from './axios'
 import "moment/locale/es-mx";
 import moment from "moment";
-//EXPORTA A Excel
 import exportFromJSON from 'export-from-json'
+import uniqid from 'uniqid';
+
+//Claves unicas
+export function Uid(extra=0) {
+  return (new Date()).getTime()+Math.random().toString(16).slice(2)+uniqid()+extra   
+   
+}
 
 //EXPORTA A EXCEL
 export const ExportToExcel = (propX) => {
   const { datasource, Title, } = propX;
   exportFromJSON({ data: datasource, fileName: Title, exportType: 'xls' })
 }
-
 
 export const getAxiosLumen = async (propX) => {
   const { uri, setloading, msErrorApi, keycloak, notification, parametros, request, logoutOptions } = propX;
@@ -78,7 +83,6 @@ export const getAxiosLumen = async (propX) => {
 
   }
 }
-
 // formato de con comas para numeros
 function separator(numb) {
   var str = numb.toString().split(".");
@@ -97,6 +101,25 @@ export const formatDateTime = (dateOriginal) => {
   let formatted_date = moment(dateOriginal).format("DD/MM/YYYY HH:mm:ss")
   return formatted_date;
 }
+
+
+export const formatDateTimeBD = (dateOriginal) => {
+  let formatted_date = moment(dateOriginal).format("YYYY-MM-DD HH:mm:ss")
+  return formatted_date;
+}
+
+export const formatDateBD = (dateOriginal) => {
+  let formatted_date = moment(dateOriginal).format("YYYY-MM-DD")
+  return formatted_date;
+}
+
+export const formatTimeBD = (dateOriginal) => {
+  let formatted_date = moment(dateOriginal).format("HH:mm:ss")
+  return formatted_date;
+}
+
+
+
 
 /* resize imagen antes de subir  JVICENCIO*/
 export const beforeUpload = file => {
@@ -164,6 +187,7 @@ export const disableDateRangesDatepiker = (range = { startDate: false, endDate: 
 }
 
 export default separator;
+
 
 
 //referencias de MOMENT (https://momentjs.com/)

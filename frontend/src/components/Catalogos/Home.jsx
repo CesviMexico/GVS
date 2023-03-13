@@ -106,11 +106,22 @@ const Home = (props) => {
                 </Grid>
                 <Grid item xs={2}>
                   <Tooltip title="Actualizar Combo">
-                    <Button shape="circle" style={{ backgroundColor: backgroundColor }}
+                    {/* <Button shape="circle" style={{ backgroundColor: backgroundColor }}
                        onClick={() =>   ComboCatalogos()}
                       icon={<SyncOutlined spin={loadingComboCatalogos}
                         style={{ fontSize: 15, color: colorIcon }}
-                      />} />
+                      />} /> */}
+
+                      <Button
+                      type="primary"
+                      style={{ backgroundColor: backgroundColor }}
+                      loading={loadingComboCatalogos}
+                      onClick={() => ComboCatalogos()}
+                      icon={<SyncOutlined
+                        style={{ fontSize: 17, color: colorIcon }}
+                      />}
+                    />
+                    
                   </Tooltip>
                 </Grid>
               </Grid>
