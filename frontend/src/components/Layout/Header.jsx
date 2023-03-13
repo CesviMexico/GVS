@@ -175,7 +175,7 @@ const HeaderComponent = () => {
         color="white"
         style={{ top: 10, position: "relative" }}
       >
-        Template Dinamic
+        Gestor de valuación en sitio
       </Typography>
 
       <Box sx={{ position: "relative", float: "right", mt: -5 }}>
@@ -339,44 +339,7 @@ const HeaderComponent = () => {
             </Typography>
           </MenuItem>
         )}
-        <Divider />
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid align="center" sx={{ width: 280 }}>
-            <Grid item>
-              <PaletaColores
-                texto={"Color Thema"}
-                ArrayColorButtonMUI={ArrayColorButtonMUI}
-                componentTipo={"Thema"}
-              />
-            </Grid>
-
-            <Grid item>
-              <PaletaColores
-                texto={"Color Badge"}
-                ArrayColorButtonMUI={ArrayColorButtonMUI}
-                componentTipo={"Badge"}
-              />
-            </Grid>
-
-            <Grid item>
-              <PaletaColores
-                texto={"Color primaryColor"}
-                ArrayColorButtonMUI={ArrayColorButtonMUI}
-                componentTipo={"primaryColor"}
-              />
-            </Grid>
-            <Grid item>
-              <PaletaColores
-                texto={"Color secondaryColor"}
-                ArrayColorButtonMUI={ArrayColorButtonMUI}
-                componentTipo={"secondaryColor"}
-              />
-            </Grid>
-
-            <Grid item> </Grid>
-          </Grid>
-        </Box>
+            
       </Menu>
     </Header>
   );
