@@ -7,10 +7,11 @@ const Login = () => {
     const { keycloak } = useKeycloak()
 
     useEffect(() => {
+     
         if (!keycloak.authenticated) {
             navigate('/')
             keycloak.login(process.env.REACT_APP_logoutOption)
-        }     
+        }   
 
     }, [keycloak])
 }

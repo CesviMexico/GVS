@@ -802,7 +802,7 @@ const TablaANTD = (props) => {
                   tableLayout={tableLayout} //"fixed" //- | auto | fixed
 
                   pagination={
-                    pagination &&
+                    pagination !=="0" &&
                     {
                       responsive: true,
                       pageSize: pageSize,
@@ -854,7 +854,7 @@ const TablaANTD = (props) => {
               tableLayout={tableLayout} //"fixed" //- | auto | fixed
 
               pagination={
-                pagination &&
+                pagination !=="0"  &&
                 {
                   responsive: true,
                   pageSize: pageSize,

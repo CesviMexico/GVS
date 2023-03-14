@@ -18,8 +18,19 @@ import Catalogos from "./components/Catalogos/Home";
 import Page404 from "./pages/Page404";
 import Page403 from "./pages/Page403";
 
+
+//ajustador
+import Ajustador from "./pages/Ajustador/Home";
+
+
+
 import { Spin } from "antd";
 import Layout from "./components/Layout/Layout";
+
+import { useKeycloak } from "@react-keycloak/web";
+
+import Navigation from './components/LayoutMobil/Navigation'
+
 
 const loading = () => (
   <div className="animated fadeIn pt-1 text-center">
@@ -29,6 +40,13 @@ const loading = () => (
 );
 
 const Router = () => {
+
+  const { keycloak } = useKeycloak();
+
+
+  console.log('keycloak', keycloak.resourceAccess ? keycloak.resourceAccess[process.env.REACT_APP_clientId].roles[0] : null)
+  let rol = keycloak.resourceAccess ? keycloak.resourceAccess[process.env.REACT_APP_clientId].roles[0] : null
+
   return (
     // <ReactKeycloakProvider authClient={keycloak}>
     <HashRouter>
@@ -93,7 +111,7 @@ const Router = () => {
               </PrivateRoute>
             }
           />
-        
+
           <Route
             path="Configuracion/Catalogos"
             element={
@@ -123,14 +141,20 @@ const Router = () => {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/Ajustador"
+            element={
+              <PrivateRoute>
+                  <Ajustador />
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path="*"
             element={
-              <PrivateRoute>
-                <Layout>
-                  <Page403 />
-                </Layout>
+              <PrivateRoute>               
+                  {rol === "Administrador" ?  <Navigation><Ajustador /></Navigation>:<Layout><Page403 /></Layout> }               
               </PrivateRoute>
             }
           />
