@@ -8,6 +8,7 @@ import './layoutMobil.css'
 import ThemeContext from '../../context/ThemContext'
 
 
+
 const Navigation = (props) => {
 
   const themeContext = useContext(ThemeContext)
@@ -21,7 +22,7 @@ const Navigation = (props) => {
   const [nameNavBar, setNameNavBar] = useState("")
 
   const swicthNameNavBar = {
-    "/ServiciosenProceso": () => setNameNavBar("Servicios en proceso"),
+    "/ServiciosenProceso": () => setNameNavBar("Valuaciones en proceso"),
     "/Cotizacion": () => setNameNavBar("Cotización"),
     "/Consultar": () => setNameNavBar("Consultar"),
     "/Usuario": () => setNameNavBar("Usuario"),
