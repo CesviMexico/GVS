@@ -35,8 +35,13 @@ export const ThemeProvider = (props) => {
 
     const [logoutOptions , setLogoutOptions ] = useState('http://localhost:3000/#/') 
     //const [logoutOptions, setLogoutOptions] = useState('http://appweb.cesvimexico.com.mx/carpeta/#')
-    const [idServicio, setIdServicio] = useState("Valuaciones en proceso")  
+    const [idServicio, setIdServicio] = useState("")  
 
+    const [tproceso, setTproceso] = useState(0)  
+        const [tporconfirmar , setTporconfirmar ] = useState(0)  
+
+
+    const [idiomaGralMobil, setIdiomaGralMobil] = useState(es_ES)
 
     return (
         <ThemeContext.Provider
@@ -51,12 +56,14 @@ export const ThemeProvider = (props) => {
                 sizeIconTable,
                 colorTable,
                 colorBadge,
-
                 msErrorApi,
                 idiomaGral,
                 logoutOptions,
+                idiomaGralMobil,    
 
-                idServicio,             
+                idServicio,     
+                tproceso,
+                tporconfirmar,    
 
 
                 setbackgroundColor,
@@ -73,6 +80,8 @@ export const ThemeProvider = (props) => {
                 setMsErrorApi,
                 setIdiomaGral,
                 setIdServicio,
+                setTproceso,
+                setTporconfirmar,
 
 
             }}

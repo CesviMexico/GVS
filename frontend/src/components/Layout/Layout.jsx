@@ -11,16 +11,17 @@ import { Icon } from '@iconify/react';
 
 //CONTEXT
 import ThemeContext from '../../context/ThemContext'
+import UserContext from "../../context/UserContext";
+
 
 //COMPONENTES
 import HeaderComponent from '../Layout/Header'
 import FooterComponent from '../Layout/Footer'
 import logo from '../../assets/images/lcesvimexico.svg'
 import logoSvg from '../../assets/images/logo.svg'
-import { getAxiosLumen } from '../Global/funciones'
 
 //servicios
-import { DataMenu } from "./Services";
+import { DataMenu, DataOneUser } from "./Services";
 
 
 const { Sider, Content } = AntLayout
@@ -35,6 +36,10 @@ const Layout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false)
     const rootSubmenuKeys = [""];
     const [openKeys, setOpenKeys] = useState([""]);
+
+    const userContext = useContext(UserContext);
+    const { user, updateUser } = userContext;
+
 
     const onOpenChange = (keys) => {
         const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -64,22 +69,6 @@ const Layout = ({ children }) => {
         }
 
     };
-
-    const ActualizaUser = async (parametros) => {
-
-        const responseActualizaUser = await getAxiosLumen({
-            uri: 'user',
-            //setloading: setloading,
-            msErrorApi: msErrorApi,
-            keycloak: keycloak,
-            notification: false,
-            request: 'post',
-            logoutOptions: logoutOptions,
-            parametros: parametros
-
-        })
-
-    }
 
     const ActualizaMenu = async (keycloak) => {  
         await keycloak.loadUserInfo()
@@ -143,9 +132,25 @@ const Layout = ({ children }) => {
         setloading(false)
     }
 
+    const DatosPerfil = async (keycloak) => {
+        await keycloak.loadUserInfo()
+        let user_info = keycloak.userInfo
+        const response = await DataOneUser(
+            setloading,
+            msErrorApi,
+            keycloak,
+            logoutOptions,
+            user_info.sub
+        );
+        console.log("DatosPerfil", response[0])       
+        updateUser({ ...response[0], id_keycloak: user_info.sub, });
+    }
+
+
     useEffect(() => {
         if (!!keycloak.authenticated) {
             ActualizaMenu(keycloak)
+            DatosPerfil(keycloak)
         }
     }, [keycloak])
 

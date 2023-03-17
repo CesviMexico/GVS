@@ -208,7 +208,7 @@ const Home = () => {
       component: newcomponentFin,
     };
 
-    console.log("parameters", parameters);
+    // console.log("parameters", parameters);
     await AddElementForm(
       setloadingDetalle,
       msErrorApi,

@@ -44,37 +44,10 @@ const HeaderComponent = () => {
   const { keycloak } = useKeycloak();
 
   const themeContext = useContext(ThemeContext);
-  const {
-    backgroundColor,
-    setbackgroundColor,
-    colorIcon,
-    setColorIcon,
-    setColorBadge,
-    sizeIcon,
-    setPrimaryColor,
-    setSecondaryColor,
-    setColorTable,
-  } = themeContext;
-
+  const {backgroundColor,sizeIcon,  } = themeContext;
   const userContext = useContext(UserContext);
-  const { user, updateUser } = userContext;
+  const { user } = userContext;
 
-  useEffect(() => {
-    if (!!keycloak.authenticated) {
-      // console.log('keycloak', keycloak)
-      // console.log('tokenParsed', keycloak.tokenParsed)
-      updateUser({
-        idUser: keycloak.subject,
-        name: keycloak.tokenParsed.name,
-        age: 0,
-        premium: true,
-        email: keycloak.tokenParsed.email,
-        rol: keycloak.tokenParsed.family_name,
-      });
-    }
-  }, [keycloak]);
-
-  //MENU DE USUARIOUS
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -98,69 +71,6 @@ const HeaderComponent = () => {
     swicthTipo[tipo]();
   };
 
-  const handleColors = (colorsMUI, componentTipo) => {
-    console.log("componentTipo-->", componentTipo);
-    switch (componentTipo) {
-      case "Thema":
-        setbackgroundColor(colorsMUI[500]);
-        setColorIcon(colorsMUI[50]);
-        setColorTable(colorsMUI[500]);
-
-        break;
-
-      case "Badge":
-        setColorBadge(colorsMUI[500]);
-
-        break;
-
-      case "primaryColor":
-        setPrimaryColor(colorsMUI);
-
-        break;
-      case "secondaryColor":
-        setSecondaryColor(colorsMUI);
-
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const ArrayColorButtonMUI = [
-    { colorA: green },
-    { colorA: red },
-    { colorA: blue },
-    { colorA: yellow },
-    { colorA: grey },
-  ];
-
-  const PaletaColores = (props) => {
-    const { texto, ArrayColorButtonMUI, componentTipo } = props;
-
-    return (
-      <>
-        <Typography variant="caption" display="block" gutterBottom>
-          {texto}
-        </Typography>
-        {ArrayColorButtonMUI.map((row, i) => (
-          <IconButtonMUI
-            size="small"
-            key={i}
-            onclickIconButton={() => handleColors(row.colorA, componentTipo)}
-          >
-            <AvatarMUI
-              key={i}
-              alt={" "}
-              src={" "}
-              style={{ backgroundColor: row.colorA[500] }}
-              sx={{ width: 24, height: 24 }}
-            />
-          </IconButtonMUI>
-        ))}
-      </>
-    );
-  };
 
   return (
     <Header
@@ -192,9 +102,11 @@ const HeaderComponent = () => {
             <AvatarMUI
               alt="NameUser"
               src="https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
+              // src={user.path_avatar}
             />
           </IconButton>
         </Tooltip>
+
         <IconButton
           onClick={() => navigate("/DemosComponents")}
           size="small"
@@ -207,6 +119,7 @@ const HeaderComponent = () => {
             max={9999}
           />
         </IconButton>
+
       </Box>
       <Menu
         anchorEl={anchorEl}
@@ -252,7 +165,7 @@ const HeaderComponent = () => {
                 altHijo={"Editar Perfil"}
                 width={90}
                 height={90}
-                action={() => console.log("Editar Perfil")}
+                // action={() => console.log("Editar Perfil")}
                 src={
                   "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
                 }
@@ -275,7 +188,7 @@ const HeaderComponent = () => {
             </Grid>
             <Grid item>
               <Typography variant="caption" display="block" gutterBottom>
-                {user.idUser}
+                {user.zona}
               </Typography>
             </Grid>
           </Grid>
@@ -285,7 +198,8 @@ const HeaderComponent = () => {
                     <Avatar  sx={{ width: 56, height: 56 }} /> My account
                 </MenuItem> */}
         <Divider />
-        <MenuItem>
+
+        {/* <MenuItem>
           <ListItemIcon>
             <Icon
               icon={reactIcon}
@@ -296,8 +210,9 @@ const HeaderComponent = () => {
           <Typography variant="caption" display="block" gutterBottom>
             Menu 1
           </Typography>
-        </MenuItem>
-        <MenuItem>
+        </MenuItem> */}
+
+        {/* <MenuItem>
           <ListItemIcon>
             <Icon
               icon={gamepadVariantOutline}
@@ -308,7 +223,7 @@ const HeaderComponent = () => {
           <Typography variant="caption" display="block" gutterBottom>
             Menu 2
           </Typography>
-        </MenuItem>
+        </MenuItem> */}
 
         {!keycloak.authenticated && (
           <MenuItem onClick={(event) => handleSalir(event, "Login")}>

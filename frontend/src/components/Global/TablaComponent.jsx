@@ -166,7 +166,7 @@ const TablaANTD = (props) => {
           current_position: dragIndex
         }
       };
-      console.log(infoRow);
+      // console.log(infoRow);
       setDataSource.length > 0 && setDataSource(
         update(datasource, {
           $splice: [
@@ -313,11 +313,13 @@ const TablaANTD = (props) => {
   const action = (row, key, IconAction, titleMSG, text) => {
     return (
       <>
-        <Tooltip title={key} key={key}>
+        <Tooltip title={key} key={Uid(1)}>
           {titleMSG ?
             <Popconfirm
-              key={key}
+              key={Uid(2)}
               title={titleMSG}
+              description={titleMSG}
+
               //icon={<Icon icon={IconAction} style={{color: backgroundColor}} />}
               okText="Si"
               cancelText="No"

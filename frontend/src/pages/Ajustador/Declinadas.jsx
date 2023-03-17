@@ -5,21 +5,28 @@ import { Dialog, List, SwipeAction, Toast, Image, ActionSheet, FloatingBubble } 
 
 import { Icon } from '@iconify/react';
 import { ListMobileAntd } from '../../components/Global/Mobile/ListMobileAntd';
+import "../../components/LayoutMobil/layoutMobil.css"
+
 import { useNavigate } from 'react-router-dom';
 
 import ThemeContext from '../../context/ThemContext'
 
 
-const Home = () => {
+const Popconfirmar = () => {
 
 
   const themeContext = useContext(ThemeContext)
-  const { idServicio, setIdServicio } = themeContext
+  const {
+     idServicio, setIdServicio ,
+     sizeIcon, colorIcon, backgroundColor,
+  } = themeContext
 
   const navigate = useNavigate();
 
+
+
   let users = []
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 6; i++) {
     let element = {
       id: i,
       key: i,
@@ -45,7 +52,9 @@ const Home = () => {
 
   }
   const onCreateService = () => {
-    navigate("/Servicio")
+    navigate("/Valuaciones")
+    setIdServicio("Solicitar Valuación")
+
   }
 
   const [keyservice, setKeyService] = useState(null);
@@ -54,7 +63,7 @@ const Home = () => {
     <>
       <ConfigProvider locale={enUS}>
         <ListMobileAntd
-          headerTitle="Servicios"
+          //headerTitle="Servicios"
           dataset={users}
           actionSheetActions={actions}
           onActionSheetEdit={onActionSheetEdit}
@@ -66,14 +75,15 @@ const Home = () => {
             '--initial-position-bottom': '65px',
             '--initial-position-right': '35px',
             '--edge-distance': '24px',
+            '--background':backgroundColor
           }}
           onClick={onCreateService}
         >
-          <Icon icon="bx:plus" style={{ fontSize: "30px" }} />
+          <Icon icon="bx:plus" style={{ fontSize: "30px" ,color:  colorIcon }} />
         </FloatingBubble>
       </ConfigProvider>
     </>
   );
 }
 
-export default Home;
+export default Popconfirmar;

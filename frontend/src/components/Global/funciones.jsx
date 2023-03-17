@@ -5,6 +5,80 @@ import moment from "moment";
 import exportFromJSON from 'export-from-json'
 import uniqid from 'uniqid';
 
+export const getAxiosLumenHea = async (propX) => {
+  const { uri, setloading, msErrorApi, keycloak, notification, parametros, request, logoutOptions ,headers,data } = propX;
+  setloading && setloading(true)
+
+  try {
+
+    let response
+
+    switch (request) {
+      case 'get':
+      case 'delete':
+      case 'head':
+        response = await clienteAxios[request](
+          uri,
+          //{ headers: { 'Authorization': `${keycloak.tokenParsed.typ} ${keycloak.token}`, }, },
+        );
+        break;
+      case 'post':
+      case 'put':
+      case 'patch':       
+        response = await clienteAxios[request](
+          uri,
+           data,
+          { headers:  headers  },
+        );
+        break;
+      default:
+        break;
+    }
+
+    notification && NotificationMessageANTD({
+      type: response.data.type,
+      texto: response.data.message,
+      tipoComponent: response.data.tipoComponent,
+    })
+
+    setloading && setloading(false)
+
+    switch (response.status) {
+      case 200:
+      case 201:
+        return response.data
+        break;
+      case 401:
+         keycloak.logout(logoutOptions)
+
+        break;
+
+      default:
+        break;
+    }
+
+
+  } catch (error) {
+
+    msErrorApi && NotificationMessageANTD({
+      type: 'error',
+      texto: msErrorApi,
+      tipoComponent: 'notification',
+    })
+
+    setloading && setloading(false)
+    return []
+
+  }
+}
+
+export const statusRecord = {
+  pulling: 'pulling',
+  canRelease: 'Puede liberar',
+  refreshing: 'Cargando...',
+  complete: 'Actualizado',
+}
+
 //Claves unicas
 export function Uid(extra=0) {
   return (new Date()).getTime()+Math.random().toString(16).slice(2)+uniqid()+extra   
@@ -118,12 +192,9 @@ export const formatTimeBD = (dateOriginal) => {
   return formatted_date;
 }
 
-
-
-
 /* resize imagen antes de subir  JVICENCIO*/
 export const beforeUpload = file => {
-  console.log(" beforeUpload === ", file)
+  // console.log(" beforeUpload === ", file)
 
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -187,43 +258,3 @@ export const disableDateRangesDatepiker = (range = { startDate: false, endDate: 
 }
 
 export default separator;
-
-
-
-//referencias de MOMENT (https://momentjs.com/)
-
-/// tipos de formato
-// moment().format('MMMM Do YYYY, h:mm:ss a'); // junio 29º 2022, 1:59:42 pm
-// moment().format('dddd');                    // miércoles
-// moment().format("MMM Do YY");               // jun. 29º 22
-// moment().format('YYYY [escaped] YYYY');
-
-//Relative Time
-// moment("20111031", "YYYYMMDD").fromNow(); // hace 11 años
-// moment("20120620", "YYYYMMDD").fromNow(); // hace 10 años
-// moment().startOf('day').fromNow();        // hace 14 horas
-// moment().endOf('day').fromNow();          // en 10 horas
-// moment().startOf('hour').fromNow();
-
-//Calendar Time
-// moment().subtract(10, 'days').calendar(); // 19/06/2022
-// moment().subtract(6, 'days').calendar();  // el jueves pasado a las 14:00
-// moment().subtract(3, 'days').calendar();  // el domingo pasado a las 14:00
-// moment().subtract(1, 'days').calendar();  // ayer a las 14:00
-// moment().calendar();                      // hoy a las 14:00
-// moment().add(1, 'days').calendar();       // mañana a las 14:00
-// moment().add(3, 'days').calendar();       // sábado a las 14:00
-// moment().add(10, 'days').calendar();      // 09/07/2022
-
-// Multiple Locale Support
-// moment.locale();         // es-mx
-// moment().format('LT');   // 14:01
-// moment().format('LTS');  // 14:01:08
-// moment().format('L');    // 29/06/2022
-// moment().format('l');    // 29/6/2022
-// moment().format('LL');   // 29 de junio de 2022
-// moment().format('ll');   // 29 de jun. de 2022
-// moment().format('LLL');  // 29 de junio de 2022 14:01
-// moment().format('lll');  // 29 de jun. de 2022 14:01
-// moment().format('LLLL'); // miércoles, 29 de junio de 2022 14:01
-// moment().format('llll');
