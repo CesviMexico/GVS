@@ -1,87 +1,182 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
-import { Dialog, List, SwipeAction, Toast, Image, ActionSheet, FloatingBubble } from 'antd-mobile';
+import { ImageViewer, Image, Grid, PullToRefresh, } from 'antd-mobile';
 
 import { Icon } from '@iconify/react';
-import { ListMobileAntd } from '../../components/Global/Mobile/ListMobileAntd';
+import { ListMobileAntdOption } from '../../components/Global/Mobile/ListMobileAntdOption';
 import "../../components/LayoutMobil/layoutMobil.css"
 
 import { useNavigate } from 'react-router-dom';
-
 import ThemeContext from '../../context/ThemContext'
 
+import { useKeycloak } from "@react-keycloak/web";
+import { DataAceptadas} from "./Services";
 
-const Popconfirmar = () => {
+//funciones
+import { statusRecord } from "../../components/Global/funciones";
+import { AppStringUser } from "../../Const";
 
+const Aceptadas = () => {
 
+  const { keycloak } = useKeycloak();
   const themeContext = useContext(ThemeContext)
   const {
-     idServicio, setIdServicio ,
-     sizeIcon, colorIcon, backgroundColor,
+    setIdServicio,
+    setTporconfirmar,
+    msErrorApi,
+    logoutOptions,
+    idiomaGralMobil,
+
   } = themeContext
 
   const navigate = useNavigate();
 
-  let users = []
-  for (let i = 1; i <= 5; i++) {
-    let element = {
-      id: i,
-      key: i,
-      avatar: null,
-      content: 'No. de servicio ' + i,
-      description: 'Descripción ' + i,
-      icon: 'fa-solid:car',
-      extra: null,
-      disabled: false
+  useEffect(() => { Data() }, []); 
+
+  const [loading, setloading] = useState(false)
+  const [datasource, setDataSource] = useState([]);
+
+
+  const userLocalStorage = {
+    id_user: localStorage.getItem(AppStringUser.ID_USER),
+    color: localStorage.getItem(AppStringUser.COLOR),
+    background_color: localStorage.getItem(AppStringUser.BACKGROUND_COLOR),
+  }
+
+  const Data = async () => {
+
+    try {
+      const response = await DataAceptadas(
+        setloading,
+        msErrorApi,
+        keycloak,
+        logoutOptions,
+        userLocalStorage.id_user
+
+      )
+
+      switch (response.status) {
+        case 403:
+          setloading(false);
+          break;
+
+        case undefined:
+          setloading(false);
+          break;
+
+        case 200:
+          //console.log("DataAceptadas", response.data)
+          setDataSource([])
+          setTporconfirmar(response.data && response.data.length)
+          let users = []
+          response.data && response.data.forEach(row => {
+            let element = {
+              id: row.id_valuacion,
+              key: row.id_valuacion,
+              avatar:
+                row.foto !== null ?
+                  <Image
+                    src={row.foto}
+                    style={{ borderRadius: 8 }}
+                    fit='cover'
+                    width={80}
+                    height={70}
+                    onClick={() => VerFotos(row.files.filter(row => row.type_file === "image").map(row => row.pathname))}
+                  /> :
+                  <Icon
+                    icon={"fa-solid:car"}
+                    style={{ fontSize: "30px" }}
+                  />,
+
+              content:
+                <Grid columns={1} gap={0}>
+                  <Grid.Item>
+                    <div >{row.reporte}</div>
+                  </Grid.Item>
+                  <Grid.Item>
+                    <div >{row.vin}</div>
+                  </Grid.Item>
+                </Grid>,
+              description: 'Solicitada: ' + row.fecha_solicitud,
+              icon: 'fa-solid:car',
+              extra:
+                row.fotoMonto &&
+                <>
+                  <Icon
+                    icon="tabler:photo-dollar"
+                    style={{ fontSize: "35px" }}
+                    onClick={() => VerFotos([row.fotoMonto])}
+                  />
+                </>,
+              disabled: false
+            }
+
+            users.push(element);
+          })
+          setDataSource(users)
+
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      setloading(false);
     }
-    users.push(element);
+
+  };
+
+  const [fotos, setFotos] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const VerFotos = (fotos) => {
+    //console.log("VerFotos", fotos)
+    setFotos(fotos)
+    setVisible(true)
   }
 
-  const actions = [
-    { text: 'Finalizar', key: 'f', onClick: () => Toast.show('Se ha finalizado el el servicio: ' + keyservice) },
-    { text: 'Finalizar sin costos', key: 'fsc', onClick: () => Toast.show('Se ha finalizado el el servicio sin costos: ' + keyservice) },
-    { text: 'Finalizar sin previa', key: 'fsp', onClick: () => Toast.show('Se ha finalizado el el servicio sin previa ' + keyservice) },
-  ];
 
-  const onActionSheetEdit = (data) => {
-    setIdServicio(data.content)
-    navigate("/Servicio/" + data.key)
-
+  const onActionSheet = async (data) => {
+    //console.log("onActionSheetEdit", data)
   }
-  const onCreateService = () => {
-    navigate("/Valuaciones")
-    setIdServicio("Solicitar Valuación")
-
-  }
-
-  const [keyservice, setKeyService] = useState(null);
 
   return (
     <>
-      <ConfigProvider locale={enUS}>
-        <ListMobileAntd
-          //headerTitle="Servicios"
-          dataset={users}
-          actionSheetActions={actions}
-          onActionSheetEdit={onActionSheetEdit}
-          setKeyService={setKeyService}
-        />
+      <PullToRefresh
+        onRefresh={async () => {
+          await Data();
+        }}
+        renderText={(status) => {
+          return (
+            <ConfigProvider locale={idiomaGralMobil}>
+              <div>{statusRecord[status]}</div>
+            </ConfigProvider>
+          );
+        }}
+      >
+        <ConfigProvider locale={enUS}>
+          <ImageViewer.Multi
+            images={fotos}
+            visible={visible}
+            defaultIndex={0}
+            onClose={() => {
+              setVisible(false);
+            }}
 
-        <FloatingBubble
-          style={{
-            '--initial-position-bottom': '65px',
-            '--initial-position-right': '35px',
-            '--edge-distance': '24px',
-            '--background':backgroundColor
-          }}
-          onClick={onCreateService}
-        >
-          <Icon icon="bx:plus" style={{ fontSize: "30px" ,color:  colorIcon }} />
-        </FloatingBubble>
-      </ConfigProvider>
+          />
+          <ListMobileAntdOption
+            //headerTitle="Servicios"
+            onClickButton={() => Data()}
+            dataset={datasource}
+            loading={loading}
+            pdf={true}
+            onActionSheet={onActionSheet}
+          />
+
+        </ConfigProvider>
+      </PullToRefresh>
     </>
   );
 }
 
-export default Popconfirmar;
+export default Aceptadas;

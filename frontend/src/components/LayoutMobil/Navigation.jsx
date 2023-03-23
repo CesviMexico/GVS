@@ -10,13 +10,22 @@ import { useKeycloak } from '@react-keycloak/web'
 import { DataOneUser } from "../Layout/Services"
 import { AppStringUser } from "../../Const";
 
+import { firebaseConfig } from "../Global/firebase"
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, where, onSnapshot, } from 'firebase/firestore';
 
 
 const Navigation = (props) => {
 
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  // const storage = getStorage(app);
+
   const { keycloak } = useKeycloak()
   const themeContext = useContext(ThemeContext)
-  const {msErrorApi, logoutOptions, idServicio, setIdServicio,tproceso, tporconfirmar} = themeContext
+  const { msErrorApi, logoutOptions, idServicio, setIdServicio, tproceso, tporconfirmar,
+    setTproceso,setTporconfirmar,
+  } = themeContext
 
   const navigate = useNavigate()
   const location = useLocation();
@@ -62,6 +71,35 @@ const Navigation = (props) => {
   }, []);
 
 
+  const [Total_Data, setTotal_Data] = useState([]);
+  const preferred_username = localStorage.getItem(AppStringUser.PREFERRED_USERNAME);
+
+  useEffect(() => {
+
+    const q = query(collection(db, "usuarios"), where("user", "==", preferred_username));
+    const unsuscribe = onSnapshot(q, (snapshot) => {
+      setTotal_Data([])
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const final = { ...change.doc.data(), id: change.doc.id }
+          setTotal_Data(final)
+        }
+
+        if (change.type === "modified") {         
+          const final = { ...change.doc.data(), id: change.doc.id }        
+          setTotal_Data(final)
+        }
+      });
+      console.log('viewListMessage', Total_Data) 
+      setTproceso( Total_Data.solicitado)
+      setTporconfirmar( Total_Data.valuado)   
+    });
+
+    return () => {
+      unsuscribe();
+    }
+  }, []);
+
 
   const Bottom = () => {
     const tabs = [
@@ -69,13 +107,13 @@ const Navigation = (props) => {
         key: '/Proceso',
         title: 'Valuaciones en proceso',
         icon: <Icon icon={"bx:home"} style={{ fontSize: 35 }} />,
-        badge: tproceso,
+        badge: Total_Data.solicitado,
       },
       {
         key: '/Porconfirmar',
         title: 'Valuaciones por confirmar',
         icon: <Icon icon={"bx:dollar-circle"} style={{ fontSize: 35 }} />,
-        badge: tporconfirmar,
+        badge: Total_Data.valuado,
       },
       {
         key: '/Aceptadas',
@@ -143,11 +181,8 @@ const Navigation = (props) => {
       user_info.sub
     );
 
-    console.log("DatosPerfilMovil", response[0])
-
+    // console.log("DatosPerfilMovil", response[0])
     localStorage.clear()
-
-
     localStorage.setItem(AppStringUser.BACKGROUND_COLOR, response[0].background_color);
     localStorage.setItem(AppStringUser.COLOR, response[0].color);
     localStorage.setItem(AppStringUser.COMPANY, response[0].company);
@@ -173,7 +208,6 @@ const Navigation = (props) => {
     }
   }, [keycloak])
 
-
   const background_color = localStorage.getItem(AppStringUser.BACKGROUND_COLOR);
   const color = localStorage.getItem(AppStringUser.COLOR);
 
@@ -187,7 +221,7 @@ const Navigation = (props) => {
               <NavBar
                 backArrow={false}
                 right={right}
-              style={{ backgroundColor: background_color, color: color }}
+                style={{ backgroundColor: background_color, color: color }}
               >
                 {nameNavBar}
               </NavBar>
@@ -195,7 +229,7 @@ const Navigation = (props) => {
               <NavBar
                 onBack={back}
                 right={right}
-              style={{ backgroundColor: background_color, color: color }}
+                style={{ backgroundColor: background_color, color: color }}
               >
                 {idServicio}
               </NavBar>

@@ -3,11 +3,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import "../../components/LayoutMobil/layoutMobil.css"
-import {
-    Form, Input, Button, Dialog, TextArea,
-    Selector, Slider, Stepper, Switch, DatePicker,
-    Space, Picker, ImageUploader,
-} from 'antd-mobile';
+import {Form, Input, Button,  TextArea, ImageUploader} from 'antd-mobile';
 import { PicturesOutline } from "antd-mobile-icons";
 
 import { useNavigate, } from 'react-router-dom';
@@ -16,14 +12,14 @@ import { AppStringUser } from "../../Const";
 
 //servicios
 import { InsertValuacion } from "./Services";
-import {beforeUpload}   from '../../components/Global/funciones'
+import { beforeUpload } from '../../components/Global/funciones'
 
 const Valuaciones = () => {
     const { keycloak } = useKeycloak();
     const themeContext = useContext(ThemeContext)
-    const { msErrorApi, logoutOptions,setIdServicio, } = themeContext
+    const { msErrorApi, logoutOptions, setIdServicio, } = themeContext
 
-    const navigate = useNavigate()
+    const navigate = useNavigate()  
 
     const userLocalStorage = {
         id_user: localStorage.getItem(AppStringUser.ID_USER),
@@ -66,9 +62,9 @@ const Valuaciones = () => {
                     break;
 
                 case 200:
-                    setFileList([]);                  
+                    setFileList([]);
                     // setInitialValues([]);
-                    setIdServicio()  
+                    setIdServicio()
                     navigate("/Proceso")
                     setLoading("Valuaciones en proceso");
 
@@ -122,7 +118,7 @@ const Valuaciones = () => {
                         rules={[{ required: true, message: "Reporte" }]}
                     >
                         <Input
-                        // onChange={console.log}
+                        // onChange={//console.log}
                         // placeholder='reporte'
                         />
                     </Form.Item>
@@ -131,7 +127,7 @@ const Valuaciones = () => {
                         rules={[{ required: true, message: "VIN" }]}
                     >
                         <Input
-                        // onChange={console.log}
+                        // onChange={//console.log}
                         // placeholder='viVINn'
                         />
                     </Form.Item>
@@ -140,7 +136,7 @@ const Valuaciones = () => {
                         rules={[{ required: true, message: "Reporte de daños" }]}
                     >
                         <TextArea
-                            // onChange={console.log}
+                            // onChange={//console.log}
                             // placeholder='Motivo del servicio'
                             //maxLength={100}
                             rows={4}

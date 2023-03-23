@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect,  useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
-import {
-  Dialog, List, SwipeAction, Toast, ImageViewer,
-  Image, ActionSheet, FloatingBubble, Switch, Grid,
-  PullToRefresh,
-} from 'antd-mobile';
+import { ImageViewer, Image, Grid, PullToRefresh, } from 'antd-mobile';
 
 import { Icon } from '@iconify/react';
 import { ListMobileAntdOption } from '../../components/Global/Mobile/ListMobileAntdOption';
@@ -15,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../../context/ThemContext'
 
 import { useKeycloak } from "@react-keycloak/web";
-import { DataPorconfirmar } from "./Services";
+import { DataPorconfirmar, DataUpdate } from "./Services";
 
 //funciones
 import { statusRecord } from "../../components/Global/funciones";
@@ -27,7 +23,7 @@ const Porconfirmar = () => {
   const themeContext = useContext(ThemeContext)
   const {
     setIdServicio,
-    setTporconfirmar,
+    tporconfirmar,
     msErrorApi,
     logoutOptions,
     idiomaGralMobil,
@@ -36,12 +32,10 @@ const Porconfirmar = () => {
 
   const navigate = useNavigate();
 
-  //TABLA
-  useEffect(() => { Data() }, []);
+  useEffect(() => { Data() }, [tporconfirmar]);
 
   const [loading, setloading] = useState(false)
   const [datasource, setDataSource] = useState([]);
-
 
   const userLocalStorage = {
     id_user: localStorage.getItem(AppStringUser.ID_USER),
@@ -71,29 +65,28 @@ const Porconfirmar = () => {
           break;
 
         case 200:
-          console.log("DataPorconfirmar", response.data)
-          // setDataSource(response.data)
+          //console.log("DataPorconfirmar", response.data)
           setDataSource([])
-          setTporconfirmar(response.data && response.data.length)
+          //setTporconfirmar(response.data && response.data.length)
           let users = []
           response.data && response.data.forEach(row => {
             let element = {
               id: row.id_valuacion,
               key: row.id_valuacion,
-              avatar: 
-              row.foto !== null ?
-              <Image
-                  src={ row.foto}
-                  style={{ borderRadius: 8 }}
-                  fit='cover'
-                  width={80}
-                  height={70}
-                  onClick={() => VerFotos(row.files.filter(row => row.type_file === "image").map(row => row.pathname))}
-              /> :
-              <Icon
-                  icon={"fa-solid:car"}
-                  style={{ fontSize: "30px" }}
-              />,
+              avatar:
+                row.foto !== null ?
+                  <Image
+                    src={row.foto}
+                    style={{ borderRadius: 8 }}
+                    fit='cover'
+                    width={80}
+                    height={70}
+                    onClick={() => VerFotos(row.files.filter(row => row.type_file === "image").map(row => row.pathname))}
+                  /> :
+                  <Icon
+                    icon={"fa-solid:car"}
+                    style={{ fontSize: "30px" }}
+                  />,
 
               content:
                 <Grid columns={1} gap={0}>
@@ -107,16 +100,8 @@ const Porconfirmar = () => {
               description: 'Solicitada: ' + row.fecha_solicitud,
               icon: 'fa-solid:car',
               extra:
-                row.files.length > 0 &&
+                row.fotoMonto &&
                 <>
-                  {/* <Icon
-                    icon="mingcute:photo-album-fill"
-                    style={{
-                      fontSize: "25px",
-                      // color: userLocalStorage.background_color,
-                    }}
-                    onClick={() => VerFotos(row.files.filter(row => row.type_file === "image").map(row => row.pathname))}
-                  /> */}
                   <Icon
                     icon="tabler:photo-dollar"
                     style={{ fontSize: "35px" }}
@@ -144,21 +129,52 @@ const Porconfirmar = () => {
   const [fotos, setFotos] = useState([]);
   const [visible, setVisible] = useState(false);
   const VerFotos = (fotos) => {
-    console.log("VerFotos",fotos)
+    //console.log("VerFotos", fotos)
     setFotos(fotos)
     setVisible(true)
   }
 
 
-  const onActionSheetEdit = (data) => {
+  const onActionSheet = async (data, tipo, valueMotivo) => {
+    //console.log("onActionSheetEdit", data.id)
+    //console.log("onActionSheettipo", tipo)
+    // return
 
-    console.log("onActionSheetEdit", data)
-    // setIdServicio(data.content)
-    // navigate("/Servicio/" + data.key)
+    try {
+      const response = await DataUpdate(
+        setloading,
+        msErrorApi,
+        keycloak,
+        logoutOptions,
+        data.id,
+        {
+          motivo_declina: valueMotivo ? valueMotivo : " ",
+          status: tipo === 1 ? 'aceptado' : 'declinado',
+        }
 
+      )
+      switch (response.status) {
+        case 403:
+          setloading(false);
+          break;
+
+        case undefined:
+          setloading(false);
+          break;
+
+        case 200:
+          //console.log("DataUpdate", response.data)
+          Data()
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      setloading(false);
+    }
 
   }
-
   return (
     <>
       <PullToRefresh
@@ -183,14 +199,16 @@ const Porconfirmar = () => {
             }}
 
           />
-
           <ListMobileAntdOption
             //headerTitle="Servicios"
+            onClickButton={() => Data()}
             dataset={datasource}
             loading={loading}
-
-            onActionSheetEdit={onActionSheetEdit}
+            onActionSheet={onActionSheet}
+            color={userLocalStorage.color}
+            backgroundColor={userLocalStorage.background_color}
           />
+
         </ConfigProvider>
       </PullToRefresh>
     </>

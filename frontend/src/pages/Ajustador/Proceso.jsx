@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect,  useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
-import {
-  Dialog, List, SwipeAction, Toast, ImageViewer,
-  Image, ActionSheet, FloatingBubble, Switch, Grid,
-  PullToRefresh,
-} from 'antd-mobile';
+import { ImageViewer, Image, FloatingBubble, Grid, PullToRefresh, } from 'antd-mobile';
 
 import { Icon } from '@iconify/react';
 import { ListMobileAntd } from '../../components/Global/Mobile/ListMobileAntd';
@@ -27,17 +23,17 @@ const Proceso = () => {
   const themeContext = useContext(ThemeContext)
   const {
     setIdServicio,
-    setTproceso,
+    tproceso,
     msErrorApi,
-    logoutOptions,    
+    logoutOptions,
     idiomaGralMobil,
 
   } = themeContext
 
   const navigate = useNavigate();
 
-  //TABLA
-  useEffect(() => { Data() }, []);
+  useEffect(() => { Data() }, [tproceso]);
+
 
   const [loading, setloading] = useState(false)
   const [datasource, setDataSource] = useState([]);
@@ -73,13 +69,26 @@ const Proceso = () => {
 
         case 200:
           // setDataSource(response.data)
-          setTproceso(response.data && response.data.length)
+          // setTproceso(response.data && response.data.length)
           let users = []
           response.data && response.data.forEach(row => {
             let element = {
               id: row.id_valuacion,
               key: row.id_valuacion,
-              avatar: row.foto,
+              avatar:
+                row.foto !== null ?
+                  <Image
+                    src={row.foto}
+                    style={{ borderRadius: 8 }}
+                    fit='cover'
+                    width={80}
+                    height={70}
+                    onClick={() => VerFotos(row.files.filter(row => row.type_file === "image").map(row => row.pathname))}
+                  /> :
+                  <Icon
+                    icon={"fa-solid:car"}
+                    style={{ fontSize: "30px" }}
+                  />,
               content:
                 <Grid columns={1} gap={0}>
                   <Grid.Item>

@@ -36,21 +36,22 @@ export const ListMobileAntd = (props) => {
                             <List.Item
                                 //onClick={() =>  onClickActionListItem(data)}
                                 key={Uid()}
-                                prefix={
-                                    data.avatar !== null ?
-                                        <Image
-                                            src={data.avatar}
-                                            style={{ borderRadius: 8 }}
-                                            fit='cover'
-                                            width={80}
-                                            height={70}
+                                // prefix={
+                                //     data.avatar !== null ?
+                                //         <Image
+                                //             src={data.avatar}
+                                //             style={{ borderRadius: 8 }}
+                                //             fit='cover'
+                                //             width={80}
+                                //             height={70}
 
-                                        /> :
-                                        <Icon
-                                            icon={data.icon}
-                                            style={{ fontSize: "30px" }}
-                                        />
-                                }
+                                //         /> :
+                                //         <Icon
+                                //             icon={data.icon}
+                                //             style={{ fontSize: "30px" }}
+                                //         />
+                                // }
+                                prefix={data.avatar}
                                 description={data.description}
                                 extra={data.extra}
                                 disabled={data.disabled}

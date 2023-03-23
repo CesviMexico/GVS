@@ -1,42 +1,74 @@
 import React, { useRef, useState } from 'react';
-import { Dialog, List, SwipeAction, Toast, Image, ActionSheet, Skeleton } from 'antd-mobile';
+import { Dialog, List, SwipeAction, Grid, Skeleton, TextArea, AutoCenter, Button, ErrorBlock, } from 'antd-mobile';
 import { Icon } from '@iconify/react';
 import { Uid } from '../funciones'
 export const ListMobileAntdOption = (props) => {
 
     const {
         loading, headerTitle, dataset,
-        rightActionsSwipe = "default",
-        onActionSheetEdit,
+        rightActionsSwipe = "default", onClickButton,
+        onActionSheet, pdf,
+       color, backgroundColor,
     } = props
 
     const ref = useRef(null);
+    // const [valueMotivo, setValueMotivo] = useState("");
 
+    let valueMotivo = null;
 
     const onRightActions = (data) => {
 
-        const rightActionsDefault = [            
+        const rightActionsDefault = [
             {
-                key: 'Si',
+                key: Uid(data.id),
                 text: <Icon icon={"heroicons-outline:check"} style={{ fontSize: "30px" }} />,
                 color: '#66bb6a',
-
-                onClick: () => {
-                    onActionSheetEdit(data)
-                    ref.current.close()
+                onClick: async () => {
+                    await Dialog.confirm({
+                        confirmText: 'OK',
+                        cancelText: 'Cancelar',
+                        content: '¿Seguro que quieres aceptarla?',
+                        onConfirm: () => onActionSheet(data, 1, undefined),
+                        // onClose: ref.current.close()
+                    })
                 },
-
             },
             {
-                key: 'No',
+                key: Uid(data.id),
                 text: <Icon icon={"heroicons-outline:x"} style={{ fontSize: "24px" }} />,
                 color: 'danger',
 
                 onClick: async () => {
                     await Dialog.confirm({
-                        content: '¿Seguro que quieres eliminarlo?',
+                        confirmText: 'OK',
+                        cancelText: 'Cancelar',
+                        content:
+                            <>
+                                <AutoCenter>
+                                    <Grid columns={1} gap={10}>
+                                        <Grid.Item>
+                                            ¿Seguro que quieres declinarla?
+                                        </Grid.Item>
+                                        <Grid.Item />
+                                        <Grid.Item>
+                                            <TextArea
+                                                autoSize={true}
+                                                placeholder='Motivo'
+                                                // value={valueMotivo}
+                                                onChange={val => {
+                                                    valueMotivo = val
+                                                    console.log("val", val)
+                                                }}
+                                            />
+                                        </Grid.Item>
+                                    </Grid>
+                                </AutoCenter>
+                            </>
+                        ,
+                        onConfirm: () => onActionSheet(data, 0, valueMotivo),
+                        // onClose: ref.current.close()
                     })
-                    ref.current.close()
+                    //ref.current.close()
                 },
 
             },
@@ -45,6 +77,31 @@ export const ListMobileAntdOption = (props) => {
 
         return rightActions
     }
+
+    const onRightActions2 = (data) => {
+
+        const rightActionsDefault2 = [
+            {
+                key: Uid(data.id),
+                text: <Icon icon={"carbon:generate-pdf"} style={{ fontSize: "30px" }} />,
+                color: 'primary',
+                onClick: async () => {
+                    await Dialog.confirm({
+                        confirmText: 'OK',
+                        cancelText: 'Cancelar',
+                        content: '¿Seguro que quieres ver PDF?',
+                        onConfirm: () => onActionSheet(data),
+                        // onClose: ref.current.close()
+                    })
+                },
+            },
+        ];
+
+        const rightActions = rightActionsSwipe === "default" ? rightActionsDefault2 : rightActionsSwipe
+
+        return rightActions
+    }
+
 
     return (
         <>{
@@ -72,26 +129,51 @@ export const ListMobileAntdOption = (props) => {
                 </>
                 :
                 <>
-                    <List header={headerTitle}>
-                        {dataset.map(data => (
-                            <SwipeAction
-                                ref={ref}
-                                closeOnAction={false}
-                                closeOnTouchOutside={false}
-                                rightActions={onRightActions(data)}
-                            >
-                                <List.Item
-                                    key={Uid()}
-                                    prefix={ data.avatar }
-                                    description={data.description}
-                                    extra={data.extra}
-                                    disabled={data.disabled}
+                    {dataset.length > 0 ?
+                        <List header={headerTitle}>
+                            {dataset.map(data => (
+                                <SwipeAction
+                                    key={Uid(data.id)}
+                                    ref={ref}
+                                    closeOnAction={false}
+                                    closeOnTouchOutside={false}
+                                    rightActions={pdf ? onRightActions2(data) : onRightActions(data)}
                                 >
-                                    {data.content}
-                                </List.Item>
-                            </SwipeAction>
-                        ))}
-                    </List>
+                                    <List.Item
+                                        key={Uid(data.id)}
+                                        prefix={data.avatar}
+                                        description={data.description}
+                                        extra={data.extra}
+                                        disabled={data.disabled}
+                                    >
+                                        {data.content}
+                                    </List.Item>
+                                </SwipeAction>
+                            ))}
+                        </List>
+                        :
+                        <AutoCenter>
+                            <ErrorBlock
+                                fullPage
+                                title="No hay datos por mostrar..."
+                                status='busy'
+                                description={" "}
+                                image='https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg'
+                               >
+                                <Button
+                                    loading={loading}
+                                    onClick={() => onClickButton()}
+                                    style={{
+                                        color: color,
+                                        backgroundColor:backgroundColor
+                                    }}
+                                >
+                                    Actualizar
+                                </Button>
+                            </ErrorBlock>
+                        </AutoCenter>
+                    }
+
                 </>
         }
         </>
