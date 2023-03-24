@@ -25,7 +25,7 @@ import { ModdalANTD } from '../Global/ModalComponent';
 import CardMUI from '../Global/CardComponent';
 
 // FUNCIONES
-import separator, { formatDate, formatDateTime, ExportToExcel, Uid } from './funciones'
+import separator, { formatDate, formatDateTime, ExportToExcel, Uid , beforeUpload} from './funciones'
 
 
 //colores
@@ -39,7 +39,6 @@ import update from "immutability-helper";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { SearchOutlined } from '@ant-design/icons';
-import Box from '@mui/material/Box';
 
 
 const { Link } = TypographyAntd;
@@ -258,6 +257,101 @@ const TablaANTD = (props) => {
   };
 
   //Función para mostrar las acciones de cada fila -> editar o eliminar
+
+  const actionBooleano = (row, key, IconAction, titleMSG, text, campoAvalidar) => {
+   
+  
+    return (
+      <>
+        {row[campoAvalidar] &&
+
+          <Tooltip title={key} key={Uid(1)}>
+            {titleMSG ?
+              <Popconfirm
+                key={Uid(2)}
+                title={titleMSG}
+                description={titleMSG}
+                okText="Si"
+                cancelText="No"
+                onConfirm={() => OnClickAction(row, key)}
+              >
+                <Icon icon={IconAction} key={key}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: sizeIcon,
+                    marginLeft: "5px",
+                    color: backgroundColor
+                  }}
+                />
+              </Popconfirm>
+              :
+              <Icon icon={IconAction} key={key}
+                style={{
+                  cursor: "pointer",
+                  fontSize: sizeIcon,
+                  marginLeft: "5px",
+                  color: backgroundColor
+                }}
+                onClick={() => OnClickAction(row, key)}
+              />
+            }
+
+          </Tooltip>
+
+        }
+
+      </>
+    );
+  };
+  const objAccionesBooleano = (key, IconAction, titleMSG, campoAvalidar) => ({
+    render: (text, row, index) => actionBooleano(row, key, IconAction, titleMSG, text, campoAvalidar),
+  })
+  const actionBander = (row, key, IconAction, titleMSG, text, campoAvalidar, valorAvalidar) => {
+    
+    return (
+      <>
+        {row[campoAvalidar] === valorAvalidar &&
+          <Tooltip title={key} key={Uid(1)}>
+            {titleMSG ?
+              <Popconfirm
+                key={Uid(2)}
+                title={titleMSG}
+                description={titleMSG}
+                okText="Si"
+                cancelText="No"
+                onConfirm={() => OnClickAction(row, key)}
+              >
+                <Icon icon={IconAction} key={key}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: sizeIcon,
+                    marginLeft: "5px",
+                    color: backgroundColor
+                  }}
+                />
+              </Popconfirm>
+              :
+
+              <Icon icon={IconAction} key={key}
+                style={{
+                  cursor: "pointer",
+                  fontSize: sizeIcon,
+                  marginLeft: "5px",
+                  color: backgroundColor
+                }}
+                onClick={() => OnClickAction(row, key)}
+              />
+
+            }
+          </Tooltip>
+        }
+
+      </>
+    );
+  };
+  const objAccionesBandera = (key, IconAction, titleMSG, campoAvalidar, valorAvalidar) => ({
+    render: (text, row, index) => actionBander(row, key, IconAction, titleMSG, text, campoAvalidar, valorAvalidar),
+  })
   const rate = (row, nameValue,) => {
     return (
       <>
@@ -265,11 +359,9 @@ const TablaANTD = (props) => {
       </>
     );
   };
-
   const objRate = (nameValue) => ({
     render: (text, row, index) => rate(row, nameValue,),
   })
-
   const avatar = (row, nameUrl, size, nameTexShow) => {
     return (
       <>
@@ -286,12 +378,9 @@ const TablaANTD = (props) => {
       </>
     );
   };
-
   const objAvatar = (nameUrl, size, nameTexShow) => ({
     render: (text, row, index) => avatar(row, nameUrl, size, nameTexShow),
   })
-
-
   const iconT = (row, nameUrl, size) => {
     return (
       <>
@@ -305,11 +394,9 @@ const TablaANTD = (props) => {
   const objIcon = (nameUrl, size) => ({
     render: (text, row, index) => iconT(row, nameUrl, size),
   })
-
   const objNo = () => ({
     render: (text, record, index) => (index + 1),
   })
-
   const action = (row, key, IconAction, titleMSG, text) => {
     return (
       <>
@@ -352,7 +439,6 @@ const TablaANTD = (props) => {
       </>
     );
   };
-
   const objAcciones = (key, IconAction, titleMSG,) => ({
     render: (text, row, index) => action(row, key, IconAction, titleMSG, index, text),
   })
@@ -394,13 +480,12 @@ const TablaANTD = (props) => {
   })
 
   // upload
-  const upload = (row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl) => {
+  const upload = (row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath) => {
 
     return (
-      row.path ?
+      row[namepath] ?
         (<Tooltip title={titleMSGD}>
-          <Link href={row.path} target="_blank">
-            {/* <Icon icon={swicthIcons[IconUploadD]} */}
+          <Link href={ row[namepath]} target="_blank">
             <Icon icon={IconUploadD}
               style={{
                 cursor: "pointer",
@@ -417,9 +502,10 @@ const TablaANTD = (props) => {
           name='file'
           accept={tipoFile}
           multiple={multipleFile}
-          action={actionUrl} //"https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          action={actionUrl+row[nameid]} 
           onChange={(e) => OnClickAction(row, key, e, 'change')}
           onRemove={(e) => OnClickAction(row, key, e, 'remove')}
+          beforeUpload={beforeUpload}
           defaultFileList={row.defaultFileList}
           listType={listType}
           onPreview={listType !== 'text' && handlePreview}
@@ -439,8 +525,8 @@ const TablaANTD = (props) => {
     );
   };
 
-  const objUploads = (key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl) => ({
-    render: (row) => upload(row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl),
+  const objUploads = (key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath) => ({
+    render: (row) => upload(row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath),
   })
 
   //DatePicker
@@ -542,35 +628,27 @@ const TablaANTD = (props) => {
     render: (text, record, index) => Combo(record, key, IconAction, placeholder, arrayOption, index, width),
   })
 
-
-
   //ordenamiento de las columnas
   const objSorterNumber = (dataIndex) => ({
     sorter: (a, b) => a[dataIndex] - b[dataIndex],
   })
-
   const objSorterString = (dataIndex) => ({
     sorter: (a, b) => a[dataIndex] < b[dataIndex],
   })
-
   //filtrado de la columna
   const filtersOption = (dataIndex) => ({
     onFilter: (value, record) => record[dataIndex] && record[dataIndex].startsWith(value),
   })
-
   //Formato de datos de la columna
   const tipoMonedaMiles = (prefi) => ({
     render: (row) => prefi + separator(row + ""),
   })
-
   const tipoFecha = () => ({
     render: (row) => formatDate(row),
   })
-
   const tipoFechaTime = () => ({
     render: (row) => formatDateTime(row),
   })
-
   //ellipsis
   const funcEllipsis = () => ({
     ellipsis: {
@@ -629,6 +707,11 @@ const TablaANTD = (props) => {
         {},
         col,
         col.no && objNo(),
+
+        col.actionsBandera && objAccionesBandera(col.key, col.icon, col.titleMSG, col.campoAvalidar, col.valorAvalidar,),
+
+        col.actionsBooleano && objAccionesBooleano(col.key, col.icon, col.titleMSG, col.campoAvalidar),
+
         col.actions && objAcciones(col.key, col.icon, col.titleMSG,),
         col.avatar && objAvatar(col.nameUrl, col.size, col.nameTexShow),
         col.icono && objIcon(col.nameUrl, col.size,),
@@ -650,6 +733,8 @@ const TablaANTD = (props) => {
           col.multipleFile,
           col.listType,
           col.actionUrl,
+          col.nameid,
+          col.namepath,
         ),
 
         col.busqueda && getColumnSearchProps(col.dataIndex, col.title),
@@ -717,7 +802,6 @@ const TablaANTD = (props) => {
       :
       ExportToExcel({ datasource: datasource, Title: Title })
   }
-
 
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -804,7 +888,7 @@ const TablaANTD = (props) => {
                   tableLayout={tableLayout} //"fixed" //- | auto | fixed
 
                   pagination={
-                    pagination !=="0" &&
+                    pagination !== "0" &&
                     {
                       responsive: true,
                       pageSize: pageSize,
@@ -820,11 +904,11 @@ const TablaANTD = (props) => {
                   title={() =>
                     noChange > 0 && noChange !== datasource.length ?
                       searchText &&
-                        <Typography
-                          variant="body2"
-                          style={{ color: colorTable }}
-                        ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-                        </Typography>
+                      <Typography
+                        variant="body2"
+                        style={{ color: colorTable }}
+                      ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                      </Typography>
                       : ""}
 
                   summary={(pageData) => Sumary && Sumary(pageData)}
@@ -856,7 +940,7 @@ const TablaANTD = (props) => {
               tableLayout={tableLayout} //"fixed" //- | auto | fixed
 
               pagination={
-                pagination !=="0"  &&
+                pagination !== "0" &&
                 {
                   responsive: true,
                   pageSize: pageSize,
@@ -872,11 +956,11 @@ const TablaANTD = (props) => {
               title={() =>
                 noChange > 0 && noChange !== datasource.length ?
                   searchText &&
-                    <Typography
-                      variant="body2"
-                      style={{ color: colorTable }}
-                    ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
-                    </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{ color: colorTable }}
+                  ><b style={{ fontSize: '17px' }} > {noChange}</b>{' registros de '} <b> {searchText}</b>{' en la columna '}<b>{searchedColumnT}</b>
+                  </Typography>
                   : ""}
 
               summary={(pageData) => Sumary && Sumary(pageData)}

@@ -29,7 +29,20 @@ const Layout = ({ children }) => {
 
     let navigate = useNavigate()
     const themeContext = useContext(ThemeContext)
-    const { themeAntd, sizeIcon, colorIcon, backgroundColor, msErrorApi, logoutOptions } = themeContext
+    const {
+        themeAntd, sizeIcon, colorIcon, backgroundColor,      
+        msErrorApi, logoutOptions, 
+  
+        setColorIcon,
+        setbackgroundColor, 
+        setColorBadge,
+        setSizeIcon,
+        setPrimaryColor,
+        setSecondaryColor,
+        setColorTable,
+
+
+    } = themeContext
     const { keycloak } = useKeycloak()
     const [loading, setloading] = useState(false);
     const [items, setItems] = useState([]);
@@ -38,7 +51,10 @@ const Layout = ({ children }) => {
     const [openKeys, setOpenKeys] = useState([""]);
 
     const userContext = useContext(UserContext);
-    const { user, updateUser } = userContext;
+    const {
+        user, updateUser,
+
+    } = userContext;
 
 
     const onOpenChange = (keys) => {
@@ -70,7 +86,7 @@ const Layout = ({ children }) => {
 
     };
 
-    const ActualizaMenu = async (keycloak) => {  
+    const ActualizaMenu = async (keycloak) => {
         await keycloak.loadUserInfo()
         let user_info = keycloak.userInfo
         let user = {
@@ -142,8 +158,22 @@ const Layout = ({ children }) => {
             logoutOptions,
             user_info.sub
         );
-        console.log("DatosPerfil", response[0])       
+        
+        console.log("DatosPerfil", response[0])
+
         updateUser({ ...response[0], id_keycloak: user_info.sub, });
+        
+
+        setColorIcon(response[0].color)
+        setbackgroundColor(response[0].background_color)
+        setColorBadge(response[0].color_badge)
+        setSizeIcon(response[0].size_icon)
+        setPrimaryColor(response[0].primary_color)
+        setSecondaryColor(response[0].secondary_color)
+        setColorTable(response[0].background_color)
+        
+
+
     }
 
 

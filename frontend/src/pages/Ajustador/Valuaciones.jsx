@@ -3,7 +3,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import "../../components/LayoutMobil/layoutMobil.css"
-import {Form, Input, Button,  TextArea, ImageUploader} from 'antd-mobile';
+import { Form, Input, Button, TextArea, ImageUploader } from 'antd-mobile';
 import { PicturesOutline } from "antd-mobile-icons";
 
 import { useNavigate, } from 'react-router-dom';
@@ -19,7 +19,7 @@ const Valuaciones = () => {
     const themeContext = useContext(ThemeContext)
     const { msErrorApi, logoutOptions, setIdServicio, } = themeContext
 
-    const navigate = useNavigate()  
+    const navigate = useNavigate()
 
     const userLocalStorage = {
         id_user: localStorage.getItem(AppStringUser.ID_USER),
@@ -115,35 +115,42 @@ const Valuaciones = () => {
                 >
                     <Form.Header>Datos del siniestro</Form.Header>
                     <Form.Item name='reporte' label='Reporte'
-                        rules={[{ required: true, message: "Reporte" }]}
+                        rules={[{
+                            required: true,
+                            message: "Reporte",
+                            len: 20,
+                            pattern: new RegExp("^[a-z A-Z Ññ ü á-ú Á-Ú -- /-_,()=.+]*$"),
+                        }]}
                     >
-                        <Input
-                        // onChange={//console.log}
-                        // placeholder='reporte'
-                        />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item name='vin' label='VIN'
-                        rules={[{ required: true, message: "VIN" }]}
+                        rules={[{
+                            required: true,
+                            message: "VIN",
+                            len: 17,
+                            pattern: new RegExp("^[a-z A-Z 0-9]*$"),
+                        }]}
                     >
-                        <Input
-                        // onChange={//console.log}
-                        // placeholder='viVINn'
-                        />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item name='danios' label='Reporte de daños'
-                        rules={[{ required: true, message: "Reporte de daños" }]}
+                        rules={[{
+                            required: true,
+                            message: "Reporte de daños",                           
+                        }]}
                     >
-                        <TextArea
-                            // onChange={//console.log}
-                            // placeholder='Motivo del servicio'
-                            //maxLength={100}
-                            rows={4}
-                        // showCount
-                        />
+                        <TextArea rows={4} />
                     </Form.Item>
-                    <Form.Item name="archivos" label="Fotos">
+                    <Form.Item name="archivos" label="Fotos"
+                        // rules={[{
+                        //     required: true,
+                        //     message: "Fotos",
+                        //     type: 'url'
+                        // }]}
+                    >
                         <div style={{ height: "22vh", overflowY: "scroll" }}>
                             <ImageUploader
                                 multiple={true}

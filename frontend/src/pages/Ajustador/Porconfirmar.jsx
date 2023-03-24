@@ -17,7 +17,17 @@ import { DataPorconfirmar, DataUpdate } from "./Services";
 import { statusRecord } from "../../components/Global/funciones";
 import { AppStringUser } from "../../Const";
 
+//FIREBASE
+import { firebaseConfig } from '../../components/Global/firebase'
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+
+
 const Porconfirmar = () => {
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
 
   const { keycloak } = useKeycloak();
   const themeContext = useContext(ThemeContext)
@@ -41,6 +51,8 @@ const Porconfirmar = () => {
     id_user: localStorage.getItem(AppStringUser.ID_USER),
     color: localStorage.getItem(AppStringUser.COLOR),
     background_color: localStorage.getItem(AppStringUser.BACKGROUND_COLOR),
+    preferred_username: localStorage.getItem(AppStringUser.PREFERRED_USERNAME),
+
   }
 
   const Data = async () => {
@@ -65,9 +77,7 @@ const Porconfirmar = () => {
           break;
 
         case 200:
-          //console.log("DataPorconfirmar", response.data)
           setDataSource([])
-          //setTporconfirmar(response.data && response.data.length)
           let users = []
           response.data && response.data.forEach(row => {
             let element = {
@@ -114,6 +124,11 @@ const Porconfirmar = () => {
             users.push(element);
           })
           setDataSource(users)
+          const encuestaRef = doc(db, 'usuarios',  userLocalStorage.preferred_username);
+          response.data && await updateDoc(encuestaRef, {
+            valuado: response.data.length
+          });
+
 
           break;
 

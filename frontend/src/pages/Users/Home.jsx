@@ -7,6 +7,8 @@ import TablaANTD from "../../components/Global/TablaComponent";
 import { ModdalANTD } from "../../components/Global/ModalComponent";
 import FormAntd from "../../components/Global/FormComponent";
 import DrawerAntd from "../../components/Global/DrawerComponent";
+import NotificationMessageANTD from '../../components/Global/notification'
+
 
 //servicios
 import DataUser, { DeleteElement, UpdateElement, MenuPermissions, UpdatePermissions } from "./Services";
@@ -32,8 +34,17 @@ import { Form } from "antd";
 //iconos 
 import { Icon } from '@iconify/react';
 
+//FIREBASE
+import { firebaseConfig } from '../../components/Global/firebase'
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+
 
 const Home = () => {
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
 
   const themeContext = useContext(ThemeContext);
   const { keycloak } = useKeycloak();
@@ -74,6 +85,10 @@ const Home = () => {
     Eliminar: (row) => onEliminarRow(row),
     Editar: (row) => onEditarRow(row),
     Permisos: (row) => onPersmiosRow(row),
+    firebase: (row) => createFirebase(row),
+
+
+
   };
 
   const ActualizaTabla = async () => {
@@ -321,6 +336,26 @@ const Home = () => {
     }
 
   };
+
+  const createFirebase = async (row) => {
+    setloading(true);
+    await setDoc(doc(db, "usuarios", row.preferred_username), {
+      solicitado: 0,
+      valuado: 0,
+      user: row.preferred_username
+    });
+
+    NotificationMessageANTD(
+      {
+        tipoComponent: 'notification',
+        texto: 'Registro exitoso',
+        type: 'success',
+      }
+    )
+    setloading(false);
+
+  }
+
 
 
   return (

@@ -173,6 +173,10 @@ const Declinadas = () => {
             dataset={datasource}
             setKeyService={setKeyService}
             loading={loading}
+
+            onClickButton={() => Data()}
+            color={userLocalStorage.color}
+            backgroundColor={userLocalStorage.background_color}
           />
 
           <FloatingBubble

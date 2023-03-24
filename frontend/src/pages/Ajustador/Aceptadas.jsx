@@ -171,6 +171,10 @@ const Aceptadas = () => {
             loading={loading}
             pdf={true}
             onActionSheet={onActionSheet}
+
+            color={userLocalStorage.color}
+            backgroundColor={userLocalStorage.background_color}
+
           />
 
         </ConfigProvider>

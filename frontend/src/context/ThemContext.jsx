@@ -14,7 +14,7 @@ export const ThemeProvider = (props) => {
     const [sizeIcon, setSizeIcon] = useState(25)
 
     //Badge
-    const [colorBadge, setColorBadge] = useState(green[500])
+    const [colorBadge, setColorBadge] = useState(red[500])
 
     //TABLAS
     const [sizeIconTable, setSizeIconTable] = useState(40)

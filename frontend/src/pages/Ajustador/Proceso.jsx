@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import { ImageViewer, Image, FloatingBubble, Grid, PullToRefresh, } from 'antd-mobile';
@@ -17,7 +17,17 @@ import DataProceso from "./Services";
 import { statusRecord } from "../../components/Global/funciones";
 import { AppStringUser } from "../../Const";
 
+//FIREBASE
+import { firebaseConfig } from '../../components/Global/firebase'
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+
+
 const Proceso = () => {
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
 
   const { keycloak } = useKeycloak();
   const themeContext = useContext(ThemeContext)
@@ -43,8 +53,8 @@ const Proceso = () => {
     id_user: localStorage.getItem(AppStringUser.ID_USER),
     color: localStorage.getItem(AppStringUser.COLOR),
     background_color: localStorage.getItem(AppStringUser.BACKGROUND_COLOR),
+    preferred_username: localStorage.getItem(AppStringUser.PREFERRED_USERNAME),
   }
-
 
   const Data = async () => {
 
@@ -68,8 +78,7 @@ const Proceso = () => {
           break;
 
         case 200:
-          // setDataSource(response.data)
-          // setTproceso(response.data && response.data.length)
+
           let users = []
           response.data && response.data.forEach(row => {
             let element = {
@@ -112,7 +121,18 @@ const Proceso = () => {
 
             users.push(element);
           })
+
           setDataSource(users)
+
+          // await setDoc(doc(db, "usuarios", userLocalStorage.preferred_username), {
+          //   solicitado: response.data.length
+          // });
+
+          const encuestaRef = doc(db, 'usuarios', userLocalStorage.preferred_username);
+          response.data && await updateDoc(encuestaRef, {
+            solicitado: response.data.length
+          });
+
 
           break;
 
@@ -171,6 +191,11 @@ const Proceso = () => {
             dataset={datasource}
             setKeyService={setKeyService}
             loading={loading}
+
+            onClickButton={() => Data()}
+            color={userLocalStorage.color}
+            backgroundColor={userLocalStorage.background_color}
+            
           />
 
           <FloatingBubble

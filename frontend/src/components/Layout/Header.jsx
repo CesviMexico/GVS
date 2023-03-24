@@ -37,14 +37,23 @@ import { green, red, blue, yellow, grey } from "@mui/material/colors";
 
 import { useNavigate } from "react-router-dom";
 
+
+import { firebaseConfig } from "../Global/firebase"
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, where, onSnapshot, } from 'firebase/firestore';
+
+
 const { Header } = AntLayout;
 
 const HeaderComponent = () => {
   let navigate = useNavigate();
   const { keycloak } = useKeycloak();
 
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
   const themeContext = useContext(ThemeContext);
-  const {backgroundColor,sizeIcon,  } = themeContext;
+  const { backgroundColor, sizeIcon, } = themeContext;
   const userContext = useContext(UserContext);
   const { user } = userContext;
 
@@ -70,6 +79,39 @@ const HeaderComponent = () => {
     setAnchorEl(event.currentTarget);
     swicthTipo[tipo]();
   };
+
+
+  const [Total_Data, setTotal_Data] = useState(0);
+  useEffect(() => {
+
+    const q = query(collection(db, "usuarios"));
+    const unsuscribe = onSnapshot(q, (snapshot) => {
+      setTotal_Data(0)
+      let total = 0
+      snapshot.docChanges().forEach((change) => {
+
+        // if (change.type === "added") {
+        //   const final = { ...change.doc.data() }
+        //   // console.log('final', final.solicitado)
+        //   total = total + final.solicitado
+        //   setTotal_Data(total)
+
+        // }
+
+        // if (change.type === "modified") {
+          const final = { ...change.doc.data() }
+          total = total + final.solicitado
+          setTotal_Data(total)
+        // }
+
+      });
+      // console.log('viewListMessage', Total_Data)    
+    });
+
+    return () => {
+      unsuscribe();
+    }
+  }, []);
 
 
   return (
@@ -102,20 +144,20 @@ const HeaderComponent = () => {
             <AvatarMUI
               alt="NameUser"
               src="https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
-              // src={user.path_avatar}
+            // src={user.path_avatar}
             />
           </IconButton>
         </Tooltip>
 
         <IconButton
-          onClick={() => navigate("/DemosComponents")}
+          onClick={() => navigate("/Valuacion/Espera")}
           size="small"
           style={{ right: 60, backgroundColor: backgroundColor }}
         >
           <BadgeMUIImg
             sizeIcon={sizeIcon}
             icon={bellOutline}
-            badgeContent={10}
+            badgeContent={Total_Data}
             max={9999}
           />
         </IconButton>
@@ -254,7 +296,7 @@ const HeaderComponent = () => {
             </Typography>
           </MenuItem>
         )}
-            
+
       </Menu>
     </Header>
   );

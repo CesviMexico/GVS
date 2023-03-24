@@ -79,7 +79,7 @@ const Navigation = (props) => {
     const q = query(collection(db, "usuarios"), where("user", "==", preferred_username));
     const unsuscribe = onSnapshot(q, (snapshot) => {
       setTotal_Data([])
-      snapshot.docChanges().forEach((change) => {
+      snapshot.docChanges().forEach((change) => {        
         if (change.type === "added") {
           const final = { ...change.doc.data(), id: change.doc.id }
           setTotal_Data(final)
@@ -107,13 +107,13 @@ const Navigation = (props) => {
         key: '/Proceso',
         title: 'Valuaciones en proceso',
         icon: <Icon icon={"bx:home"} style={{ fontSize: 35 }} />,
-        badge: Total_Data.solicitado,
+        badge: Total_Data.solicitado > 0 && Total_Data.solicitado,
       },
       {
         key: '/Porconfirmar',
         title: 'Valuaciones por confirmar',
         icon: <Icon icon={"bx:dollar-circle"} style={{ fontSize: 35 }} />,
-        badge: Total_Data.valuado,
+        badge: Total_Data.valuado > 0 && Total_Data.valuado,
       },
       {
         key: '/Aceptadas',
