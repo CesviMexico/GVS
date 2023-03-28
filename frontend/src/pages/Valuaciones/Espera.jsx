@@ -77,9 +77,9 @@ const Espera = (props) => {
     };
     const swicthComponentAction = {
         fotos: (row) => onViewfotos(row),
-        monto: (row) => ActualizaTabla(),
-        status: (row) => onChangeStatus(row),
-        trash: (row) => onTrash(row),
+        Monto: (row) => ActualizaTabla(),
+        Validacion: (row) => onChangeStatus(row),
+        Eliminar: (row) => onTrash(row),
     };
     //ACTION'S DE LAS TABLAS
     const OnClickAction = (row, key) => {

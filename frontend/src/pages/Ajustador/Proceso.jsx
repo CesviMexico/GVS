@@ -200,15 +200,15 @@ const Proceso = () => {
 
           <FloatingBubble
             style={{
-              '--initial-position-bottom': '40px',
-              '--initial-position-right': '60px',
+              '--initial-position-bottom': '90px',
+              '--initial-position-right': '35px',
               '--edge-distance': '24px',
               '--background': userLocalStorage.background_color,
-              '--size': "58px",
+              '--size': "60px",
             }}
             onClick={onCreateService}
           >
-            <Icon icon="bx:plus" style={{ fontSize: "30px", color: userLocalStorage.color }} />
+            <Icon icon="bx:plus" style={{ fontSize: "33px", color: userLocalStorage.color }} />
           </FloatingBubble>
         </ConfigProvider>
       </PullToRefresh>

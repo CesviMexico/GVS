@@ -14,6 +14,8 @@ import DataValuations, {DataValuationsDeclined, GetPhotosValuation, GetValuation
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
+import { Uid } from '../../components/Global/funciones'
+
 const Declinadas = (props) => {
     const themeContext = useContext(ThemeContext);
     const { keycloak } = useKeycloak();
@@ -82,14 +84,12 @@ const Declinadas = (props) => {
     };
     //modal action
     const [visible, setVisible] = useState(false)
-    const [id_valuacion, setId_valuacion] = useState("")
     const [listImage, setListImage] = useState([])
 
     //acciones de botones
     const onViewfotos = async(row) => {
         //console.log("onViewfotos", row)
         setVisible(true)
-        setId_valuacion(row.id_valuacion)
         try {
             const response = await GetPhotosValuation(
                 setloading,
@@ -121,7 +121,6 @@ const Declinadas = (props) => {
     const onViewEvaluacion = async(row) => {
         //console.log("onViewEvaluacion", row)
         setVisible(true)
-        setId_valuacion(row.id_valuacion)
         try {
             const response = await GetValuationMonto(
                 setloading,
@@ -154,27 +153,23 @@ const Declinadas = (props) => {
 
     return (
         <>
-        <ModdalANTD
-            visible={visible}
-            Title={"Galeria"}
-            footer={false}
-            onCancel={()=>setVisible(false)}
-            width={"75%"}
-            centered>
+        <div style={{ display: 'none', }}>
                 <Image.PreviewGroup
                     preview={{
-                    onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+                        visible: visible,
+                        onVisibleChange: (vis) => setVisible(vis),
                     }}
-                    >
-                    {listImage.map((images) =>
-                    <Image
-                    //with="20"
-                    height={100}
-                    style={{ padding:5,  }}
-                    src={images.pathname} />
-                    )}    
-                </Image.PreviewGroup> 
-        </ModdalANTD>
+                >
+                    {listImage.map((images, index) =>
+                        <Image
+                            key={Uid(index)}
+                            //with="20"
+                            height={100}
+                            style={{ padding: 5, }}
+                            src={images.pathname} />
+                    )}
+                </Image.PreviewGroup>
+            </div>
         <Box
             sx={{
             display: "flex",

@@ -25,7 +25,7 @@ import { ModdalANTD } from '../Global/ModalComponent';
 import CardMUI from '../Global/CardComponent';
 
 // FUNCIONES
-import separator, { formatDate, formatDateTime, ExportToExcel, Uid , beforeUpload} from './funciones'
+import separator, { formatDate, formatDateTime, ExportToExcel, Uid, beforeUpload } from './funciones'
 
 
 //colores
@@ -258,56 +258,58 @@ const TablaANTD = (props) => {
 
   //Función para mostrar las acciones de cada fila -> editar o eliminar
 
-  const actionBooleano = (row, key, IconAction, titleMSG, text, campoAvalidar) => {
-   
-  
+  const actionBooleano = (row, key, IconAction, titleMSG, text, campoAvalidar, index) => {
     return (
       <>
         {row[campoAvalidar] &&
-
-          <Tooltip title={key} key={Uid(1)}>
+          <Tooltip
+            placement="topRight"
+            title={key}
+            key={Uid(index)}
+          >
             {titleMSG ?
               <Popconfirm
-                key={Uid(2)}
+                key={Uid(index)}
                 title={titleMSG}
-                description={titleMSG}
+                // description={titleMSG}
                 okText="Si"
                 cancelText="No"
                 onConfirm={() => OnClickAction(row, key)}
               >
-                <Icon icon={IconAction} key={key}
+                <>
+                  <Icon icon={IconAction} key={Uid(index)}
+                    style={{
+                      cursor: "pointer",
+                      fontSize: sizeIcon,
+                      marginLeft: "5px",
+                      color: backgroundColor
+                    }}
+                  />
+                </>
+              </Popconfirm>
+              :
+              <>
+                <Icon icon={IconAction} key={Uid(index)}
                   style={{
                     cursor: "pointer",
                     fontSize: sizeIcon,
                     marginLeft: "5px",
                     color: backgroundColor
                   }}
+                  onClick={() => OnClickAction(row, key)}
                 />
-              </Popconfirm>
-              :
-              <Icon icon={IconAction} key={key}
-                style={{
-                  cursor: "pointer",
-                  fontSize: sizeIcon,
-                  marginLeft: "5px",
-                  color: backgroundColor
-                }}
-                onClick={() => OnClickAction(row, key)}
-              />
+              </>
             }
-
           </Tooltip>
-
         }
-
       </>
     );
   };
   const objAccionesBooleano = (key, IconAction, titleMSG, campoAvalidar) => ({
-    render: (text, row, index) => actionBooleano(row, key, IconAction, titleMSG, text, campoAvalidar),
+    render: (text, row, index) => actionBooleano(row, key, IconAction, titleMSG, text, campoAvalidar, index),
   })
   const actionBander = (row, key, IconAction, titleMSG, text, campoAvalidar, valorAvalidar) => {
-    
+
     return (
       <>
         {row[campoAvalidar] === valorAvalidar &&
@@ -316,11 +318,24 @@ const TablaANTD = (props) => {
               <Popconfirm
                 key={Uid(2)}
                 title={titleMSG}
-                description={titleMSG}
+                // description={titleMSG}
                 okText="Si"
                 cancelText="No"
                 onConfirm={() => OnClickAction(row, key)}
               >
+                <>
+                  <Icon icon={IconAction} key={key}
+                    style={{
+                      cursor: "pointer",
+                      fontSize: sizeIcon,
+                      marginLeft: "5px",
+                      color: backgroundColor
+                    }}
+                  />
+                </>
+              </Popconfirm>
+              :
+              <>
                 <Icon icon={IconAction} key={key}
                   style={{
                     cursor: "pointer",
@@ -328,19 +343,9 @@ const TablaANTD = (props) => {
                     marginLeft: "5px",
                     color: backgroundColor
                   }}
+                  onClick={() => OnClickAction(row, key)}
                 />
-              </Popconfirm>
-              :
-
-              <Icon icon={IconAction} key={key}
-                style={{
-                  cursor: "pointer",
-                  fontSize: sizeIcon,
-                  marginLeft: "5px",
-                  color: backgroundColor
-                }}
-                onClick={() => OnClickAction(row, key)}
-              />
+              </>
 
             }
           </Tooltip>
@@ -362,10 +367,11 @@ const TablaANTD = (props) => {
   const objRate = (nameValue) => ({
     render: (text, row, index) => rate(row, nameValue,),
   })
-  const avatar = (row, nameUrl, size, nameTexShow) => {
+  const avatar = (row, nameUrl, size, nameTexShow,shape) => {
     return (
       <>
         <Avatar
+          shape={ shape ? shape : "circle" }
           size={Number(size)}
           key={Uid()}
           src={row[nameUrl]}
@@ -378,8 +384,8 @@ const TablaANTD = (props) => {
       </>
     );
   };
-  const objAvatar = (nameUrl, size, nameTexShow) => ({
-    render: (text, row, index) => avatar(row, nameUrl, size, nameTexShow),
+  const objAvatar = (nameUrl, size, nameTexShow,shape) => ({
+    render: (text, row, index) => avatar(row, nameUrl, size, nameTexShow,shape),
   })
   const iconT = (row, nameUrl, size) => {
     return (
@@ -397,23 +403,30 @@ const TablaANTD = (props) => {
   const objNo = () => ({
     render: (text, record, index) => (index + 1),
   })
-  const action = (row, key, IconAction, titleMSG, text) => {
+  const action = (row, key, IconAction, titleMSG, index, text) => {
     return (
-      <>
-        <Tooltip title={key} key={Uid(1)}>
-          {titleMSG ?
-            <Popconfirm
-              key={Uid(2)}
-              title={titleMSG}
-              description={titleMSG}
+      <Tooltip
+        title={key}
+        key={Uid(index)}
+        placement="topRight"
+      >
+        {titleMSG ?
+          <Popconfirm
+            key={Uid(index)}
+            title={titleMSG}
+            // description={titleMSG}
+            style={{
+              position: "relative",
+              right: 500
+            }}
 
-              //icon={<Icon icon={IconAction} style={{color: backgroundColor}} />}
-              okText="Si"
-              cancelText="No"
-              onConfirm={() => OnClickAction(row, key)}
-            >
-              {/* <Icon icon={swicthIcons[IconAction]} */}
-              <Icon icon={IconAction} key={key}
+            //icon={<Icon icon={IconAction} style={{color: backgroundColor}} />}
+            okText="Si"
+            cancelText="No"
+            onConfirm={() => OnClickAction(row, key)}
+          >
+            <>
+              <Icon icon={IconAction} key={Uid(index)}
                 style={{
                   cursor: "pointer",
                   fontSize: sizeIcon,
@@ -421,24 +434,25 @@ const TablaANTD = (props) => {
                   color: backgroundColor
                 }}
               />
-            </Popconfirm>
-            :
+            </>
+          </Popconfirm>
+          :
 
-            <Icon icon={IconAction} key={key}
+          <>
+            <Icon icon={IconAction} key={Uid(index)}
               style={{
                 cursor: "pointer",
                 fontSize: sizeIcon,
-                marginLeft: "5px",
                 color: backgroundColor
               }}
               onClick={() => OnClickAction(row, key)}
             />
-
-          }
-        </Tooltip>
-      </>
+          </>
+        }
+      </Tooltip>
     );
   };
+
   const objAcciones = (key, IconAction, titleMSG,) => ({
     render: (text, row, index) => action(row, key, IconAction, titleMSG, index, text),
   })
@@ -480,12 +494,12 @@ const TablaANTD = (props) => {
   })
 
   // upload
-  const upload = (row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath) => {
+  const upload = (row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl, nameid, namepath, index) => {
 
     return (
       row[namepath] ?
-        (<Tooltip title={titleMSGD}>
-          <Link href={ row[namepath]} target="_blank">
+        (<Tooltip title={titleMSGD} key={Uid(index)}>
+          <Link href={row[namepath]} target="_blank" key={Uid(index)}>
             <Icon icon={IconUploadD}
               style={{
                 cursor: "pointer",
@@ -493,6 +507,7 @@ const TablaANTD = (props) => {
                 marginLeft: "5px",
                 color: backgroundColor
               }}
+              key={Uid(index)}
             />
           </Link>
         </Tooltip>
@@ -502,7 +517,7 @@ const TablaANTD = (props) => {
           name='file'
           accept={tipoFile}
           multiple={multipleFile}
-          action={actionUrl+row[nameid]} 
+          action={actionUrl + row[nameid]}
           onChange={(e) => OnClickAction(row, key, e, 'change')}
           onRemove={(e) => OnClickAction(row, key, e, 'remove')}
           beforeUpload={beforeUpload}
@@ -510,7 +525,7 @@ const TablaANTD = (props) => {
           listType={listType}
           onPreview={listType !== 'text' && handlePreview}
         >
-          <Tooltip title={titleMSGC}>
+          <Tooltip title={titleMSGC} key={Uid(index)}>
             <Icon icon={IconUploadC}
               style={{
                 cursor: "pointer",
@@ -518,6 +533,7 @@ const TablaANTD = (props) => {
                 marginLeft: "5px",
                 color: backgroundColor
               }}
+              key={Uid(index)}
             />
           </Tooltip>
         </Upload>)
@@ -525,8 +541,8 @@ const TablaANTD = (props) => {
     );
   };
 
-  const objUploads = (key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath) => ({
-    render: (row) => upload(row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl,nameid,namepath),
+  const objUploads = (key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl, nameid, namepath) => ({
+    render: (text, row, index) => upload(row, key, IconUploadC, IconUploadD, titleMSGC, titleMSGD, tipoFile, multipleFile, listType, actionUrl, nameid, namepath, index),
   })
 
   //DatePicker
@@ -709,11 +725,10 @@ const TablaANTD = (props) => {
         col.no && objNo(),
 
         col.actionsBandera && objAccionesBandera(col.key, col.icon, col.titleMSG, col.campoAvalidar, col.valorAvalidar,),
-
         col.actionsBooleano && objAccionesBooleano(col.key, col.icon, col.titleMSG, col.campoAvalidar),
-
         col.actions && objAcciones(col.key, col.icon, col.titleMSG,),
-        col.avatar && objAvatar(col.nameUrl, col.size, col.nameTexShow),
+
+        col.avatar && objAvatar(col.nameUrl, col.size, col.nameTexShow, col.shape),
         col.icono && objIcon(col.nameUrl, col.size,),
 
         col.rate && objRate(col.nameValue,),
@@ -754,7 +769,7 @@ const TablaANTD = (props) => {
 
       )
       columns.push(obj)
-      // console.log("columns",columns)
+      // console.log("columns", columns)
     });
   }
 

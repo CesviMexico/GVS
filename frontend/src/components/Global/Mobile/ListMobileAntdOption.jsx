@@ -8,7 +8,7 @@ export const ListMobileAntdOption = (props) => {
         loading, headerTitle, dataset,
         rightActionsSwipe = "default", onClickButton,
         onActionSheet, pdf,
-       color, backgroundColor,
+        color, backgroundColor,
     } = props
 
     const ref = useRef(null);
@@ -27,7 +27,7 @@ export const ListMobileAntdOption = (props) => {
                     await Dialog.confirm({
                         confirmText: 'OK',
                         cancelText: 'Cancelar',
-                        content: '¿Seguro que quieres aceptarla?',
+                        content: '¿Confirmas que el cliente acepta el pago?',
                         onConfirm: () => onActionSheet(data, 1, undefined),
                         // onClose: ref.current.close()
                     })
@@ -47,7 +47,7 @@ export const ListMobileAntdOption = (props) => {
                                 <AutoCenter>
                                     <Grid columns={1} gap={10}>
                                         <Grid.Item>
-                                            ¿Seguro que quieres declinarla?
+                                            ¿Confirmas que el cliente no acepta el pago?
                                         </Grid.Item>
                                         <Grid.Item />
                                         <Grid.Item>
@@ -159,13 +159,13 @@ export const ListMobileAntdOption = (props) => {
                                 status='busy'
                                 description={" "}
                                 image='https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg'
-                               >
+                            >
                                 <Button
                                     loading={loading}
                                     onClick={() => onClickButton()}
                                     style={{
                                         color: color,
-                                        backgroundColor:backgroundColor
+                                        backgroundColor: backgroundColor
                                     }}
                                 >
                                     Actualizar

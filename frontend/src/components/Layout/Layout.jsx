@@ -135,6 +135,7 @@ const Layout = ({ children }) => {
                     )
                 })
                 setItems(Menu)
+                console.log("Menu",Menu)
                 break;
             case 0:
                 // navigate('/Page404');
@@ -159,7 +160,7 @@ const Layout = ({ children }) => {
             user_info.sub
         );
         
-        console.log("DatosPerfil", response[0])
+        // console.log("DatosPerfil", response[0])
 
         updateUser({ ...response[0], id_keycloak: user_info.sub, });
         
@@ -224,7 +225,7 @@ const Layout = ({ children }) => {
                     <Menu
                         theme={themeAntd}
                         mode="inline"
-                        defaultSelectedKeys={["DemosComponents"]}
+                        defaultSelectedKeys={["Dashboard"]}
                         items={items}
                         openKeys={openKeys}
                         onOpenChange={onOpenChange}

@@ -19,7 +19,7 @@ const FooterComponent = () => {
                 background: backgroundColor 
             }}
         >           
-            <Typography variant="h7"  color="white" >Cesvi Mexico ©2022</Typography> 
+            <Typography variant="h7"  color="white" >Cesvi Mexico ©2023</Typography> 
 
         </Footer>
     )

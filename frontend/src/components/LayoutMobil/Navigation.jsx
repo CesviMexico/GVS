@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { NavBar, TabBar, Space, ConfigProvider } from 'antd-mobile'
+import { NavBar, TabBar, Space, ConfigProvider, Button } from 'antd-mobile'
 import { useNavigate, useLocation, } from 'react-router-dom';
 import { Icon } from '@iconify/react'
 import enUS from 'antd-mobile/es/locales/en-US'
@@ -15,6 +15,8 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, onSnapshot, } from 'firebase/firestore';
 
 
+
+
 const Navigation = (props) => {
 
   const app = initializeApp(firebaseConfig);
@@ -24,8 +26,12 @@ const Navigation = (props) => {
   const { keycloak } = useKeycloak()
   const themeContext = useContext(ThemeContext)
   const { msErrorApi, logoutOptions, idServicio, setIdServicio, tproceso, tporconfirmar,
-    setTproceso,setTporconfirmar,
+    setTproceso, setTporconfirmar,
   } = themeContext
+
+  const background_color = localStorage.getItem(AppStringUser.BACKGROUND_COLOR);
+  const color = localStorage.getItem(AppStringUser.COLOR);
+
 
   const navigate = useNavigate()
   const location = useLocation();
@@ -79,20 +85,20 @@ const Navigation = (props) => {
     const q = query(collection(db, "usuarios"), where("user", "==", preferred_username));
     const unsuscribe = onSnapshot(q, (snapshot) => {
       setTotal_Data([])
-      snapshot.docChanges().forEach((change) => {        
+      snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           const final = { ...change.doc.data(), id: change.doc.id }
           setTotal_Data(final)
         }
 
-        if (change.type === "modified") {         
-          const final = { ...change.doc.data(), id: change.doc.id }        
+        if (change.type === "modified") {
+          const final = { ...change.doc.data(), id: change.doc.id }
           setTotal_Data(final)
         }
       });
-      console.log('viewListMessage', Total_Data) 
-      setTproceso( Total_Data.solicitado)
-      setTporconfirmar( Total_Data.valuado)   
+      // console.log('viewListMessage', Total_Data)
+      setTproceso(Total_Data.solicitado)
+      setTporconfirmar(Total_Data.valuado)
     });
 
     return () => {
@@ -152,14 +158,44 @@ const Navigation = (props) => {
     )
   }
 
+  const handleSalir = () => {
+    keycloak.logout(process.env.REACT_APP_logoutOption);
+  };
 
   const right = (
-    <div style={{ fontSize: 20 }}>
-      <Space style={{ '--gap': '16px' }}>
-        {/* <MoreOutline /> */}
-        <Icon icon={"fontisto:more-v-a"} />
-      </Space>
-    </div>
+    // <div style={{ fontSize: 20 }}>
+    <Space
+       style={{ '--gap': '0px' }}
+    >
+
+      <Button
+        fill={'none'}
+        onClick={() => handleSalir()}
+      >
+        <Icon icon={"mdi:location-exit"}
+          style={{
+            fontSize: 25,
+            backgroundColor: background_color,
+            color: color
+          }}
+
+        />
+      </Button>
+      {/* <Button
+          fill={'none'}
+          // onClick={() => handleSalir()}
+        >
+          <Icon icon={"fontisto:more-v-a"}
+            style={{
+              fontSize: 20,
+              backgroundColor: background_color, 
+              color: color             
+            }}
+
+          />
+        </Button> */}
+    </Space>
+    // </div>
   )
 
   const back = () => {
@@ -208,8 +244,6 @@ const Navigation = (props) => {
     }
   }, [keycloak])
 
-  const background_color = localStorage.getItem(AppStringUser.BACKGROUND_COLOR);
-  const color = localStorage.getItem(AppStringUser.COLOR);
 
 
   return (

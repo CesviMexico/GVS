@@ -1,6 +1,6 @@
 {
-  "short_name": "CesviMexico",
-  "name": "CesviMexico",
+  "short_name": "GVS",
+  "name": "Gestor de valuaciones en sitio",
   "icons": [
     {
       "src": "favicon.png",

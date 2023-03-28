@@ -4,7 +4,6 @@ import { useKeycloak } from "@react-keycloak/web";
 
 //components
 import TablaANTD from "../../components/Global/TablaComponent";
-import { ModdalANTD } from "../../components/Global/ModalComponent";
 import { Image} from 'antd'
 
 //servicios
@@ -13,6 +12,8 @@ import DataValuations, {DataValuationsConfirmar, GetPhotosValuation, GetValuatio
 //MIU
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+
+import { Uid } from '../../components/Global/funciones'
 
 const PorConfirmar = (props) => {
     const themeContext = useContext(ThemeContext);
@@ -79,14 +80,12 @@ const PorConfirmar = (props) => {
         swicthComponentAction[key](row);
     };
 
-    //modal action
+    //Image action
     const [visible, setVisible] = useState(false)
-    const [id_valuacion, setId_valuacion] = useState("")
     const [listImage, setListImage] = useState([])
     const onViewfotos = async (row) => {
         setVisible(true)
         //console.log("onViewfotos", row)
-        setId_valuacion(row.id_valuacion)
         try {
             const response = await GetPhotosValuation(
                 setloading,
@@ -119,7 +118,6 @@ const PorConfirmar = (props) => {
     }
     const OnViewValuacion = async(row, key) => {
         setVisible(true)
-        setId_valuacion(row.id_valuacion)
         //console.log("row, key", row, key)
         //swicthComponentAction[key](row);
         try {
@@ -154,27 +152,23 @@ const PorConfirmar = (props) => {
 
     return (
         <>
-        <ModdalANTD
-            visible={visible}
-            Title={false}
-            footer={false}
-            onCancel={()=>setVisible(false)}
-            width={"75%"}
-            centered>
-                <Image.PreviewGroup
-                    preview={{
-                    onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
-                    }}
-                    >
-                    {listImage.map((images) =>
+        <div style={{ display: 'none', }}>
+            <Image.PreviewGroup
+                preview={{
+                    visible: visible,
+                    onVisibleChange: (vis) => setVisible(vis),
+                }}
+            >
+                {listImage.map((images, index) =>
                     <Image
-                    //with="20"
-                    height={100}
-                    style={{ padding:5,  }}
-                    src={images.pathname} />
-                    )}    
-                </Image.PreviewGroup> 
-        </ModdalANTD>
+                        key={Uid(index)}
+                        //with="20"
+                        height={100}
+                        style={{ padding: 5, }}
+                        src={images.pathname} />
+                )}
+            </Image.PreviewGroup>
+        </div>
 
         <Box
             sx={{

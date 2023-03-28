@@ -9,19 +9,19 @@ export const ThemeConsumer = ThemeContext.Consumer;
 export const ThemeProvider = (props) => {
 
     //Generales
-    const [backgroundColor, setbackgroundColor] = useState(red[500])
-    const [colorIcon, setColorIcon] = useState(red[50])
+    const [backgroundColor, setbackgroundColor] = useState(green[500])
+    const [colorIcon, setColorIcon] = useState(green[50])
     const [sizeIcon, setSizeIcon] = useState(25)
 
     //Badge
-    const [colorBadge, setColorBadge] = useState(red[500])
+    const [colorBadge, setColorBadge] = useState(green[500])
 
     //TABLAS
     const [sizeIconTable, setSizeIconTable] = useState(40)
-    const [colorTable, setColorTable] = useState(red[500])
+    const [colorTable, setColorTable] = useState(green[500])
 
     /// Tipos Generales
-    const [primaryColor, setPrimaryColor] = useState(red)
+    const [primaryColor, setPrimaryColor] = useState(green)
     const [secondaryColor, setSecondaryColor] = useState(green)
 
     //Layout

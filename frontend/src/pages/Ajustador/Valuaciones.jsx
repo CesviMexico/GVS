@@ -3,7 +3,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import "../../components/LayoutMobil/layoutMobil.css"
-import { Form, Input, Button, TextArea, ImageUploader } from 'antd-mobile';
+import { Form, Input, Button, TextArea, ImageUploader, Toast } from 'antd-mobile';
 import { PicturesOutline } from "antd-mobile-icons";
 
 import { useNavigate, } from 'react-router-dom';
@@ -28,10 +28,24 @@ const Valuaciones = () => {
         background_color: localStorage.getItem(AppStringUser.BACKGROUND_COLOR),
     }
 
+
+    const onFinishA = (value) => {
+
+        console.log("length", fileList.length)
+        console.log("fileList", fileList)
+
+        if (fileList.length) {
+            onFinish(value)
+            console.log("ok")          
+        } else {
+            Toast.show({ content: 'No hay fotos', })
+            setLoading(false);
+        }
+
+    }
     const onFinish = async (value) => {
         setLoading(true);
         let formData = new FormData();
-
         fileList.map((photo) => {
             let blob = new Blob([photo.file], { type: "image/png,jpg" });
             formData.append("photos[]", blob, photo.file.name);
@@ -76,7 +90,6 @@ const Valuaciones = () => {
         } catch (error) {
             setLoading(false);
         }
-
     };
 
     const [fileList, setFileList] = useState([]);
@@ -90,15 +103,13 @@ const Valuaciones = () => {
 
     const [loading, setLoading] = useState(false);
 
-
-
     return (
         <>
             <ConfigProvider locale={enUS}>
                 <Form
                     mode={"card"}
                     // layout="horizontal"
-                    onFinish={onFinish}
+                    onFinish={onFinishA}
                     footer={
                         <Button
                             loading={loading}
@@ -118,38 +129,48 @@ const Valuaciones = () => {
                         rules={[{
                             required: true,
                             message: "Reporte",
-                            len: 20,
-                            pattern: new RegExp("^[a-z A-Z Ññ ü á-ú Á-Ú -- /-_,()=.+]*$"),
+                            pattern: new RegExp("^[a-zA-Z0-9-]*$"),
                         }]}
                     >
-                        <Input />
+                        <Input max={20} clearable />
                     </Form.Item>
 
                     <Form.Item name='vin' label='VIN'
                         rules={[{
                             required: true,
                             message: "VIN",
-                            len: 17,
-                            pattern: new RegExp("^[a-z A-Z 0-9]*$"),
+                            pattern: new RegExp("^[a-zA-Z0-9]*$"),
                         }]}
                     >
-                        <Input />
+                        <Input max={17} clearable />
                     </Form.Item>
 
                     <Form.Item name='danios' label='Reporte de daños'
                         rules={[{
                             required: true,
-                            message: "Reporte de daños",                           
+                            message: "Reporte de daños",
                         }]}
                     >
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="archivos" label="Fotos"
-                        // rules={[{
-                        //     required: true,
-                        //     message: "Fotos",
-                        //     type: 'url'
-                        // }]}
+                    // rules={[
+                    //     {
+                    //         required: true,
+                    //         message: 'Please confirm your archivos!',
+                    //     },
+                    // ({ getFieldValue }) => ({
+                    //     validator(_, value) {
+                    //         console.log("fileList", getFieldValue)
+
+                    //         if (!value || getFieldValue) {
+                    //             return Promise.resolve();
+                    //         }
+                    //         return Promise.reject(new Error('The two archivos that you entered do not match!'));
+                    //     },
+                    // }),
+                    // ]}
+
                     >
                         <div style={{ height: "22vh", overflowY: "scroll" }}>
                             <ImageUploader
@@ -158,6 +179,7 @@ const Valuaciones = () => {
                                 onChange={setFileList}
                                 upload={mockUpload}
                                 beforeUpload={beforeUpload}
+
                             //capture={true}
 
                             >
