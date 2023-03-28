@@ -124,6 +124,7 @@ const Porconfirmar = () => {
             users.push(element);
           })
           setDataSource(users)
+          
           const encuestaRef = doc(db, 'usuarios',  userLocalStorage.preferred_username);
           response.data && await updateDoc(encuestaRef, {
             valuado: response.data.length
@@ -144,15 +145,15 @@ const Porconfirmar = () => {
   const [fotos, setFotos] = useState([]);
   const [visible, setVisible] = useState(false);
   const VerFotos = (fotos) => {
-    //console.log("VerFotos", fotos)
+    ////console.log("VerFotos", fotos)
     setFotos(fotos)
     setVisible(true)
   }
 
 
   const onActionSheet = async (data, tipo, valueMotivo) => {
-    //console.log("onActionSheetEdit", data.id)
-    //console.log("onActionSheettipo", tipo)
+    ////console.log("onActionSheetEdit", data.id)
+    ////console.log("onActionSheettipo", tipo)
     // return
 
     try {
@@ -178,7 +179,7 @@ const Porconfirmar = () => {
           break;
 
         case 200:
-          //console.log("DataUpdate", response.data)
+          ////console.log("DataUpdate", response.data)
           Data()
           break;
 
