@@ -194,7 +194,7 @@ export const formatTimeBD = (dateOriginal) => {
 
 /* resize imagen antes de subir  JVICENCIO*/
 export const beforeUpload = file => {
-  // console.log(" beforeUpload === ", file)
+  // //console.log(" beforeUpload === ", file)
 
   return new Promise((resolve) => {
     const reader = new FileReader();

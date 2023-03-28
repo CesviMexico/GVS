@@ -57,7 +57,7 @@ export const ListMobileAntdOption = (props) => {
                                                 // value={valueMotivo}
                                                 onChange={val => {
                                                     valueMotivo = val
-                                                    console.log("val", val)
+                                                    //console.log("val", val)
                                                 }}
                                             />
                                         </Grid.Item>

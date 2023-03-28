@@ -64,7 +64,7 @@ const Home = () => {
     };
 
     const OnClickAction = (row, key, event) => {
-        //console.log("key", key)
+        ////console.log("key", key)
         swicthComponentAction[key](row, event);
     };
 
@@ -124,7 +124,7 @@ const Home = () => {
         setTablePropsDetalle(response.props_table);
         setFormTablePropsDetalle(response.formItems);
 
-        // //console.log("DetalleComponentes", response);
+        // ////console.log("DetalleComponentes", response);
 
         setRowForms(row);
         chCurrentRowIDAction(row.table_id);
@@ -171,14 +171,14 @@ const Home = () => {
             dfi
         );
 
-        ////console.log("TablaAtributos", response);
+        //////console.log("TablaAtributos", response);
         setDataSourceAttributes(response.data);
         setColumnsAttributes(response.columns);
 
         // EDITA ARREGLO PARA MODIFICAR DE
         response.data.forEach(row => { onInputAttribute(row, undefined, row.defaultValue) });
         setNewcomponentHook(newcomponent)
-        // //console.log("newcomponent", newcomponent)
+        // ////console.log("newcomponent", newcomponent)
 
         setlLoadingAtributos(false)
 
@@ -239,7 +239,7 @@ const Home = () => {
         }
 
 
-        //console.log("parameters", parameters)
+        ////console.log("parameters", parameters)
 
         await AddColumnaForm(
             setloadingDetalle,

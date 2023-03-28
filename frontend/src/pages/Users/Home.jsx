@@ -101,7 +101,7 @@ const Home = () => {
         logoutOptions,
 
       )
-      // console.log("response", response)
+      // //console.log("response", response)
 
       switch (response.status) {
         case 403:
@@ -138,7 +138,7 @@ const Home = () => {
 
   const [form] = Form.useForm();
   const onEditarRow = (row) => {
-    //console.log("onEditarRow", row)
+    ////console.log("onEditarRow", row)
 
     form.resetFields()
     form.setFieldsValue(row);
@@ -149,7 +149,7 @@ const Home = () => {
   };
 
   const onEliminarRow = async (row) => {
-    //console.log("onEliminarRow", row)
+    ////console.log("onEliminarRow", row)
 
 
     try {
@@ -161,7 +161,7 @@ const Home = () => {
         row.id_user
 
       )
-      //console.log("response", response)
+      ////console.log("response", response)
 
       switch (response.status) {
         case 403:
@@ -186,7 +186,7 @@ const Home = () => {
   }
 
   const onFinish = async (value) => {
-    //console.log("onFinish", value)
+    ////console.log("onFinish", value)
     setloading(true);
     try {
       const response = await UpdateElement(
@@ -198,7 +198,7 @@ const Home = () => {
         value
 
       )
-      //console.log("response", response)
+      ////console.log("response", response)
 
       switch (response.status) {
         case 403:
@@ -241,7 +241,7 @@ const Home = () => {
         row.id_user
 
       )
-      // console.log("VerMenuPermissions", response)
+      // //console.log("VerMenuPermissions", response)
 
       switch (response.status) {
         case 403:
@@ -272,8 +272,8 @@ const Home = () => {
   const [loadingChecked, setloadingChecked] = useState(false);
   const onChangeChecked = async (value, row) => {
 
-    // console.log("value", value)
-    // console.log("onEditarRow", row)
+    // //console.log("value", value)
+    // //console.log("onEditarRow", row)
 
 
     let request = ""
@@ -312,7 +312,7 @@ const Home = () => {
 
 
       )
-      // console.log("onChangeChecked", response)
+      // //console.log("onChangeChecked", response)
 
       switch (response.status) {
         case 403:

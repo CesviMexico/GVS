@@ -92,7 +92,7 @@ const HeaderComponent = () => {
 
         // if (change.type === "added") {
         //   const final = { ...change.doc.data() }
-        //   // console.log('final', final.solicitado)
+        //   // //console.log('final', final.solicitado)
         //   total = total + final.solicitado
         //   setTotal_Data(total)
 
@@ -105,7 +105,7 @@ const HeaderComponent = () => {
         // }
 
       });
-      // console.log('viewListMessage', Total_Data)    
+      // //console.log('viewListMessage', Total_Data)    
     });
 
     return () => {
@@ -207,7 +207,7 @@ const HeaderComponent = () => {
                 altHijo={"Editar Perfil"}
                 width={90}
                 height={90}
-                // action={() => console.log("Editar Perfil")}
+                // action={() => //console.log("Editar Perfil")}
                 src={
                   "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
                 }

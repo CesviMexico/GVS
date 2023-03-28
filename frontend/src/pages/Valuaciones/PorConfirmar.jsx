@@ -45,7 +45,7 @@ const PorConfirmar = (props) => {
             logoutOptions,
 
         )
-        console.log("response", response)
+        //console.log("response", response)
         switch (response.status) {
             case 403:
             setloading(false);
@@ -71,8 +71,8 @@ const PorConfirmar = (props) => {
         }
     };
     const swicthComponentAction = {
-        fotos: (row) => onViewfotos(row),
-        valuacion: (row) => OnViewValuacion(row),
+        Fotos: (row) => onViewfotos(row),
+        Valuacion: (row) => OnViewValuacion(row),
     };
 
     //ACTION'S DE LAS TABLAS
@@ -85,7 +85,7 @@ const PorConfirmar = (props) => {
     const [listImage, setListImage] = useState([])
     const onViewfotos = async (row) => {
         setVisible(true)
-        //console.log("onViewfotos", row)
+        ////console.log("onViewfotos", row)
         try {
             const response = await GetPhotosValuation(
                 setloading,
@@ -94,7 +94,7 @@ const PorConfirmar = (props) => {
                 logoutOptions,
                 row.id_valuacion,
             )
-            //console.log("verfotosuValuacion", response)
+            ////console.log("verfotosuValuacion", response)
             switch (response.status) {
                 case 403:
                     setloading(false);
@@ -118,7 +118,7 @@ const PorConfirmar = (props) => {
     }
     const OnViewValuacion = async(row, key) => {
         setVisible(true)
-        //console.log("row, key", row, key)
+        ////console.log("row, key", row, key)
         //swicthComponentAction[key](row);
         try {
             const response = await GetValuationMonto(
@@ -128,7 +128,7 @@ const PorConfirmar = (props) => {
                 logoutOptions,
                 row.id_valuacion,
             )
-            //console.log("verfotosuValuacion", response)
+            ////console.log("verfotosuValuacion", response)
             switch (response.status) {
                 case 403:
                     setloading(false);

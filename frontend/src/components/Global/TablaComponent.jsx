@@ -165,7 +165,7 @@ const TablaANTD = (props) => {
           current_position: dragIndex
         }
       };
-      // console.log(infoRow);
+      // //console.log(infoRow);
       setDataSource.length > 0 && setDataSource(
         update(datasource, {
           $splice: [
@@ -769,7 +769,7 @@ const TablaANTD = (props) => {
 
       )
       columns.push(obj)
-      // console.log("columns", columns)
+      // //console.log("columns", columns)
     });
   }
 

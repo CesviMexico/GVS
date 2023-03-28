@@ -46,7 +46,7 @@ const Declinadas = (props) => {
             logoutOptions,
 
         )
-        //console.log("response", response)
+        ////console.log("response", response)
         switch (response.status) {
             case 403:
             setloading(false);
@@ -74,13 +74,13 @@ const Declinadas = (props) => {
 
     //ACTION'S DE LAS TABLAS
     const OnClickAction = (row, key) => {
-        //console.log("row, key", row, key)
+        ////console.log("row, key", row, key)
         swicthComponentAction[key](row);
     }
 
     const swicthComponentAction = {
-        fotos: (row) => onViewfotos(row),
-        valuacion: (row) => onViewEvaluacion(row),
+        Fotos: (row) => onViewfotos(row),
+        Valuacion: (row) => onViewEvaluacion(row),
     };
     //modal action
     const [visible, setVisible] = useState(false)
@@ -88,7 +88,7 @@ const Declinadas = (props) => {
 
     //acciones de botones
     const onViewfotos = async(row) => {
-        //console.log("onViewfotos", row)
+        ////console.log("onViewfotos", row)
         setVisible(true)
         try {
             const response = await GetPhotosValuation(
@@ -119,7 +119,7 @@ const Declinadas = (props) => {
         }
     }
     const onViewEvaluacion = async(row) => {
-        //console.log("onViewEvaluacion", row)
+        ////console.log("onViewEvaluacion", row)
         setVisible(true)
         try {
             const response = await GetValuationMonto(

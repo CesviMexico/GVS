@@ -66,7 +66,7 @@ const Aceptadas = () => {
           break;
 
         case 200:
-          //console.log("DataAceptadas", response.data)
+          ////console.log("DataAceptadas", response.data)
           setDataSource([])
           setTporconfirmar(response.data && response.data.length)
           let users = []
@@ -130,14 +130,14 @@ const Aceptadas = () => {
   const [fotos, setFotos] = useState([]);
   const [visible, setVisible] = useState(false);
   const VerFotos = (fotos) => {
-    //console.log("VerFotos", fotos)
+    ////console.log("VerFotos", fotos)
     setFotos(fotos)
     setVisible(true)
   }
 
 
   const onActionSheet = async (data) => {
-    //console.log("onActionSheetEdit", data)
+    ////console.log("onActionSheetEdit", data)
   }
 
   return (

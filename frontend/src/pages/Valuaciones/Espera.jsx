@@ -50,7 +50,7 @@ const Espera = (props) => {
                 logoutOptions,
 
             )
-            console.log("Espera", response)
+            //console.log("Espera", response)
             switch (response.status) {
                 case 403:
                     setloading(false);
@@ -76,7 +76,7 @@ const Espera = (props) => {
         }
     };
     const swicthComponentAction = {
-        fotos: (row) => onViewfotos(row),
+        Fotos: (row) => onViewfotos(row),
         Monto: (row) => ActualizaTabla(),
         Validacion: (row) => onChangeStatus(row),
         Eliminar: (row) => onTrash(row),
@@ -102,7 +102,7 @@ const Espera = (props) => {
                 logoutOptions,
                 row.id_valuacion,
             )
-            console.log("verfotosuValuacion", response)
+            //console.log("verfotosuValuacion", response)
             switch (response.status) {
                 case 403:
                     setloading(false);
@@ -126,7 +126,7 @@ const Espera = (props) => {
     }
 
     const onChangeStatus = async (row) => {
-        // console.log("onChangeStatus", row)
+        // //console.log("onChangeStatus", row)
         // setId_valuacion(row.id_valuacion)
         // let parametros = { status: 'valuado', id_user_respuesta: user.id_user }
         try {

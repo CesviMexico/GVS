@@ -45,7 +45,7 @@ const Aceptadas = (props) => {
             logoutOptions,
 
         )
-        //console.log("response", response)
+        ////console.log("response", response)
         switch (response.status) {
             case 403:
             setloading(false);
@@ -77,9 +77,9 @@ const Aceptadas = (props) => {
     };
 
     const swicthComponentAction = {
-        fotos: (row) => onViewfotos(row),
-        valuacion: (row) => OnViewValuacion(row),
-        informe: (row) => onViewInforme(row),
+        Fotos: (row) => onViewfotos(row),
+        Valuacion: (row) => OnViewValuacion(row),
+        Informe: (row) => onViewInforme(row),
     };
     
 
@@ -89,7 +89,7 @@ const Aceptadas = (props) => {
 
     //acciones de botones
     const onViewfotos = async(row) => {
-        //console.log("onViewfotos", row)
+        ////console.log("onViewfotos", row)
         setVisible(true)
         try {
             const response = await GetPhotosValuation(
@@ -121,7 +121,7 @@ const Aceptadas = (props) => {
     }
 
     const OnViewValuacion = async(row, key) => {
-        //console.log("onViewEvaluacion", row)
+        ////console.log("onViewEvaluacion", row)
         setVisible(true)
         try {
             const response = await GetValuationMonto(
@@ -153,7 +153,7 @@ const Aceptadas = (props) => {
     }
     
     const onViewInforme = (row) => {
-        console.log("onViewInforme", row)
+        //console.log("onViewInforme", row)
         window.open('https://apis.cesvimexico.com.mx/GVS/public/valuacion/5/6413597c215dc_20230316180132.png');
     }
     return (

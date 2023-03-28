@@ -41,7 +41,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          // //console.log('fetch data failed', error);
+          // ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -70,7 +70,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -122,7 +122,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -302,7 +302,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -329,7 +329,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -354,7 +354,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -465,7 +465,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -509,7 +509,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -538,7 +538,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     G2.registerInteraction('element-link', {
@@ -1379,7 +1379,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -1482,7 +1482,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -1791,7 +1791,7 @@ const DemoLineBasic = () => {
            * item.source: 获取 source 数据
            * item.target: 获取 target 数据
            */
-          // //console.log(graph.findById(item.source).getModel());
+          // ////console.log(graph.findById(item.source).getModel());
           return {
             stroke: '#40a9ff',
             lineWidth: Math.random() * 10 + 1,
@@ -3572,7 +3572,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3610,7 +3610,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3653,7 +3653,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3683,7 +3683,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3714,7 +3714,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3744,7 +3744,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3777,7 +3777,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -3817,7 +3817,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     G2.registerShape('polygon', 'boundary-polygon', {
@@ -3957,7 +3957,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4042,7 +4042,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4077,7 +4077,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4112,7 +4112,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4146,7 +4146,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4184,7 +4184,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((list) => setData(list))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4390,7 +4390,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4437,7 +4437,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4496,7 +4496,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4556,7 +4556,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -4784,7 +4784,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     // 分组玫瑰图
@@ -4982,7 +4982,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5010,7 +5010,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5042,7 +5042,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5201,7 +5201,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5445,7 +5445,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5473,7 +5473,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5514,7 +5514,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5554,7 +5554,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5793,7 +5793,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const sum = data.reduce((a, b) => a + b.size, 0);
@@ -5939,7 +5939,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {
@@ -5963,7 +5963,7 @@ const DemoLineBasic = () => {
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => {
-          //console.log('fetch data failed', error);
+          ////console.log('fetch data failed', error);
         });
     };
     const config = {

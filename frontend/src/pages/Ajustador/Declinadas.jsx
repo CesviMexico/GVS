@@ -68,7 +68,7 @@ const Declinadas = () => {
           break;
 
         case 200:
-          //console.log("DataDeclinadas", response.data)
+          ////console.log("DataDeclinadas", response.data)
           // setTproceso(response.data && response.data.length)
           let users = []
           response.data && response.data.forEach(row => {

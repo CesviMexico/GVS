@@ -48,7 +48,7 @@ const Home = (props) => {
       logoutOptions,
       "id",
     );
-    //console.log("ComboCatalogos", response.formItems);
+    ////console.log("ComboCatalogos", response.formItems);
     setFormItemsCombo(response.formItems)
     setloadingComboCatalogos(false)
   };

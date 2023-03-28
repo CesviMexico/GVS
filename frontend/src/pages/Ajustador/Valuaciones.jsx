@@ -31,12 +31,12 @@ const Valuaciones = () => {
 
     const onFinishA = (value) => {
 
-        console.log("length", fileList.length)
-        console.log("fileList", fileList)
+        //console.log("length", fileList.length)
+        //console.log("fileList", fileList)
 
         if (fileList.length) {
             onFinish(value)
-            console.log("ok")          
+            //console.log("ok")          
         } else {
             Toast.show({ content: 'No hay fotos', })
             setLoading(false);
@@ -126,23 +126,25 @@ const Valuaciones = () => {
                 >
                     <Form.Header>Datos del siniestro</Form.Header>
                     <Form.Item name='reporte' label='Reporte'
+                       
                         rules={[{
                             required: true,
                             message: "Reporte",
                             pattern: new RegExp("^[a-zA-Z0-9-]*$"),
                         }]}
                     >
-                        <Input max={20} clearable />
+                        <Input clearable  maxLength={20}/>
                     </Form.Item>
 
                     <Form.Item name='vin' label='VIN'
+                       
                         rules={[{
                             required: true,
                             message: "VIN",
                             pattern: new RegExp("^[a-zA-Z0-9]*$"),
                         }]}
                     >
-                        <Input max={17} clearable />
+                        <Input clearable  maxLength={17} />
                     </Form.Item>
 
                     <Form.Item name='danios' label='Reporte de daños'
@@ -153,25 +155,7 @@ const Valuaciones = () => {
                     >
                         <TextArea rows={4} />
                     </Form.Item>
-                    <Form.Item name="archivos" label="Fotos"
-                    // rules={[
-                    //     {
-                    //         required: true,
-                    //         message: 'Please confirm your archivos!',
-                    //     },
-                    // ({ getFieldValue }) => ({
-                    //     validator(_, value) {
-                    //         console.log("fileList", getFieldValue)
-
-                    //         if (!value || getFieldValue) {
-                    //             return Promise.resolve();
-                    //         }
-                    //         return Promise.reject(new Error('The two archivos that you entered do not match!'));
-                    //     },
-                    // }),
-                    // ]}
-
-                    >
+                    <Form.Item name="archivos" label="Fotos">
                         <div style={{ height: "22vh", overflowY: "scroll" }}>
                             <ImageUploader
                                 multiple={true}
@@ -179,9 +163,6 @@ const Valuaciones = () => {
                                 onChange={setFileList}
                                 upload={mockUpload}
                                 beforeUpload={beforeUpload}
-
-                            //capture={true}
-
                             >
                                 <div
                                     style={{

@@ -55,7 +55,7 @@ const Router = () => {
 
   const { keycloak } = useKeycloak();
   let rol = keycloak.resourceAccess ? keycloak.resourceAccess[process.env.REACT_APP_clientId].roles[0] : null
-  console.log(rol)
+  // //console.log(rol)
   return (
     <HashRouter>
       <React.Suspense fallback={loading()}>

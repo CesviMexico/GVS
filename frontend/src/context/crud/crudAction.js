@@ -70,7 +70,7 @@ const CrudAction = (props) => {
                 logoutOptions: logoutOptions
 
             })
-            //console.log('obtenerDatosAction',response)
+            ////console.log('obtenerDatosAction',response)
             dispatch(mostrarDatos(response));
         } catch (error) {
             dispatch(mostrarDatosError());

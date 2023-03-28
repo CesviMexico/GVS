@@ -48,7 +48,7 @@ const FormAntd = (props) => {
 
   ///Upload
   const normFile = (e) => {
-    console.log('Upload event:', e);
+    //console.log('Upload event:', e);
 
     if (Array.isArray(e)) {
       return e;
@@ -219,9 +219,9 @@ const FormAntd = (props) => {
 
   const handleChange = (value, key, event, children, parent) => {
 
-    // console.log('key', key)
-    // console.log('value', value)
-    // console.log('event', event)
+    // //console.log('key', key)
+    // //console.log('value', value)
+    // //console.log('event', event)
 
     if (parent === null && children !== null) {
       hijos.push(children)
@@ -242,7 +242,7 @@ const FormAntd = (props) => {
     if (value !== undefined) {
       setValueTmp({ ...valuetmp, [event]: value })
     }
-    console.log(hijos)
+    //console.log(hijos)
     // if (key === 'id_estado') {
     //   setArrayOption(value)
     //   setId_estado(event ? event.children : 0 )
@@ -359,7 +359,7 @@ export const FormAntdCrud = (props) => {
 
   ///Upload
   const normFile = (e) => {
-    console.log('Upload event:', e);
+    //console.log('Upload event:', e);
 
     if (Array.isArray(e)) {
       return e;
@@ -496,8 +496,8 @@ export const FormAntdCrud = (props) => {
       formItem.push(obj)
     });
 
-    // console.log('formItem', formItem)
-    // console.log('formItem', formItem.length)
+    // //console.log('formItem', formItem)
+    // //console.log('formItem', formItem.length)
   }
 
   formItem.length === 0 && ItemsForm();

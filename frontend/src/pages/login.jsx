@@ -17,7 +17,7 @@ const Login = () => {
             if (rol === "Ajustador") {
                 navigate('/Proceso')
             } else {
-                navigate('/Dashboard')
+                navigate('/Valuacion/Espera')
             }
         }
 

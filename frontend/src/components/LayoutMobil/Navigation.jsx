@@ -71,7 +71,7 @@ const Navigation = (props) => {
     try {
       swicthNameNavBar[pathname]();
     } catch (error) {
-      //console.log('error', error)
+      ////console.log('error', error)
     }
 
   }, []);
@@ -96,7 +96,7 @@ const Navigation = (props) => {
           setTotal_Data(final)
         }
       });
-      // console.log('viewListMessage', Total_Data)
+      // //console.log('viewListMessage', Total_Data)
       setTproceso(Total_Data.solicitado)
       setTporconfirmar(Total_Data.valuado)
     });
@@ -217,7 +217,7 @@ const Navigation = (props) => {
       user_info.sub
     );
 
-    // console.log("DatosPerfilMovil", response[0])
+    // //console.log("DatosPerfilMovil", response[0])
     localStorage.clear()
     localStorage.setItem(AppStringUser.BACKGROUND_COLOR, response[0].background_color);
     localStorage.setItem(AppStringUser.COLOR, response[0].color);
