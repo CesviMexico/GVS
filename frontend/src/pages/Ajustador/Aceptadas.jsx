@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../../context/ThemContext'
 
 import { useKeycloak } from "@react-keycloak/web";
-import { DataAceptadas} from "./Services";
+import { DataAceptadas, DataPdf } from "./Services";
 
 //funciones
 import { statusRecord } from "../../components/Global/funciones";
@@ -22,7 +22,6 @@ const Aceptadas = () => {
   const { keycloak } = useKeycloak();
   const themeContext = useContext(ThemeContext)
   const {
-    setIdServicio,
     setTporconfirmar,
     msErrorApi,
     logoutOptions,
@@ -32,7 +31,7 @@ const Aceptadas = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => { Data() }, []); 
+  useEffect(() => { Data() }, []);
 
   const [loading, setloading] = useState(false)
   const [datasource, setDataSource] = useState([]);
@@ -55,6 +54,7 @@ const Aceptadas = () => {
         userLocalStorage.id_user
 
       )
+      response.length === 0 && keycloak.logout(process.env.REACT_APP_logoutOption);
 
       switch (response.status) {
         case 403:
@@ -137,11 +137,46 @@ const Aceptadas = () => {
 
 
   const onActionSheet = async (data) => {
-    ////console.log("onActionSheetEdit", data)
+    // console.log("onActionSheetEdit", data.id)
+
+    try {
+      const response = await DataPdf(
+        setloading,
+        msErrorApi,
+        keycloak,
+        logoutOptions,
+        data.id
+
+      )
+      response.length === 0 && keycloak.logout(process.env.REACT_APP_logoutOption);
+      switch (response.status) {
+        case 403:
+          setloading(false);
+          break;
+
+        case undefined:
+          setloading(false);
+          break;
+
+        case 200:
+          // console.log("DataAceptadas", response.data[0].pathname)
+          window.open(response.data[0].pathname, '_blank');          
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      setloading(false);
+    }
+
   }
 
   return (
     <>
+
+
+
       <PullToRefresh
         onRefresh={async () => {
           await Data();

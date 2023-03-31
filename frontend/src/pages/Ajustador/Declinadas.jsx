@@ -57,6 +57,7 @@ const Declinadas = () => {
         userLocalStorage.id_user
 
       )
+      response.length ===0 && keycloak.logout(process.env.REACT_APP_logoutOption);
 
       switch (response.status) {
         case 403:

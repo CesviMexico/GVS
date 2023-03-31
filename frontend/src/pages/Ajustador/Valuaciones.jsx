@@ -66,6 +66,7 @@ const Valuaciones = () => {
                 "",
                 formData
             );
+            // response.length ===0 && keycloak.logout(process.env.REACT_APP_logoutOption);
             switch (response.status) {
                 case 403:
                     setLoading(false);

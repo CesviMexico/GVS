@@ -128,13 +128,13 @@ export const getAxiosLumen = async (propX) => {
     })
 
     setloading && setloading(false)
-
     switch (response.status) {
       case 200:
       case 201:
         return response.data
         break;
       case 401:
+        
         keycloak.logout(logoutOptions)
 
         break;

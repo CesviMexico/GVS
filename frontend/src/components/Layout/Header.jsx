@@ -82,34 +82,27 @@ const HeaderComponent = () => {
 
 
   const [Total_Data, setTotal_Data] = useState(0);
+  // const [fire_Data, setFire_Data] = useState(0);
+
+
   useEffect(() => {
 
     const q = query(collection(db, "usuarios"));
-    const unsuscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe2 = onSnapshot(q, (querySnapshot) => {
+      // const finalIni = [];
       setTotal_Data(0)
       let total = 0
-      snapshot.docChanges().forEach((change) => {
-
-        // if (change.type === "added") {
-        //   const final = { ...change.doc.data() }
-        //   // //console.log('final', final.solicitado)
-        //   total = total + final.solicitado
-        //   setTotal_Data(total)
-
-        // }
-
-        // if (change.type === "modified") {
-          const final = { ...change.doc.data() }
-          total = total + final.solicitado
-          setTotal_Data(total)
-        // }
+      querySnapshot.forEach((doc) => {
+        // finalIni.push(doc.data());
+        let final = { ...doc.data() }
+        total = total + final.solicitado
+        setTotal_Data(total)
 
       });
-      // //console.log('viewListMessage', Total_Data)    
+      // setFire_Data(finalIni)
     });
-
     return () => {
-      unsuscribe();
+      unsubscribe2();
     }
   }, []);
 

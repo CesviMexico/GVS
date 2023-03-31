@@ -25,7 +25,7 @@ const Navigation = (props) => {
 
   const { keycloak } = useKeycloak()
   const themeContext = useContext(ThemeContext)
-  const { msErrorApi, logoutOptions, idServicio, setIdServicio, tproceso, tporconfirmar,
+  const { msErrorApi, logoutOptions, idServicio, setIdServicio, 
     setTproceso, setTporconfirmar,
   } = themeContext
 

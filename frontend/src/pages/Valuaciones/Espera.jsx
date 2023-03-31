@@ -17,21 +17,28 @@ import Box from '@mui/material/Box';
 
 import { Uid } from '../../components/Global/funciones'
 
+//FIREBASE
+import { firebaseConfig } from '../../components/Global/firebase'
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+
+
 const Espera = (props) => {
     const themeContext = useContext(ThemeContext);
     const { keycloak } = useKeycloak();
     const {
-        backgroundColor,
-        primaryColor,
-        secondaryColor,
-        colorTable,
-        sizeIcon,
         msErrorApi,
         logoutOptions,
+        tporconfirmar,
+
     } = themeContext;
 
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
     const userContext = useContext(UserContext);
-    const { user, updateUser } = userContext;
+    const { user } = userContext;
 
     //hooks table
     const [datasource, setDataSource] = useState([]);
@@ -40,7 +47,7 @@ const Espera = (props) => {
     const [tableProps, setTableProps] = useState([]);
 
     //TABLA
-    useEffect(() => { ActualizaTabla() }, []);
+    useEffect(() => { ActualizaTabla() }, [tporconfirmar]);
     const ActualizaTabla = async () => {
         try {
             const response = await DataValuations(
@@ -50,7 +57,6 @@ const Espera = (props) => {
                 logoutOptions,
 
             )
-            //console.log("Espera", response)
             switch (response.status) {
                 case 403:
                     setloading(false);
@@ -77,23 +83,18 @@ const Espera = (props) => {
     };
     const swicthComponentAction = {
         Fotos: (row) => onViewfotos(row),
-        Monto: (row) => ActualizaTabla(),
-        Validacion: (row) => onChangeStatus(row),
+        Monto: () => ActualizaTabla(),
+        'Enviar valuación': (row) => onChangeStatus(row),
         Eliminar: (row) => onTrash(row),
     };
-    //ACTION'S DE LAS TABLAS
     const OnClickAction = (row, key) => {
         swicthComponentAction[key](row);
     };
 
-    //modal action
     const [visible, setVisible] = useState(false)
-    // const [id_valuacion, setId_valuacion] = useState("")
-
     const [listImage, setListImage] = useState([])
     const onViewfotos = async (row) => {
         setVisible(true)
-        // setId_valuacion(row.id_valuacion)
         try {
             const response = await GetPhotosValuation(
                 setloading,
@@ -102,7 +103,6 @@ const Espera = (props) => {
                 logoutOptions,
                 row.id_valuacion,
             )
-            //console.log("verfotosuValuacion", response)
             switch (response.status) {
                 case 403:
                     setloading(false);
@@ -126,9 +126,6 @@ const Espera = (props) => {
     }
 
     const onChangeStatus = async (row) => {
-        // //console.log("onChangeStatus", row)
-        // setId_valuacion(row.id_valuacion)
-        // let parametros = { status: 'valuado', id_user_respuesta: user.id_user }
         try {
             const response = await updateValuation(
                 setloading,
@@ -138,10 +135,13 @@ const Espera = (props) => {
                 row.id_valuacion,
                 {
                     status: 'valuado',
-                    id_user_respuesta: user.id_user
+                    id_user_respuesta: user.id_user,
+                    id_ajustado :row.id_ajustado
                 }
             )
-            switch (response.status) {
+
+            switch (response.status) {             
+
                 case 403:
                     setloading(false);
                     break;
@@ -151,8 +151,16 @@ const Espera = (props) => {
                     break;
 
                 case 200:
+
+                console.log('preferred_username',row.preferred_username);
+                console.log('totales', response.totales[0].T);
+
+                    const encuestaRef = doc(db, 'usuarios', row.preferred_username);
+                    await updateDoc(encuestaRef, {
+                        valuado: response.totales[0].T
+                    });
+
                     ActualizaTabla();
-                    //setListImage(response.data)
                     break;
 
                 default:

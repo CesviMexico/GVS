@@ -225,7 +225,7 @@ const Layout = ({ children }) => {
                     <Menu
                         theme={themeAntd}
                         mode="inline"
-                        defaultSelectedKeys={["Dashboard"]}
+                        defaultSelectedKeys={["Valuaciones"]}
                         items={items}
                         openKeys={openKeys}
                         onOpenChange={onOpenChange}

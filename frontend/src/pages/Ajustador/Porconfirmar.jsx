@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import { ImageViewer, Image, Grid, PullToRefresh, } from 'antd-mobile';
@@ -32,7 +32,6 @@ const Porconfirmar = () => {
   const { keycloak } = useKeycloak();
   const themeContext = useContext(ThemeContext)
   const {
-    setIdServicio,
     tporconfirmar,
     msErrorApi,
     logoutOptions,
@@ -40,7 +39,6 @@ const Porconfirmar = () => {
 
   } = themeContext
 
-  const navigate = useNavigate();
 
   useEffect(() => { Data() }, [tporconfirmar]);
 
@@ -64,10 +62,16 @@ const Porconfirmar = () => {
         keycloak,
         logoutOptions,
         userLocalStorage.id_user
-
       )
 
-      switch (response.status) {
+        response.length ===0 && keycloak.logout(process.env.REACT_APP_logoutOption);
+
+        switch (response.status) {
+
+        case 401:
+          keycloak.logout(process.env.REACT_APP_logoutOption);
+          break;
+
         case 403:
           setloading(false);
           break;
@@ -124,8 +128,8 @@ const Porconfirmar = () => {
             users.push(element);
           })
           setDataSource(users)
-          
-          const encuestaRef = doc(db, 'usuarios',  userLocalStorage.preferred_username);
+
+          const encuestaRef = doc(db, 'usuarios', userLocalStorage.preferred_username);
           response.data && await updateDoc(encuestaRef, {
             valuado: response.data.length
           });
@@ -137,6 +141,7 @@ const Porconfirmar = () => {
           break;
       }
     } catch (error) {
+     
       setloading(false);
     }
 

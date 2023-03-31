@@ -152,10 +152,10 @@ const Aceptadas = (props) => {
         }
     }
     
-    const onViewInforme = (row) => {
-        //console.log("onViewInforme", row)
-        window.open('https://apis.cesvimexico.com.mx/GVS/public/valuacion/5/6413597c215dc_20230316180132.png');
+    const onViewInforme = (row) => {        
+        window.open( row.pdf);
     }
+    
     return (
         <>
         <div style={{ display: 'none', }}>

@@ -39,7 +39,15 @@ const FormAntd = (props) => {
     xs = 12,
     sm = 6,
     md = 4,
-    layout = "horizontal"
+    layout = "horizontal",
+    block = true,
+    position = 'absolute',
+    salto = true,
+
+    xsBotton = 12,
+    smBotton = 6,
+    mdBotton = 4,
+
   } = props
 
   const [formItem, setFormItem] = useState([])
@@ -59,17 +67,17 @@ const FormAntd = (props) => {
   const swicthTipo = {
     "Input": ({ placeholder }) => <Input placeholder={placeholder} />,
     "InputPassword": () => <Input.Password />,
-    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 , stringMode=true }) =>
-    <InputNumber
-      defaultValue="1"
-      min={min}
-      max={max}
-      step={step}
-      stringMode={stringMode}
-      style={{
-        width: width,
-      }}
-    />,
+    "InputNumber": ({ min = "1", max, step = "0.01", width = 200, stringMode = true }) =>
+      <InputNumber
+        defaultValue="1"
+        min={min}
+        max={max}
+        step={step}
+        stringMode={stringMode}
+        style={{
+          width: width,
+        }}
+      />,
     "InputTextArea": ({ maxLength, showCount }) => <Input.TextArea showCount={showCount} maxLength={maxLength} />,
 
     "DatePicker": ({ showTime, format }) => <DatePicker showTime={showTime} format={format} />,
@@ -299,23 +307,19 @@ const FormAntd = (props) => {
               </Form.Item>
             </Grid>
           )}
-          <Grid item
-            xs={xs}
-            sm={sm}
-            md={md} key={Uid()} />
-          <Grid item
-            xs={xs}
-            sm={sm}
-            md={md} key={Uid()} >
+
+          {salto && <Grid item xs={xs} sm={sm} md={md} key={Uid()} />}
+
+          <Grid item xs={xsBotton} sm={smBotton} md={mdBotton} key={Uid()} >
             <Form.Item key={Uid()}>
               <Button
                 key={Uid()}
                 loading={loading}
-                block={true}
+                block={block}
                 style={{
                   backgroundColor: backgroundColor,
                   color: 'white',
-                  position: 'absolute',
+                  position: position,
                   align: 'center'
                 }}
                 htmlType="submit"
@@ -329,6 +333,7 @@ const FormAntd = (props) => {
               {
                 ButtonSec &&
                 <Button
+                  block={block}
                   key={Uid()}
                   loading={loading}
                   style={{ backgroundColor: backgroundColor, color: 'white', }}
@@ -370,7 +375,7 @@ export const FormAntdCrud = (props) => {
   const swicthTipo = {
     "Input": ({ placeholder }) => <Input placeholder={placeholder} />,
     "InputPassword": () => <Input.Password />,
-    "InputNumber": ({ min = "1", max, step = "0.01" , width=200 }) =>
+    "InputNumber": ({ min = "1", max, step = "0.01", width = 200 }) =>
       <InputNumber
         defaultValue="1"
         min={min}

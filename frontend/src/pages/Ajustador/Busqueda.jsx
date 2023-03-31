@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../../context/ThemContext'
 
 import { useKeycloak } from "@react-keycloak/web";
-import { DataBusqueda } from "./Services";
+import { DataBusqueda, DataPdf } from "./Services";
 
 //funciones
 import { AppStringUser } from "../../Const";
@@ -30,7 +30,6 @@ const Busqueda = () => {
 
   } = themeContext
 
-  const navigate = useNavigate();
   const [loading, setloading] = useState(false)
   const [datasource, setDataSource] = useState([]);
 
@@ -66,6 +65,8 @@ const Busqueda = () => {
           { busqueda: busqueda }
         )
 
+        response.length ===0 && keycloak.logout(process.env.REACT_APP_logoutOption);
+        
         switch (response.status) {
           case 403:
             setloading(false);
@@ -149,7 +150,38 @@ const Busqueda = () => {
 
 
   const onActionSheet = async (data) => {
-    ////console.log("onActionSheetEdit", data)
+    // console.log("onActionSheetEdit", data)
+    try {
+      const response = await DataPdf(
+        setloading,
+        msErrorApi,
+        keycloak,
+        logoutOptions,
+        data.id
+
+      )
+      response.length === 0 && keycloak.logout(process.env.REACT_APP_logoutOption);
+      switch (response.status) {
+        case 403:
+          setloading(false);
+          break;
+
+        case undefined:
+          setloading(false);
+          break;
+
+        case 200:
+          // console.log("DataAceptadas", response.data)
+          window.open(response.data[0].pathname, '_blank');          
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      setloading(false);
+    }
+
   }
 
 
@@ -160,7 +192,7 @@ const Busqueda = () => {
       <div style={{ padding: 16 }}>
 
         <Space direction='vertical' block={true} >
-          <AutoCenter>  <h3>Ingresa el número de reporte o el numero de serie</h3> </AutoCenter>
+          <AutoCenter>  <h3>Ingresa el número de reporte o el número de serie</h3> </AutoCenter>
           <SearchBar
             icon={<SearchOutline
               style={{
@@ -169,7 +201,7 @@ const Busqueda = () => {
 
             />
             }
-            placeholder='Reporte o Vin'
+            placeholder='Reporte o VIN'
             style={{
               '--border-radius': '100px',
               // '--background': '#ffffff',

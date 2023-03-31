@@ -103,5 +103,20 @@ export const DataBusqueda = async (setloading, msErrorApi, keycloak, logoutOptio
     return response
 }
 
+export const DataPdf = async (setloading, msErrorApi, keycloak, logoutOptions, data_id) => {
+    const response = await getAxiosLumen({
+        uri: `/ajustador/pdf/${data_id}`,
+        setloading: setloading,
+        msErrorApi: msErrorApi,
+        keycloak: keycloak,
+        notification: false,
+        request: 'get',
+        logoutOptions: logoutOptions
+
+    })
+    return response
+}
+
+
 
 export default DataProceso;
