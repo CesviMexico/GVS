@@ -117,6 +117,21 @@ export const DataPdf = async (setloading, msErrorApi, keycloak, logoutOptions, d
     return response
 }
 
+export const InsertMoreFotos = async (setloading ,msErrorApi,keycloak, logoutOptions, parametros, data) => {
+    const response = await getAxiosLumenHea({
+       uri:`InsertMoreFotos`,
+       setloading: setloading,
+       msErrorApi: msErrorApi,
+       keycloak: keycloak,
+       notification: true,
+       request: 'post',
+       logoutOptions: logoutOptions,
+       parametros:parametros,
+       data:data,
+       headers :{ 'Content-Type': 'application/x-www-form-urlencoded'}
+   })
+   return response
+}
 
 
 export default DataProceso;

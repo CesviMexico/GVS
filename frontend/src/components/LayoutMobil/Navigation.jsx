@@ -7,14 +7,12 @@ import './layoutMobil.css'
 import ThemeContext from '../../context/ThemContext'
 
 import { useKeycloak } from '@react-keycloak/web'
-import { DataOneUser } from "../Layout/Services"
+import { DataOneUser,DataMenu } from "../Layout/Services"
 import { AppStringUser } from "../../Const";
 
 import { firebaseConfig } from "../Global/firebase"
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, onSnapshot, } from 'firebase/firestore';
-
-
 
 
 const Navigation = (props) => {
@@ -25,7 +23,7 @@ const Navigation = (props) => {
 
   const { keycloak } = useKeycloak()
   const themeContext = useContext(ThemeContext)
-  const { msErrorApi, logoutOptions, idServicio, setIdServicio, 
+  const { msErrorApi, logoutOptions, idServicio, setIdServicio,
     setTproceso, setTporconfirmar,
   } = themeContext
 
@@ -165,7 +163,7 @@ const Navigation = (props) => {
   const right = (
     // <div style={{ fontSize: 20 }}>
     <Space
-       style={{ '--gap': '0px' }}
+      style={{ '--gap': '0px' }}
     >
 
       <Button
@@ -241,9 +239,34 @@ const Navigation = (props) => {
   useEffect(() => {
     if (!!keycloak.authenticated) {
       DatosPerfil(keycloak)
+      ActualizaMenu(keycloak)
     }
   }, [keycloak])
 
+
+  const ActualizaMenu = async (keycloak) => {
+    await keycloak.loadUserInfo()
+    let user_info = keycloak.userInfo
+    let user = {
+      id_keycloak: user_info.sub,
+      preferred_username: user_info.preferred_username,
+      email: user_info.email,
+      given_name: user_info.given_name,
+      family_name: user_info.family_name,
+      name: user_info.name,
+      id_company: 1,
+      rol: keycloak.resourceAccess ? keycloak.resourceAccess[process.env.REACT_APP_clientId].roles[0] : null
+    }
+    let subject = keycloak.subject
+    const response = await DataMenu(
+      setloading,
+      msErrorApi,
+      keycloak,
+      logoutOptions,
+      subject,
+      user
+    );
+  }
 
 
   return (

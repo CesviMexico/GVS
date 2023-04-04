@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { ConfigProvider } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
-import { ImageViewer, Image, Grid, PullToRefresh, } from 'antd-mobile';
+import {
+  ImageViewer, Image, Grid, PullToRefresh,
+  Popup, ImageUploader, Form, Button, Toast,
+} from 'antd-mobile';
+import { PicturesOutline } from "antd-mobile-icons";
+
 
 import { Icon } from '@iconify/react';
 import { ListMobileAntdOption } from '../../components/Global/Mobile/ListMobileAntdOption';
@@ -11,10 +16,10 @@ import { useNavigate } from 'react-router-dom';
 import ThemeContext from '../../context/ThemContext'
 
 import { useKeycloak } from "@react-keycloak/web";
-import { DataAceptadas, DataPdf } from "./Services";
+import { DataAceptadas, DataPdf, InsertMoreFotos } from "./Services";
 
 //funciones
-import { statusRecord } from "../../components/Global/funciones";
+import { statusRecord, beforeUpload } from "../../components/Global/funciones";
 import { AppStringUser } from "../../Const";
 
 const Aceptadas = () => {
@@ -66,7 +71,6 @@ const Aceptadas = () => {
           break;
 
         case 200:
-          ////console.log("DataAceptadas", response.data)
           setDataSource([])
           setTporconfirmar(response.data && response.data.length)
           let users = []
@@ -130,52 +134,200 @@ const Aceptadas = () => {
   const [fotos, setFotos] = useState([]);
   const [visible, setVisible] = useState(false);
   const VerFotos = (fotos) => {
-    ////console.log("VerFotos", fotos)
     setFotos(fotos)
     setVisible(true)
   }
 
 
-  const onActionSheet = async (data) => {
-    // console.log("onActionSheetEdit", data.id)
+  const [fileList, setFileList] = useState([]);
+  const [id_valuacion, setId_valuacion] = useState([]);
+  const mockUpload = (file) => {
+    // await sleep(3000);
+    return {
+      url: URL.createObjectURL(file),
+      file: file,
+    };
+  };
 
+
+  const onActionSheet = async (data, tipo) => {
+    switch (tipo) {
+      case "pdf":
+
+        try {
+          const response = await DataPdf(
+            setloading,
+            msErrorApi,
+            keycloak,
+            logoutOptions,
+            data.id
+
+          )
+          response.length === 0 && keycloak.logout(process.env.REACT_APP_logoutOption);
+          switch (response.status) {
+            case 403:
+              setloading(false);
+              break;
+
+            case undefined:
+              setloading(false);
+              break;
+
+            case 200:
+              window.open(response.data[0].pathname, '_blank');
+              break;
+
+            default:
+              break;
+          }
+        } catch (error) {
+          setloading(false);
+        }
+
+        break;
+      case "fotos":      
+        setId_valuacion(data.id)
+        setFileList([])
+        setVisiblePopup(true)
+        break;
+
+      default:
+        break;
+    }
+
+
+
+  }
+
+  const [visiblePopup, setVisiblePopup] = useState(false);
+  const [loadingF, setLoadingF] = useState(false);
+
+  const onFinishA = (value) => {
+    if (fileList.length) {
+      onFinish(value)
+    } else {
+      Toast.show({ content: 'No hay fotos', })
+      setLoadingF(false);
+    }
+  }
+
+  const onFinish = async () => {
+    setLoadingF(true);
+    let formData = new FormData();
+    fileList.map((photo) => {
+      let blob = new Blob([photo.file], { type: "image/png,jpg" });
+      formData.append("photos[]", blob, photo.file.name);
+    });
+    formData.append("id_valuacion", id_valuacion);
     try {
-      const response = await DataPdf(
-        setloading,
+      const response = await InsertMoreFotos(
+        setLoadingF,
         msErrorApi,
         keycloak,
         logoutOptions,
-        data.id
-
-      )
+        "",
+        formData
+      );
       response.length === 0 && keycloak.logout(process.env.REACT_APP_logoutOption);
       switch (response.status) {
         case 403:
-          setloading(false);
+          setLoadingF(false);
           break;
 
         case undefined:
-          setloading(false);
+          setLoadingF(false);
           break;
 
         case 200:
-          // console.log("DataAceptadas", response.data[0].pathname)
-          window.open(response.data[0].pathname, '_blank');          
+
+          setFileList([]);
+          Data()
+          setVisiblePopup(false)
+
           break;
 
         default:
           break;
       }
     } catch (error) {
-      setloading(false);
+      setLoadingF(false);
     }
-
-  }
+  };
 
   return (
     <>
 
+      <Popup
+        destroyOnClose={true}
+        visible={visiblePopup}
 
+        onMaskClick={() => {
+          setVisiblePopup(false)
+          setFileList([])
+        }}
+
+        bodyStyle={{
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          minHeight: "25vh",
+        }}
+
+        // position='right'
+        showCloseButton
+        onClose={() => {
+          setVisiblePopup(false)
+        }}
+      >
+        <div style={{ overflowY: 'scroll', paddingTop: '25px' }}>
+          <Form
+            mode={"card"}
+            // layout="horizontal"
+            onFinish={onFinishA}
+            footer={
+              <Button
+                loading={loadingF}
+                block
+                type='submit'
+                style={{
+                  color: userLocalStorage.color,
+                  backgroundColor: userLocalStorage.background_color
+                }}
+                size='large'
+              >
+                Enviar
+              </Button>}
+          >
+            {/* <Fo rm.Header>Datos del siniestro</Form.Header> */}
+            <Form.Item name="archivos" label="Fotos">
+              <div style={{ height: "22vh", overflowY: "scroll" }}>
+                <ImageUploader
+                  multiple={true}
+                  value={fileList}
+                  onChange={setFileList}
+                  upload={mockUpload}
+                  beforeUpload={beforeUpload}
+                >
+                  <div
+                    style={{
+                      width: 70,
+                      height: 70,
+                      borderRadius: 15,
+                      backgroundColor: '#f5f5f5',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      color: '#999999',
+                    }}
+                  >
+                    <PicturesOutline style={{ fontSize: 30 }} />
+                  </div>
+                </ImageUploader>
+
+              </div>
+            </Form.Item>
+          </Form>
+        </div>
+      </Popup>
 
       <PullToRefresh
         onRefresh={async () => {

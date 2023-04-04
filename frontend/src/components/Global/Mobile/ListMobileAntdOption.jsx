@@ -90,9 +90,24 @@ export const ListMobileAntdOption = (props) => {
                         confirmText: 'OK',
                         cancelText: 'Cancelar',
                         content: '¿Seguro que quieres ver PDF?',
-                        onConfirm: () => onActionSheet(data),
+                        onConfirm: () => onActionSheet(data,'pdf'),
                         // onClose: ref.current.close()
                     })
+                },
+            },
+            {
+                key: Uid(data.id),
+                text: <Icon icon={"icon-park-outline:add-picture"} style={{ fontSize: "30px" }} />,
+                color: '#66bb6a',
+                onClick: async () => {
+                    onActionSheet(data,'fotos')
+                    // await Dialog.confirm({
+                    //     confirmText: 'OK',
+                    //     cancelText: 'Cancelar',
+                    //     content: '¿Seguro que quieres agregar imagenes al PDF?',
+                    //     onConfirm: () => onActionSheet(data,'fotos'),
+                    //     // onClose: ref.current.close()
+                    // })
                 },
             },
         ];
