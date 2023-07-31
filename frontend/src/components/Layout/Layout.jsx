@@ -203,7 +203,7 @@ const Layout = ({ children }) => {
                         display: collapsed && 'flex',
                         justifycontent: 'center',
                         alignitems: 'center',
-                        height: '40px',
+                        height: '70px',
                         margin: '11px',
                         textAlign: "center",
                         top: '100',
@@ -216,8 +216,8 @@ const Layout = ({ children }) => {
                 >
                     <img
                         src={!collapsed ? logoSvg : logo}
-                        height={!collapsed ? "100%" : "90%"}
-                        width={!collapsed ? "100%" : "100%"}
+                        height={!collapsed ? "110%" : "90%"}
+                        width={!collapsed ? "110%" : "100%"}
                     />
 
                 </div>
